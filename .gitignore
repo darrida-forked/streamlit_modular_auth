@@ -1,2 +1,3 @@
 venv
 _secret_auth_.json
+__pycache__/
