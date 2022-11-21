@@ -32,9 +32,7 @@ def load_lottieurl(url: str) -> str:
     """
     try:
         r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json()
+        return None if r.status_code != 200 else r.json()
     except:
         pass
 
@@ -45,9 +43,7 @@ def check_valid_name(name_sign_up: str) -> bool:
     """
     name_regex = (r'^[A-Za-z_][A-Za-z0-9_]*')
 
-    if re.search(name_regex, name_sign_up):
-        return True
-    return False
+    return bool(re.search(name_regex, name_sign_up))
 
 
 def check_valid_email(email_sign_up: str) -> bool:
@@ -56,25 +52,22 @@ def check_valid_email(email_sign_up: str) -> bool:
     """
     regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
 
-    if re.fullmatch(regex, email_sign_up):
-        return True
-    return False
+    return bool(re.fullmatch(regex, email_sign_up))
 
 
 def check_unique_email(email_sign_up: str) -> bool:
     """
     Checks if the email already exists (since email needs to be unique).
     """
-    authorized_user_data_master = list()
+    authorized_user_data_master = []
     with open("_secret_auth_.json", "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['email'])
+        authorized_user_data_master.extend(
+            user['email'] for user in authorized_users_data
+        )
 
-    if email_sign_up in authorized_user_data_master:
-        return False
-    return True
+    return email_sign_up not in authorized_user_data_master
 
 
 def non_empty_str_check(username_sign_up: str) -> bool:
@@ -88,9 +81,7 @@ def non_empty_str_check(username_sign_up: str) -> bool:
             if empty_count == len(username_sign_up):
                 return False
 
-    if not username_sign_up:
-        return False
-    return True
+    return bool(username_sign_up)
 
 
 def check_unique_usr(username_sign_up: str):
@@ -98,21 +89,20 @@ def check_unique_usr(username_sign_up: str):
     Checks if the username already exists (since username needs to be unique),
     also checks for non - empty username.
     """
-    authorized_user_data_master = list()
+    authorized_user_data_master = []
     with open("_secret_auth_.json", "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'])
+        authorized_user_data_master.extend(
+            user['username'] for user in authorized_users_data
+        )
 
     if username_sign_up in authorized_user_data_master:
         return False
-    
+
     non_empty_check = non_empty_str_check(username_sign_up)
 
-    if non_empty_check == False:
-        return None
-    return True
+    return None if non_empty_check == False else True
 
 
 def register_new_usr(name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
@@ -133,16 +123,15 @@ def check_username_exists(user_name: str) -> bool:
     """
     Checks if the username exists in the _secret_auth.json file.
     """
-    authorized_user_data_master = list()
+    authorized_user_data_master = []
     with open("_secret_auth_.json", "r") as auth_json:
         authorized_users_data = json.load(auth_json)
 
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'])
-        
-    if user_name in authorized_user_data_master:
-        return True
-    return False
+        authorized_user_data_master.extend(
+            user['username'] for user in authorized_users_data
+        )
+
+    return user_name in authorized_user_data_master
         
 
 def check_email_exists(email_forgot_passwd: str):
@@ -173,18 +162,23 @@ def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_for
     client = Courier(auth_token = auth_token)
 
     resp = client.send_message(
-    message={
-        "to": {
-        "email": email_forgot_passwd
-        },
-        "content": {
-        "title": company_name + ": Login Password!",
-        "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
-        },
-        "data":{
-        "info": "Please reset your password at the earliest for security reasons."
+        message={
+            "to": {"email": email_forgot_passwd},
+            "content": {
+                "title": f"{company_name}: Login Password!",
+                "body": f"Hi! {username_forgot_passwd},"
+                + "\n"
+                + "\n"
+                + "Your temporary login password is: "
+                + random_password
+                + "\n"
+                + "\n"
+                + "{{info}}",
+            },
+            "data": {
+                "info": "Please reset your password at the earliest for security reasons."
+            },
         }
-    }
     )
 
 

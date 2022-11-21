@@ -58,16 +58,17 @@ class __login__:
         """
         Checks if the auth file (where the user info is stored) already exists.
         """
-        file_names = []
-        for path in os.listdir('./'):
-            if os.path.isfile(os.path.join('./', path)):
-                file_names.append(path)
+        file_names = [
+            path
+            for path in os.listdir('./')
+            if os.path.isfile(os.path.join('./', path))
+        ]
 
         present_files = []
         for file_name in file_names:
             if auth_filename in file_name:
                 present_files.append(file_name)
-                    
+
             present_files = sorted(present_files)
             if len(present_files) > 0:
                 return True
@@ -77,8 +78,7 @@ class __login__:
         if st.session_state['LOGOUT_BUTTON_HIT'] == False:
             fetched_cookies = self.cookies
             if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
-                username=fetched_cookies['__streamlit_login_signup_ui_username__']
-                return username
+                return fetched_cookies['__streamlit_login_signup_ui_username__']
  
 
     def login_widget(self) -> None:
@@ -87,12 +87,17 @@ class __login__:
         """
 
         # Checks if cookie exists.
-        if st.session_state['LOGGED_IN'] == False:
-            if st.session_state['LOGOUT_BUTTON_HIT'] == False:
-                fetched_cookies = self.cookies
-                if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
-                    if fetched_cookies['__streamlit_login_signup_ui_username__'] != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
-                        st.session_state['LOGGED_IN'] = True
+        if (
+            st.session_state['LOGGED_IN'] == False
+            and st.session_state['LOGOUT_BUTTON_HIT'] == False
+        ):
+            fetched_cookies = self.cookies
+            if (
+                '__streamlit_login_signup_ui_username__' in fetched_cookies.keys()
+                and fetched_cookies['__streamlit_login_signup_ui_username__']
+                != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182'
+            ):
+                st.session_state['LOGGED_IN'] = True
 
         if st.session_state['LOGGED_IN'] == False:
             st.session_state['LOGOUT_BUTTON_HIT'] = False 
@@ -138,37 +143,37 @@ class __login__:
             email_sign_up = st.text_input("Email *", placeholder = 'Please enter your email')
             valid_email_check = check_valid_email(email_sign_up)
             unique_email_check = check_unique_email(email_sign_up)
-            
+
             username_sign_up = st.text_input("Username *", placeholder = 'Enter a unique username')
             unique_username_check = check_unique_usr(username_sign_up)
 
             password_sign_up = st.text_input("Password *", placeholder = 'Create a strong password', type = 'password')
 
             st.markdown("###")
-            sign_up_submit_button = st.form_submit_button(label = 'Register')
-
-            if sign_up_submit_button:
+            if sign_up_submit_button := st.form_submit_button(label='Register'):
                 if valid_name_check == False:
                     st.error("Please enter a valid name!")
 
                 elif valid_email_check == False:
                     st.error("Please enter a valid Email!")
-                
+
                 elif unique_email_check == False:
                     st.error("Email already exists!")
-                
+
                 elif unique_username_check == False:
                     st.error(f'Sorry, username {username_sign_up} already exists!')
-                
-                elif unique_username_check == None:
+
+                elif unique_username_check is None:
                     st.error('Please enter a non - empty Username!')
 
-                if valid_name_check == True:
-                    if valid_email_check == True:
-                        if unique_email_check == True:
-                            if unique_username_check == True:
-                                register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
-                                st.success("Registration Successful!")
+                if (
+                    valid_name_check == True
+                    and valid_email_check == True
+                    and unique_email_check == True
+                    and unique_username_check == True
+                ):
+                    register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
+                    st.success("Registration Successful!")
 
 
     def forgot_password(self) -> None:
@@ -181,9 +186,9 @@ class __login__:
             email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd)
 
             st.markdown("###")
-            forgot_passwd_submit_button = st.form_submit_button(label = 'Get Password')
-
-            if forgot_passwd_submit_button:
+            if forgot_passwd_submit_button := st.form_submit_button(
+                label='Get Password'
+            ):
                 if email_exists_check == False:
                     st.error("Email ID not registered with us!")
 
@@ -211,9 +216,9 @@ class __login__:
             new_passwd_1 = st.text_input("Re - Enter New Password", placeholder= 'Please re- enter the new password', type = 'password')
 
             st.markdown("###")
-            reset_passwd_submit_button = st.form_submit_button(label = 'Reset Password')
-
-            if reset_passwd_submit_button:
+            if reset_passwd_submit_button := st.form_submit_button(
+                label='Reset Password'
+            ):
                 if email_exists_check == False:
                     st.error("Email does not exist!")
 
@@ -222,11 +227,10 @@ class __login__:
 
                 elif new_passwd != new_passwd_1:
                     st.error("Passwords don't match!")
-            
-                if email_exists_check == True:
-                    if current_passwd_check == True:
-                        change_passwd(email_reset_passwd, new_passwd)
-                        st.success("Password Reset Successfully!")
+
+                if email_exists_check == True and current_passwd_check == True:
+                    change_passwd(email_reset_passwd, new_passwd)
+                    st.success("Password Reset Successfully!")
                 
 
     def logout_widget(self) -> None:
