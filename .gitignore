@@ -11,3 +11,4 @@ archived_logs/
 latest_logs/
 *.egg-info/
 pabot_results/
+.*
