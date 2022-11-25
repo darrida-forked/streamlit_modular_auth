@@ -16,16 +16,3 @@ LOGGED_IN = __login__obj.build_login_ui()
 
 if LOGGED_IN == True:
     st.markdown("Your Streamlit Application Begins here!")
-
-
-# import streamlit as st
-
-# st.title("Test")
-# genre = st.radio(
-#     "What's your favorite movie genre",
-#     ('Comedy', 'Drama', 'Documentary'))
-
-# if genre == 'Comedy':
-#     st.write('You selected comedy.')
-# else:
-#     st.write("You didn't select comedy.")
