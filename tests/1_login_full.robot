@@ -51,6 +51,9 @@ Login Screen
     Page Should Contain     Create Account
     Page Should Contain     Forgot Password?
     Page Should Contain     Reset Password
+    Unselect Frame
+    Page Should Not Contain    //a[contains(text(),'Made with')]
+    Page Should Not Contain    //*[@id="MainMenu"]
     Close Browser
 
 

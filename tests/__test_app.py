@@ -7,7 +7,7 @@ hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else F
 hide_account_management = True if os.environ.get("HIDE_ACCOUNT_MANAGEMENT") == "true" else False
 hide_footer_bool = True if os.environ.get("HIDE_FOOTER") == "true" else False
 hide_menu_bool = True if os.environ.get("HIDE_MENU") == "true" else False
-logout_button_name = True if os.environ.get("LOGOUT_BUTTON_NAME") == "true" else False
+logout_button_name = os.environ.get("LOGOUT_BUTTON_NAME") if os.environ.get("LOGOUT_BUTTON_NAME") else "Logout"
 
 
 __login__obj = __login__(
