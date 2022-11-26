@@ -7,39 +7,16 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
-Suite Setup         Start the webserver
-Suite Teardown      Stop the webserver
-
-
-*** Keywords ***
-Start the webserver
-    Log To Console  start
-    
-    ${PROCESS}    Start Process   python3    
-        ...    -m    coverage    run    --source    tests   
-        ...    -m    streamlit    run    __test_app.py    
-        ...    --server.port    8001    
-        ...    --server.headless   true
-        ...    env:HIDE_FOOTER=true
-
-    Set suite variable    ${PROCESS}
-    Log To Console     ${PROCESS}
-    sleep    2s
-
-Stop the webserver
-    Log To Console    end
-    Terminate Process
-
 
 *** Variables ***
-${URL}             http://localhost:8001/
+${URL}             http://localhost:8007/
 ${BROWSER}         headlessfirefox
 # ${BROWSER}         firefox
 ${DRIVER_LOGS}      .logs/geckodriver.log
 
 
 *** Test Cases ***
-Login Screen
+Hide Menu - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Page Should Contain     Password
@@ -51,5 +28,5 @@ Login Screen
     Page Should Contain     Forgot Password?
     Page Should Contain     Reset Password
     Unselect Frame
-    Page Should Not Contain    //a[contains(text(),'Made with')]
+    Page Should Not Contain    //*[@id="MainMenu"]
     Close Browser

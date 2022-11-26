@@ -1,13 +1,33 @@
 import os
 import streamlit as st
 from streamlit_login_auth_ui import __login__
+from streamlit_login_auth_ui.utils import StreamlitLoginAuth
+
+
+class CustomAuth(StreamlitLoginAuth):
+    def __init__(self, login_name=None, username=None, password=None):
+        super().__init__(login_name, username, password)
+    
+    def check_usr_pass(self):
+        if self.username == "custom_auth_user" and self.password == "custom_auth_pass":
+            return True
+        return False
 
 
 hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else False
 hide_account_management = True if os.environ.get("HIDE_ACCOUNT_MANAGEMENT") == "true" else False
 hide_footer_bool = True if os.environ.get("HIDE_FOOTER") == "true" else False
 hide_menu_bool = True if os.environ.get("HIDE_MENU") == "true" else False
-logout_button_name = os.environ.get("LOGOUT_BUTTON_NAME") if os.environ.get("LOGOUT_BUTTON_NAME") else "Logout"
+logout_button_name = (
+    os.environ.get("LOGOUT_BUTTON_NAME") if os.environ.get("LOGOUT_BUTTON_NAME") else "Logout"
+)
+if os.environ.get("CUSTOM_AUTH"):
+    if os.environ.get("CUSTOM_AUTH") != "true":
+        custom_authentication = CustomAuth(login_name=os.environ.get("CUSTOM_AUTH"))
+    else:
+        custom_authentication = CustomAuth()
+else:
+    custom_authentication = None # StreamlitLoginAuth()
 
 
 __login__obj = __login__(
@@ -20,7 +40,8 @@ __login__obj = __login__(
     hide_footer_bool = hide_footer_bool, 
     lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
     hide_registration=hide_registration,
-    hide_account_management=hide_account_management
+    hide_account_management=hide_account_management,
+    custom_authentication=custom_authentication
 )
 
 

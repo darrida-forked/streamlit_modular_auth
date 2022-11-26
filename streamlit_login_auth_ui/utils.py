@@ -8,22 +8,22 @@ import requests
 
 ph = PasswordHasher() 
 
-def check_usr_pass(username: str, password: str) -> bool:
-    """
-    Authenticates the username and password.
-    """
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_user_data = json.load(auth_json)
+# def check_usr_pass(username: str, password: str) -> bool:
+#     """
+#     Authenticates the username and password.
+#     """
+#     with open("_secret_auth_.json", "r") as auth_json:
+#         authorized_user_data = json.load(auth_json)
 
-    for registered_user in authorized_user_data:
-        if registered_user['username'] == username:
-            try:
-                passwd_verification_bool = ph.verify(registered_user['password'], password)
-                if passwd_verification_bool == True:
-                    return True
-            except:
-                pass
-    return False
+#     for registered_user in authorized_user_data:
+#         if registered_user['username'] == username:
+#             try:
+#                 passwd_verification_bool = ph.verify(registered_user['password'], password)
+#                 if passwd_verification_bool == True:
+#                     return True
+#             except:
+#                 pass
+#     return False
 
 
 def load_lottieurl(url: str) -> str:
@@ -218,6 +218,31 @@ def check_current_passwd(email_reset_passwd: str, current_passwd: str) -> bool:
                 except:
                     pass
     return False
+
+
+class StreamlitLoginAuth:
+    def __init__(self, login_name: str = None, username: str = None, password: str = None):
+        self.login_name = login_name or "Login"
+        self.username = username
+        self.password = password
+
+    def check_usr_pass(self) -> bool:
+        """
+        Authenticates the username and password.
+        """
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_user_data = json.load(auth_json)
+
+        for registered_user in authorized_user_data:
+            if registered_user['username'] == self.username:
+                try:
+                    passwd_verification_bool = ph.verify(registered_user['password'], self.password)
+                    if passwd_verification_bool == True:
+                        return True
+                except:
+                    pass
+        return False
+
 
 # Author: Gauri Prabhakar
 # GitHub: https://github.com/GauriSP10/streamlit_login_auth_ui

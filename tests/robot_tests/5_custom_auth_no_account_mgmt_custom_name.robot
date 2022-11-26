@@ -7,72 +7,49 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
-Suite Setup         Start the webserver
-Suite Teardown      Stop the webserver
-
-
-*** Keywords ***
-Start the webserver
-    Log To Console  start
-    
-    ${PROCESS}    Start Process   python3    
-        ...    -m    coverage    run    --source    tests   
-        ...    -m    streamlit    run    __test_app.py    
-        ...    --server.port    8003    
-        ...    --server.headless   true
-        ...    env:HIDE_ACCOUNT_MANAGEMENT=true
-
-    Set suite variable    ${PROCESS}
-    Log To Console     ${PROCESS}
-    sleep  2s
-
-Stop the webserver
-    Log To Console  end
-    Terminate Process
-
 
 *** Variables ***
-${URL}             http://localhost:8003/
+${URL}             http://localhost:8005/
 ${BROWSER}         headlessfirefox
 # ${BROWSER}         firefox
 ${DRIVER_LOGS}      .logs/geckodriver.log
 
 
 *** Test Cases ***
-No Acc Mgmt - Login Screen
+Custom Auth Login Name - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Page Should Contain     Password
     Page Should Contain     Login
     Select Frame    tag:iframe
     Page Should Contain     Navigation
-    Page Should Contain     Login
+    Page Should Contain     Custom Login
     Page Should Not Contain     Create Account
     Page Should Not Contain     Forgot Password?
     Page Should Not Contain     Reset Password
     Close Browser
 
 
-No Acc Mgmt - Login Successful
+Custom Auth Login Name - Login Successful
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    custom_auth_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password1
+    Input Text      //*[@placeholder="Your password"]    custom_auth_pass
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Close Browser
 
 
-No Acc Mgmt - Login, then Logout
+Custom Auth Login Name - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    custom_auth_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password1
+    Input Text      //*[@placeholder="Your password"]    custom_auth_pass
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
@@ -83,26 +60,28 @@ No Acc Mgmt - Login, then Logout
     Close Browser
 
 
-No Acc Mgmt - Login Failed - Invalid Password
+Custom Auth Login Name - Login Failed - Invalid Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    custom_auth_user_wrong
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password2
+    Input Text      //*[@placeholder="Your password"]    custom_auth_pass
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
     Close Browser
 
 
-No Acc Mgmt - Login Failed - Invalid Username
+Custom Auth Login Name - Login Failed - Invalid Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user2
+    Input Text      //*[@placeholder="Your unique username"]    custom_auth_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password1
+    Input Text      //*[@placeholder="Your password"]    custom_auth_pass_wrong
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!

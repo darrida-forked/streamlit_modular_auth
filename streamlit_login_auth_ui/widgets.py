@@ -4,7 +4,7 @@ import os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
-from .utils import check_usr_pass
+# from .utils import check_usr_pass
 from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
@@ -16,6 +16,7 @@ from .utils import generate_random_passwd
 from .utils import send_passwd_in_email
 from .utils import change_passwd
 from .utils import check_current_passwd
+from .utils import StreamlitLoginAuth
 
 
 class __login__:
@@ -26,7 +27,8 @@ class __login__:
     def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', 
                  hide_menu_bool: bool = False, hide_footer_bool: bool = False, 
                  lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
-                 hide_registration: bool = False, hide_account_management: bool = False):
+                 hide_registration: bool = False, hide_account_management: bool = False,
+                 custom_authentication: StreamlitLoginAuth = None):
         """
         Arguments:
         -----------
@@ -50,6 +52,7 @@ class __login__:
         self.lottie_url = lottie_url
         self.hide_registration = hide_registration
         self.hide_account_management = hide_account_management
+        self.authentication = custom_authentication or StreamlitLoginAuth()
 
         self.cookies = EncryptedCookieManager(
         prefix="streamlit_login_ui_yummy_cookies",
@@ -111,7 +114,9 @@ class __login__:
                 login_submit_button = st.form_submit_button(label = 'Login')
 
                 if login_submit_button == True:
-                    authenticate_user_check = check_usr_pass(username, password)
+                    self.authentication.username = username
+                    self.authentication.password = password
+                    authenticate_user_check = self.authentication.check_usr_pass()
 
                     if authenticate_user_check == False:
                         st.error("Invalid Username or Password!")
@@ -258,7 +263,7 @@ class __login__:
         main_page_sidebar = st.sidebar.empty()
         with main_page_sidebar:
             icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise']
-            options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password']
+            options = [self.authentication.login_name, 'Create Account', 'Forgot Password?', 'Reset Password']
             if self.hide_registration or self.hide_account_management:
                 icons.remove('person-plus')
                 options.remove('Create Account')
@@ -314,7 +319,7 @@ class __login__:
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 
-        if selected_option == 'Login':
+        if selected_option == self.authentication.login_name: # 'Login':
             c1, c2 = st.columns([7,3])
             with c1:
                 self.login_widget()

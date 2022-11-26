@@ -7,30 +7,6 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
-Suite Setup         Start the webserver
-Suite Teardown      Stop the webserver
-
-
-*** Keywords ***
-Start the webserver
-    Log To Console  start
-    
-    Remove File     _secret_auth_.json
-    
-    ${PROCESS}    Start Process   python3    
-        ...    -m    coverage    run    --source    tests   
-        ...    -m    streamlit    run    __test_app.py    
-        ...    --server.port    8001    
-        ...    --server.headless   true
-
-    Set suite variable    ${PROCESS}
-    Log To Console     ${PROCESS}
-    sleep    2s
-
-Stop the webserver
-    Log To Console    end
-    Terminate Process
-
 
 *** Variables ***
 ${URL}             http://localhost:8001/
@@ -40,7 +16,7 @@ ${DRIVER_LOGS}      .logs/geckodriver.log
 
 
 *** Test Cases ***
-Login Screen
+Default - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Page Should Contain     Password
@@ -57,12 +33,12 @@ Login Screen
     Close Browser
 
 
-Check For Password File
-    Depends on test     Login Screen
+Default - Check For Password File
+    Depends on test     Default - Login Screen
     File Should Exist   _secret_auth_.json
 
 
-Reset Password Screen
+Default - Reset Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   tag:iframe
@@ -74,7 +50,7 @@ Reset Password Screen
     Close Browser
 
 
-Create Account Screen
+Default - Create Account Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   tag:iframe
@@ -90,7 +66,7 @@ Create Account Screen
     Close Browser
 
 
-Forgot Password Screen
+Default - Forgot Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   tag:iframe
@@ -102,7 +78,7 @@ Forgot Password Screen
     Close Browser
 
 
-Create Account
+Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   tag:iframe
@@ -124,8 +100,8 @@ Create Account
     Close Browser
 
 
-Login Successful
-    Depends on test     Create Account
+Default - Login Successful
+    Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -138,8 +114,8 @@ Login Successful
     Close Browser
 
 
-Login, then Logout
-    Depends on test     Create Account
+Default - Login, then Logout
+    Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -156,28 +132,30 @@ Login, then Logout
     Close Browser
 
 
-Login Failed - Invalid Password
-    Depends on test     Create Account
+Default - Invalid Password
+    Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password2
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
     Close Browser
 
 
-Login Failed - Invalid Username
-    Depends on test     Create Account
+Default - Invalid Username
+    Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user2
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
