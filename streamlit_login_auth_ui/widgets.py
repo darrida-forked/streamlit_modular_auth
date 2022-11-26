@@ -272,8 +272,6 @@ class __login__:
                 menu_icon = 'list-columns-reverse',
                 icons = icons,
                 options = options,
-                # icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise'],
-                # options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password'],
                 styles = {
                     "container": {"padding": "5px"},
                     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
