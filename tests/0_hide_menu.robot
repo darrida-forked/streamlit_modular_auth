@@ -15,8 +15,6 @@ Suite Teardown      Stop the webserver
 Start the webserver
     Log To Console  start
     
-    Remove File     _secret_auth_.json
-    
     ${PROCESS}    Start Process   python3    
         ...    -m    coverage    run    --source    tests   
         ...    -m    streamlit    run    __test_app.py    
