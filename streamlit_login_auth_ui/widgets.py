@@ -23,7 +23,10 @@ class __login__:
     Builds the UI for the Login/ Sign Up page.
     """
 
-    def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', hide_menu_bool: bool = False, hide_footer_bool: bool = False, lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json" ):
+    def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', 
+                 hide_menu_bool: bool = False, hide_footer_bool: bool = False, 
+                 lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
+                 hide_registration: bool = False, hide_account_management: bool = False):
         """
         Arguments:
         -----------
@@ -45,6 +48,8 @@ class __login__:
         self.hide_menu_bool = hide_menu_bool
         self.hide_footer_bool = hide_footer_bool
         self.lottie_url = lottie_url
+        self.hide_registration = hide_registration
+        self.hide_account_management = hide_account_management
 
         self.cookies = EncryptedCookieManager(
         prefix="streamlit_login_ui_yummy_cookies",
@@ -252,11 +257,23 @@ class __login__:
         """
         main_page_sidebar = st.sidebar.empty()
         with main_page_sidebar:
+            icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise']
+            options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password']
+            if self.hide_registration or self.hide_account_management:
+                icons.remove('person-plus')
+                options.remove('Create Account')
+            if self.hide_account_management:
+                icons.remove('x-circle')
+                options.remove('Forgot Password?')
+                icons.remove('arrow-counterclockwise')
+                options.remove('Reset Password')
             selected_option = option_menu(
                 menu_title = 'Navigation',
                 menu_icon = 'list-columns-reverse',
-                icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise'],
-                options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password'],
+                icons = icons,
+                options = options,
+                # icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise'],
+                # options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password'],
                 styles = {
                     "container": {"padding": "5px"},
                     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
@@ -307,14 +324,16 @@ class __login__:
                 if st.session_state['LOGGED_IN'] == False:
                     self.animation()
         
-        if selected_option == 'Create Account':
-            self.sign_up_widget()
+        if not self.hide_registration:
+            if selected_option == 'Create Account':
+                self.sign_up_widget()
 
-        if selected_option == 'Forgot Password?':
-            self.forgot_password()
+        if not self.hide_account_management:
+            if selected_option == 'Forgot Password?':
+                self.forgot_password()
 
-        if selected_option == 'Reset Password':
-            self.reset_password()
+            if selected_option == 'Reset Password':
+                self.reset_password()
         
         self.logout_widget()
 
