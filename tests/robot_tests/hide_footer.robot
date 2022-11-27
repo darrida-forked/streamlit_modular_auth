@@ -1,5 +1,5 @@
 # MANUALLY SET GECKODRIVER IN PATH
-# - Linux/MacOS: `export PATH=$PATH:$PWD/tests/utils/.`
+# - Linux/MacOS: `export PATH=$PATH:$PWD/tests/utils/geckodriver_macos_arm64/.`
 
 *** Settings ***
 Library  SeleniumLibrary

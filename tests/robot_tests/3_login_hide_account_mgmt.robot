@@ -30,13 +30,35 @@ No Acc Mgmt - Login Screen
     Close Browser
 
 
+No Acc Mgmt - Create Account
+    Open Browser    http://localhost:8001/  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username
+    Wait Until Element Is Visible   tag:iframe
+    Select Frame    tag:iframe
+    Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
+    Click Element                   //a[contains(text(),'Create Account')]
+    Unselect Frame
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
+    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
+    Input Text      //*[@placeholder="Please enter your email"]    flname8@email.com
+    Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
+    Input Text      //*[@placeholder="Enter a unique username"]    user8
+    Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
+    Input Text      //*[@placeholder="Create a strong password"]    password8
+    Click Button   //*[contains(text(),'Register')]
+    Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
+    Page Should Contain     Registration Successful!
+    Close Browser
+
+
 No Acc Mgmt - Login Successful
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    user8
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password1
+    Input Text      //*[@placeholder="Your password"]    password8
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
@@ -47,9 +69,9 @@ No Acc Mgmt - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    user8
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password1
+    Input Text      //*[@placeholder="Your password"]    password8
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
@@ -64,9 +86,9 @@ No Acc Mgmt - Login Failed - Invalid Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    user8
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password2
+    Input Text      //*[@placeholder="Your password"]    password1
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]

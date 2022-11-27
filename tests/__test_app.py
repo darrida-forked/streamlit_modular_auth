@@ -1,10 +1,10 @@
 import os
 import streamlit as st
 from streamlit_login_auth_ui import __login__
-from streamlit_login_auth_ui.utils import StreamlitLoginAuth
+from streamlit_login_auth_ui.utils import StreamlitUserAuth
 
 
-class CustomAuth(StreamlitLoginAuth):
+class CustomAuth(StreamlitUserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
@@ -27,7 +27,7 @@ if os.environ.get("CUSTOM_AUTH"):
     else:
         custom_authentication = CustomAuth()
 else:
-    custom_authentication = None # StreamlitLoginAuth()
+    custom_authentication = None
 
 
 __login__obj = __login__(

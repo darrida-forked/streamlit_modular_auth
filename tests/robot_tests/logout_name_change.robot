@@ -39,7 +39,7 @@ Logout Name - Create Account
 
 
 Logout Name - Logout Button is Exit
-    Depends on test     Default - Create Account
+    Depends on test     Logout Name - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
