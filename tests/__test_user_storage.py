@@ -16,7 +16,7 @@ class StreamlitTestAuth(StreamlitUserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
-    def check_usr_pass(self):
+    def check_password(self):
         user_l = [x for x in test_storage if x["username"] == self.username]
         if user_l:
             if ph.verify(user_l[0]["hashed_password"], self.password):
@@ -25,38 +25,7 @@ class StreamlitTestAuth(StreamlitUserAuth):
 
 
 class StreamlitTestUserStorage(StreamlitUserStorage):
-    storage_name: str = "sqlmodel"
-
-    def check_unique_email(self, email_sign_up: str) -> bool:
-        """
-        Checks if the email already exists (since email needs to be unique).
-
-        Args:
-            email_sign_up (str): email for new account
-
-        Return:
-            bool: If email is unique -> "True"; if not -> "False"
-        """
-        user_l = [x for x in test_storage if x["email"] == email_sign_up]
-        if user_l:
-            return False
-        return True
-
-    def check_unique_usr(self, username_sign_up: str):
-        """
-        Checks if the username already exists (since username needs to be unique),
-        also checks for non - empty username.
-
-        Args:
-            username_sign_up (str): username for new account
-
-        Returns:
-            bool: If username is unique -> "True"; if not -> "False"; if empty -> None
-        """
-        user_l = [x for x in test_storage if x["username"] == username_sign_up]
-        if user_l:
-            return False
-        return True
+    storage_name: str = "in_memory_json"
 
     def register_new_usr(self, name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
         """
@@ -124,23 +93,3 @@ class StreamlitTestUserStorage(StreamlitUserStorage):
         user_l = [x for x in test_storage if x["email"] == email_]
         if user_l:
             user_l[0]["hashed_password"] = ph.hash(random_password)
-
-    def check_current_passwd(self, email_reset_passwd: str, current_passwd: str) -> bool:
-        """
-        Authenticates the password entered against the username when 
-        resetting the password.
-
-        Args:
-            email_reset_passwd (str): email for account
-            current_passwd (str): existing password for account
-        
-        Return:
-            bool: If password is correct -> "True"; if not -> "False"
-        """
-        if not email_reset_passwd or not current_passwd:
-            return False
-        user_l = [x for x in test_storage if x["email"] == email_reset_passwd]
-        if user_l:
-            if ph.verify(user_l[0]["hashed_password"], current_passwd):
-                return True
-        return False

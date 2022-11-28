@@ -4,18 +4,11 @@ import os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
-# from .utils import check_usr_pass
 from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
-# from .utils import check_unique_email
-# from .utils import check_unique_usr
-# from .utils import register_new_usr
-# from .utils import check_email_exists
 from .utils import generate_random_passwd
 from .utils import send_passwd_in_email
-# from .utils import change_passwd
-# from .utils import check_current_passwd
 from .utils import StreamlitUserAuth, StreamlitUserStorage
 
 
@@ -118,7 +111,7 @@ class __login__:
                 if login_submit_button == True:
                     self.auth.username = username
                     self.auth.password = password
-                    authenticate_user_check = self.auth.check_usr_pass()
+                    authenticate_user_check = self.auth.check_password()
 
                     if authenticate_user_check == False:
                         st.error("Invalid Username or Password!")
@@ -149,10 +142,12 @@ class __login__:
 
             email_sign_up = st.text_input("Email *", placeholder = 'Please enter your email')
             valid_email_check = check_valid_email(email_sign_up)
-            unique_email_check = self.storage.check_unique_email(email_sign_up)
+            # unique_email_check = self.storage.check_unique_email(email_sign_up)
+            email_exists_check, _ = self.storage.check_email_exists(email_sign_up)
             
             username_sign_up = st.text_input("Username *", placeholder = 'Enter a unique username')
-            unique_username_check = self.storage.check_unique_usr(username_sign_up)
+            # unique_username_check = self.storage.check_unique_usr(username_sign_up)
+            username_exists_check = self.storage.check_username_exists(username_sign_up)
 
             password_sign_up = st.text_input("Password *", placeholder = 'Create a strong password', type = 'password')
 
@@ -166,19 +161,19 @@ class __login__:
                 elif valid_email_check == False:
                     st.error("Please enter a valid Email!")
                 
-                elif unique_email_check == False:
+                elif email_exists_check == True:
                     st.error("Email already exists!")
                 
-                elif unique_username_check == False:
+                elif username_exists_check == True:
                     st.error(f'Sorry, username {username_sign_up} already exists!')
                 
-                elif unique_username_check == None:
+                elif username_exists_check == None:
                     st.error('Please enter a non - empty Username!')
 
                 if valid_name_check == True:
                     if valid_email_check == True:
-                        if unique_email_check == True:
-                            if unique_username_check == True:
+                        if email_exists_check == False:
+                            if username_exists_check == False:
                                 self.storage.register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
                                 st.success("Registration Successful!")
 
@@ -216,7 +211,10 @@ class __login__:
             email_exists_check, username_reset_passwd = self.storage.check_email_exists(email_reset_passwd)
 
             current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter the password you received in the email')
-            current_passwd_check = self.storage.check_current_passwd(email_reset_passwd, current_passwd)
+            # current_passwd_check = self.storage.check_current_passwd(email_reset_passwd, current_passwd)
+            self.auth.username = username_reset_passwd
+            self.auth.password = current_passwd
+            current_passwd_check = self.auth.check_password()
 
             new_passwd = st.text_input("New Password", placeholder= 'Please enter a new, strong password', type = 'password')
 
@@ -313,12 +311,12 @@ class __login__:
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
 
-        if self.storage.storage_name == "default":
-            auth_json_exists_bool = self.check_auth_json_file_exists('_secret_auth_.json')
+        # if self.storage.storage_name == "default":
+        auth_json_exists_bool = self.check_auth_json_file_exists('_secret_auth_.json')
 
-            if auth_json_exists_bool == False:
-                with open("_secret_auth_.json", "w") as auth_json:
-                    json.dump([], auth_json)
+        if auth_json_exists_bool == False:
+            with open("_secret_auth_.json", "w") as auth_json:
+                json.dump([], auth_json)
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 

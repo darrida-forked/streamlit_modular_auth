@@ -59,7 +59,7 @@ class StreamLitSQLAlchemyAuth(StreamlitUserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
-    def check_usr_pass(self):
+    def check_password(self):
         with Session(engine) as session:
             statement = select(User).where(User.username == self.username)
             user = session.exec(statement).one()
@@ -71,47 +71,6 @@ class StreamLitSQLAlchemyAuth(StreamlitUserAuth):
 
 class StreamLiteSQLAlchemyStorage(StreamlitUserStorage):
     storage_name: str = "sqlmodel"
-
-    def check_unique_email(self, email_sign_up: str) -> bool:
-        """
-        Checks if the email already exists (since email needs to be unique).
-
-        Args:
-            email_sign_up (str): email for new account
-
-        Return:
-            bool: If email is unique -> "True"; if not -> "False"
-        """
-        try:
-            with Session(engine) as session:
-                statement = select(User).where(User.email == email_sign_up)
-                email = session.exec(statement).one()
-                if email:
-                    return False
-        except NoResultFound:
-            return True
-        return True
-
-    def check_unique_usr(self, username_sign_up: str):
-        """
-        Checks if the username already exists (since username needs to be unique),
-        also checks for non - empty username.
-
-        Args:
-            username_sign_up (str): username for new account
-
-        Returns:
-            bool: If username is unique -> "True"; if not -> "False"; if empty -> None
-        """
-        try:
-            with Session(engine) as session:
-                statement = select(User).where(User.username == username_sign_up)
-                email = session.exec(statement).one()
-                if email:
-                    return False
-        except NoResultFound:
-            return True
-        return True
 
     def register_new_usr(self, name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
         """
@@ -135,10 +94,6 @@ class StreamLiteSQLAlchemyStorage(StreamlitUserStorage):
         with Session(engine) as session:
             session.add(user)
             session.commit()
-        # except IntegrityError as e:
-        #     if "UNIQUE" not in str(e):
-        #         raise IntegrityError(e) from e
-        #     print(f"User with username {user.username} and/or email {user.email} already exists.")
 
     def check_username_exists(self, user_name: str) -> bool:
         """
@@ -198,33 +153,7 @@ class StreamLiteSQLAlchemyStorage(StreamlitUserStorage):
                 user.hashed_password = ph.hash(random_password)
                 session.add(user)
                 session.commit()
-
-    def check_current_passwd(self, email_reset_passwd: str, current_passwd: str) -> bool:
-        """
-        Authenticates the password entered against the username when 
-        resetting the password.
-
-        Args:
-            email_reset_passwd (str): email for account
-            current_passwd (str): existing password for account
-        
-        Return:
-            bool: If password is correct -> "True"; if not -> "False"
-        """
-        if not email_reset_passwd or not current_passwd:
-            return False
-        with Session(engine) as session:
-            statement = select(User).where(User.email == email_reset_passwd)
-            user = session.exec(statement).one()
-            if user:
-                try:
-                    if ph.verify(user.hashed_password, current_passwd):
-                        return True
-                except:
-                    pass
-        return False
                 
-
 
 if __name__ == "__main__":
     create_db_and_tables()

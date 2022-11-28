@@ -30,7 +30,7 @@ No Acc Mgmt - Login Screen
     Close Browser
 
 
-No Acc Mgmt - Create Account
+No Acc Mgmt - Create Account (using webserver w/acc mgmt)
     Open Browser    http://localhost:8001/  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   tag:iframe

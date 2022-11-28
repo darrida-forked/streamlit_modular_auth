@@ -16,7 +16,7 @@ ${DRIVER_LOGS}      .logs/geckodriver.log
 
 
 *** Test Cases ***
-Custom Auth Login Name - Login Screen
+Custom Storage - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Page Should Contain     Password
@@ -30,7 +30,7 @@ Custom Auth Login Name - Login Screen
     Close Browser
 
 
-Default - Create Account
+Custom Storage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   tag:iframe
@@ -52,7 +52,7 @@ Default - Create Account
     Close Browser
 
 
-Custom Auth Login Name - Login Successful
+Custom Storage - Login Successful
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -65,7 +65,7 @@ Custom Auth Login Name - Login Successful
     Close Browser
 
 
-Custom Auth Login Name - Login, then Logout
+Custom Storage - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -82,7 +82,7 @@ Custom Auth Login Name - Login, then Logout
     Close Browser
 
 
-Custom Auth Login Name - Login Failed - Invalid Password
+Custom Storage - Login Failed - Invalid Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -96,7 +96,7 @@ Custom Auth Login Name - Login Failed - Invalid Password
     Close Browser
 
 
-Custom Auth Login Name - Login Failed - Invalid Username
+Custom Storage - Login Failed - Invalid Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]

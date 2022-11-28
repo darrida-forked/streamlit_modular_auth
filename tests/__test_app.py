@@ -2,17 +2,14 @@ import os
 import streamlit as st
 from streamlit_login_auth_ui import __login__
 from streamlit_login_auth_ui.utils import StreamlitUserAuth
-from __test_user_storage import (
-    # StreamLiteSQLAlchemyStorage, StreamLitSQLAlchemyAuth
-    StreamlitTestAuth, StreamlitTestUserStorage
-)
+from __test_user_storage import StreamlitTestAuth, StreamlitTestUserStorage
 
 
 class CustomAuth(StreamlitUserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
-    def check_usr_pass(self):
+    def check_password(self):
         if self.username == "custom_auth_user" and self.password == "custom_auth_pass":
             return True
         return False
