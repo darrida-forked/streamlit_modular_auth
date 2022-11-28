@@ -89,6 +89,15 @@ Start the webserver
     Set suite variable    ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}
     Log To Console     ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}
 
+    ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}    Start Process   python3    
+        ...    -m    coverage    run    --source    tests   
+        ...    -m    streamlit    run    __test_app.py    
+        ...    --server.port    8009  
+        ...    --server.headless   true
+        ...    env:CUSTOM_USER_STORAGE=true
+    Set suite variable    ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}
+    Log To Console     ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}
+
     sleep    2s
 
 Stop the webserver

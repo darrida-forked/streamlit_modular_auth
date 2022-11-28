@@ -2,6 +2,10 @@ import os
 import streamlit as st
 from streamlit_login_auth_ui import __login__
 from streamlit_login_auth_ui.utils import StreamlitUserAuth
+from __test_user_storage import (
+    # StreamLiteSQLAlchemyStorage, StreamLitSQLAlchemyAuth
+    StreamlitTestAuth, StreamlitTestUserStorage
+)
 
 
 class CustomAuth(StreamlitUserAuth):
@@ -29,6 +33,12 @@ if os.environ.get("CUSTOM_AUTH"):
 else:
     custom_authentication = None
 
+if os.environ.get("CUSTOM_USER_STORAGE") == "true":
+        custom_authentication = StreamlitTestAuth(login_name="Test Login")
+        custom_user_storage = StreamlitTestUserStorage()
+else:
+    custom_user_storage = None
+
 
 __login__obj = __login__(
     auth_token = "courier_auth_token", 
@@ -41,7 +51,8 @@ __login__obj = __login__(
     lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
     hide_registration=hide_registration,
     hide_account_management=hide_account_management,
-    custom_authentication=custom_authentication
+    custom_authentication=custom_authentication,
+    custom_user_storage=custom_user_storage
 )
 
 

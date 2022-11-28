@@ -12,3 +12,4 @@ latest_logs/
 *.egg-info/
 pabot_results/
 .*
+*.db
