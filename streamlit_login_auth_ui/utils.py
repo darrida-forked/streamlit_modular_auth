@@ -99,8 +99,8 @@ class StreamlitUserAuth:
 
     def check_password(self) -> bool:
         """
-        Authenticates the username and password.
-        - Uses password and username for initialized object
+        Authenticates using username and password class attributes.
+        - Uses password and username from initialized object
 
         Return:
             bool: If password is correct -> "True"; if not -> "False"
@@ -122,20 +122,20 @@ class StreamlitUserAuth:
 class StreamlitUserStorage:
     storage_name: str = "default"
 
-    def register_new_usr(self, name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
+    def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
 
         Args:
-            name_sign_up (str): name for new account
-            email_sign_up (str): email for new account
-            username_sign_up (str): username for new account
-            password_sign_up (str): password for new account
+            name (str): name for new account
+            email (str): email for new account
+            username (str): username for new account
+            password (str): password for new account
     a
         Return:
             None
         """
-        new_usr_data = {'username': username_sign_up, 'name': name_sign_up, 'email': email_sign_up, 'password': ph.hash(password_sign_up)}
+        new_usr_data = {'username': username, 'name': name, 'email': email, 'password': ph.hash(password)}
 
         with open("_secret_auth_.json", "r") as auth_json:
             authorized_user_data = json.load(auth_json)
@@ -144,18 +144,18 @@ class StreamlitUserStorage:
             authorized_user_data.append(new_usr_data)
             json.dump(authorized_user_data, auth_json_write)
 
-    def check_username_exists(self, user_name: str) -> bool:
+    def check_username_exists(self, username: str) -> bool:
         """
         Checks if the username exists in the _secret_auth.json file.
 
         Args:
-            user_name (str): username to check
+            username (str): username to check
 
         Return:
             bool: If username exists -> "True"; if not -> "False"
         """
-        if not user_name:
-            return None
+        # if not username:
+        #     return None
         
         authorized_user_data_master = list()
         with open("_secret_auth_.json", "r") as auth_json:
@@ -164,16 +164,16 @@ class StreamlitUserStorage:
             for user in authorized_users_data:
                 authorized_user_data_master.append(user['username'])
             
-        if user_name in authorized_user_data_master:
+        if username in authorized_user_data_master:
             return True
         return False
 
-    def check_email_exists(self, email_forgot_passwd: str):
+    def check_email_exists(self, email: str):
         """
         Checks if the email entered is present in the _secret_auth.json file.
 
         Args:
-            email_forgot_passwd (str): email connected to forgotten password
+            email (str): email connected to forgotten password
 
         Return:
             Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
@@ -182,17 +182,17 @@ class StreamlitUserStorage:
             authorized_users_data = json.load(auth_json)
 
             for user in authorized_users_data:
-                if user['email'] == email_forgot_passwd:
+                if user['email'] == email:
                         return True, user['username']
         return False, None
 
-    def change_passwd(self, email_: str, random_password: str) -> None:
+    def change_passwd(self, email: str, password: str) -> None:
         """
         Replaces the old password with the newly generated password.
 
         Args:
-            email_ (str): email connected to account
-            random_password (str): password to set
+            email (str): email connected to account
+            password (str): password to set
 
         Return:
             None
@@ -202,8 +202,8 @@ class StreamlitUserStorage:
 
         with open("_secret_auth_.json", "w") as auth_json_:
             for user in authorized_users_data:
-                if user['email'] == email_:
-                    user['password'] = ph.hash(random_password)
+                if user['email'] == email:
+                    user['password'] = ph.hash(password)
             json.dump(authorized_users_data, auth_json_)
 
 

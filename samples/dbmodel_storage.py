@@ -67,50 +67,53 @@ class StreamLitSQLModelAuth(StreamlitUserAuth):
             statement = select(User).where(User.username == self.username)
             user = session.exec(statement).one()
             if user:
-                if ph.verify(user.hashed_password, self.password):
-                    return True
+                try:
+                    if ph.verify(user.hashed_password, self.password):
+                        return True
+                except:
+                    pass
         return False
 
 
 class StreamLiteSQLModelStorage(StreamlitUserStorage):
     storage_name: str = "sqlmodel"
 
-    def register_new_usr(self, name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
+    def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
 
         Args:
-            name_sign_up (str): name for new account
-            email_sign_up (str): email for new account
-            username_sign_up (str): username for new account
-            password_sign_up (str): password for new account
+            name (str): name for new account
+            email (str): email for new account
+            username (str): username for new account
+            password (str): password for new account
 
         Return:
             None
         """
         user = User(
-            username=username_sign_up,
-            email=email_sign_up,
-            name=name_sign_up,
-            hashed_password=ph.hash(password_sign_up)
+            username=username,
+            email=email,
+            name=name,
+            hashed_password=ph.hash(password)
         )
         with Session(engine) as session:
             session.add(user)
             session.commit()
 
-    def check_username_exists(self, user_name: str) -> bool:
+    def check_username_exists(self, username: str) -> bool:
         """
         Checks if the username exists in the _secret_auth.json file.
 
         Args:
-            user_name (str): username to check
+            username (str): username to check
 
         Return:
             bool: If username exists -> "True"; if not -> "False"
         """
         try:
             with Session(engine) as session:
-                statement = select(User).where(User.username == user_name)
+                statement = select(User).where(User.username == username)
                 user = session.exec(statement).one()
                 if user:
                     return True
@@ -118,19 +121,19 @@ class StreamLiteSQLModelStorage(StreamlitUserStorage):
             return False
         return False
 
-    def check_email_exists(self, email_forgot_passwd: str):
+    def check_email_exists(self, email: str):
         """
         Checks if the email entered is present in the _secret_auth.json file.
 
         Args:
-            email_forgot_passwd (str): email connected to forgotten password
+            email (str): email connected to forgotten password
 
         Return:
             Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
         """
         try:
             with Session(engine) as session:
-                statement = select(User).where(User.email == email_forgot_passwd)
+                statement = select(User).where(User.email == email)
                 user = session.exec(statement).one()
                 if user:
                     return True, user.username
@@ -138,22 +141,22 @@ class StreamLiteSQLModelStorage(StreamlitUserStorage):
             return False, None
         return False, None
 
-    def change_passwd(self, email_: str, random_password: str) -> None:
+    def change_passwd(self, email: str, password: str) -> None:
         """
         Replaces the old password with the newly generated password.
 
         Args:
-            email_ (str): email connected to account
-            random_password (str): password to set
+            email (str): email connected to account
+            password (str): password to set
 
         Return:
             None
         """
         with Session(engine) as session:
-            statement = select(User).where(User.email == email_)
+            statement = select(User).where(User.email == email)
             user = session.exec(statement).one()
             if user:
-                user.hashed_password = ph.hash(random_password)
+                user.hashed_password = ph.hash(password)
                 session.add(user)
                 session.commit()
                 

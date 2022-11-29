@@ -35,6 +35,10 @@ class __login__:
         7. hide_menu_bool : Pass True if the streamlit menu should be hidden.
         8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
+        10. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
+        11. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
+        12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitUserAuth (see information further below).
+        13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitUserStorage (see information further below).
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -147,6 +151,8 @@ class __login__:
             
             username_sign_up = st.text_input("Username *", placeholder = 'Enter a unique username')
             # unique_username_check = self.storage.check_unique_usr(username_sign_up)
+            if username_sign_up == None:
+                st.error('Please enter a non - empty Username!')
             username_exists_check = self.storage.check_username_exists(username_sign_up)
 
             password_sign_up = st.text_input("Password *", placeholder = 'Create a strong password', type = 'password')
@@ -167,8 +173,8 @@ class __login__:
                 elif username_exists_check == True:
                     st.error(f'Sorry, username {username_sign_up} already exists!')
                 
-                elif username_exists_check == None:
-                    st.error('Please enter a non - empty Username!')
+                # elif username_exists_check == None:
+                #     st.error('Please enter a non - empty Username!')
 
                 if valid_name_check == True:
                     if valid_email_check == True:
