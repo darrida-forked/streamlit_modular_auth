@@ -7,8 +7,5 @@ class ForgotPasswordTest(ForgotPassword):
         self.method_name = "Very Insecure"
         self.message = message
 
-    def send_password(
-        auth_token: str, username: str, email: str, company_name: str, password: str, 
-        message: str
-    ) -> None:
-        st.write(f"{message}: {password}")
+    def send_password(self, auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+        st.write(f"{self.message}: {password}")

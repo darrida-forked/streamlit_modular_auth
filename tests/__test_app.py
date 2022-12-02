@@ -57,7 +57,8 @@ __login__obj = __login__(
     hide_forgot_password=hide_forgot_password,
     hide_account_management=hide_account_management,
     custom_authentication=custom_authentication,
-    custom_user_storage=custom_user_storage
+    custom_user_storage=custom_user_storage,
+    custom_reset_message=custom_reset_message
 )
 
 

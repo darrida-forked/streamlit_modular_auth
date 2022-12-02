@@ -68,28 +68,6 @@ def generate_random_passwd() -> str:
     return secrets.token_urlsafe(password_length)
 
 
-# def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_forgot_passwd: str, company_name: str, random_password: str) -> None:
-#     """
-#     Triggers an email to the user containing the randomly generated password.
-#     """
-#     client = Courier(auth_token = auth_token)
-
-#     resp = client.send_message(
-#         message={
-#             "to": {
-#             "email": email_forgot_passwd
-#             },
-#             "content": {
-#             "title": company_name + ": Login Password!",
-#             "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
-#             },
-#             "data":{
-#             "info": "Please reset your password at the earliest for security reasons."
-#             }
-#         }
-#     )
-
-
 class UserAuth:
     def __init__(self, login_name: str = None, username: str = None, password: str = None):
         self.login_name = login_name or "Login"
@@ -154,9 +132,6 @@ class UserStorage:
         Return:
             bool: If username exists -> "True"; if not -> "False"
         """
-        # if not username:
-        #     return None
-        
         authorized_user_data_master = list()
         with open("_secret_auth_.json", "r") as auth_json:
             authorized_users_data = json.load(auth_json)
@@ -207,11 +182,10 @@ class UserStorage:
             json.dump(authorized_users_data, auth_json_)
 
 
-
 class ForgotPassword:
     method_name: str = "courier"
 
-    def send_password(auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+    def send_password(self, auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
         """
         Triggers an email to the user containing the randomly generated password.
         """

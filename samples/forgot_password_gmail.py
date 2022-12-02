@@ -5,23 +5,11 @@ from streamlit_login_auth_ui.utils import ForgotPassword
 
 
 class ForgotPasswordGmail(ForgotPassword):
-    def __init__(self, email_user: str, email_password: str):
+    def __init__(self, email_user: str):
         self.method_name = "Gmail"
         self.email_user = email_user
-        self.email_password = email_password
 
-    def send_password(
-        auth_token: str, username: str, email: str, company_name: str, password: str, 
-        email_user: str,
-    ) -> None:
-        from_email = email_user
-        receiver_email = email
-
-        message = MIMEMultipart("alternative")
-        message["Subject"] = f"{company_name}: Login Password!"
-        message["From"] = from_email
-        message["To"] = receiver_email
-
+    def __build_message_body(self, username, password):
         text = f"""\
             Hi! {username},
             
@@ -43,8 +31,21 @@ class ForgotPasswordGmail(ForgotPassword):
             </body>
             </html>
         """
+        return text, html
+
+    def send_password(self,
+        auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+        from_email = self.email_user
+        receiver_email = email
+
+        message = MIMEMultipart("alternative")
+        message["Subject"] = f"{company_name}: Login Password!"
+        message["From"] = from_email
+        message["To"] = receiver_email
+
 
         # Set plain/html MIMEText objects
+        text, html = self.__build_message_body(username, password)
         part1 = MIMEText(text, "plain")
         part2 = MIMEText(html, "html")
 
@@ -55,4 +56,4 @@ class ForgotPasswordGmail(ForgotPassword):
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
             server.login(from_email, auth_token)
-            server.sendmail(email_user, receiver_email, message.as_string())
+            server.sendmail(self.email_user, receiver_email, message.as_string())
