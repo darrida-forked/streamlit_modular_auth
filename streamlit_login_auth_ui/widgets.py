@@ -8,8 +8,10 @@ from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
 from .utils import generate_random_passwd
-from .utils import send_passwd_in_email
-from .utils import StreamlitUserAuth, StreamlitUserStorage
+# from .utils import send_passwd_in_email
+from .utils import StreamlitUserAuth
+from .utils import StreamlitUserStorage
+from .utils import ForgotPasswordDefault
 
 
 class __login__:
@@ -20,9 +22,11 @@ class __login__:
     def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', 
                  hide_menu_bool: bool = False, hide_footer_bool: bool = False, 
                  lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
-                 hide_registration: bool = False, hide_account_management: bool = False,
+                 hide_registration: bool = False, hide_account_management: bool = False, 
+                 hide_forgot_password: bool = False,
                  custom_authentication: StreamlitUserAuth = None,
-                 custom_user_storage: StreamlitUserStorage = None):
+                 custom_user_storage: StreamlitUserStorage = None,
+                 custom_reset_message: ForgotPasswordDefault = None):
         """
         Arguments:
         -----------
@@ -36,6 +40,7 @@ class __login__:
         8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
         10. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
+        11. hide_forgot_password : Pass True if 'Forgot Password?' option should be hidden from Navigation.
         11. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
         12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitUserAuth (see information further below).
         13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitUserStorage (see information further below).
@@ -49,9 +54,11 @@ class __login__:
         self.hide_footer_bool = hide_footer_bool
         self.lottie_url = lottie_url
         self.hide_registration = hide_registration
+        self.hide_forgot_password = hide_forgot_password
         self.hide_account_management = hide_account_management
         self.auth = custom_authentication or StreamlitUserAuth()
         self.storage = custom_user_storage or StreamlitUserStorage()
+        self.password_reset = custom_reset_message or ForgotPasswordDefault()
 
         self.cookies = EncryptedCookieManager(
         prefix="streamlit_login_ui_yummy_cookies",
@@ -202,7 +209,7 @@ class __login__:
 
                 if email_exists_check == True:
                     random_password = generate_random_passwd()
-                    send_passwd_in_email(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
+                    self.password_reset.send_password(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
                     self.storage.change_passwd(email_forgot_passwd, random_password)
                     st.success("Secure Password Sent Successfully!")
 
@@ -273,9 +280,10 @@ class __login__:
             if self.hide_registration or self.hide_account_management:
                 icons.remove('person-plus')
                 options.remove('Create Account')
-            if self.hide_account_management:
-                icons.remove('x-circle')
+            if self.hide_forgot_password or self.hide_account_management:
+                icons.remove('x-cirlce')
                 options.remove('Forgot Password?')
+            if self.hide_account_management:
                 icons.remove('arrow-counterclockwise')
                 options.remove('Reset Password')
             selected_option = option_menu(
@@ -334,14 +342,15 @@ class __login__:
                 if st.session_state['LOGGED_IN'] == False:
                     self.animation()
         
-        if not self.hide_registration:
+        if not self.hide_registration or not self.hide_account_management:
             if selected_option == 'Create Account':
                 self.sign_up_widget()
 
-        if not self.hide_account_management:
+        if not self.hide_forgot_password or not self.hide_account_management:
             if selected_option == 'Forgot Password?':
                 self.forgot_password()
 
+        if not self.hide_account_management:
             if selected_option == 'Reset Password':
                 self.reset_password()
         

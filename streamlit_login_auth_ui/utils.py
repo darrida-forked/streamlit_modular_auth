@@ -68,26 +68,26 @@ def generate_random_passwd() -> str:
     return secrets.token_urlsafe(password_length)
 
 
-def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_forgot_passwd: str, company_name: str, random_password: str) -> None:
-    """
-    Triggers an email to the user containing the randomly generated password.
-    """
-    client = Courier(auth_token = auth_token)
+# def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_forgot_passwd: str, company_name: str, random_password: str) -> None:
+#     """
+#     Triggers an email to the user containing the randomly generated password.
+#     """
+#     client = Courier(auth_token = auth_token)
 
-    resp = client.send_message(
-        message={
-            "to": {
-            "email": email_forgot_passwd
-            },
-            "content": {
-            "title": company_name + ": Login Password!",
-            "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
-            },
-            "data":{
-            "info": "Please reset your password at the earliest for security reasons."
-            }
-        }
-    )
+#     resp = client.send_message(
+#         message={
+#             "to": {
+#             "email": email_forgot_passwd
+#             },
+#             "content": {
+#             "title": company_name + ": Login Password!",
+#             "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
+#             },
+#             "data":{
+#             "info": "Please reset your password at the earliest for security reasons."
+#             }
+#         }
+#     )
 
 
 class StreamlitUserAuth:
@@ -205,6 +205,33 @@ class StreamlitUserStorage:
                 if user['email'] == email:
                     user['password'] = ph.hash(password)
             json.dump(authorized_users_data, auth_json_)
+
+
+
+class ForgotPasswordDefault:
+    method_name: str = "courier"
+
+    def send_password(auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+        """
+        Triggers an email to the user containing the randomly generated password.
+        """
+        client = Courier(auth_token = auth_token)
+
+        resp = client.send_message(
+            message={
+                "to": {
+                "email": email
+                },
+                "content": {
+                "title": company_name + ": Login Password!",
+                "body": "Hi! " + username + "," + "\n" + "\n" + "Your temporary login password is: " + password  + "\n" + "\n" + "{{info}}"
+                },
+                "data":{
+                "info": "Please reset your password at the earliest for security reasons."
+                }
+            }
+        )
+
 
 
 # Author: Gauri Prabhakar

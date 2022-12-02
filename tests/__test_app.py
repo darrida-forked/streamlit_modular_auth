@@ -3,6 +3,7 @@ import streamlit as st
 from streamlit_login_auth_ui import __login__
 from streamlit_login_auth_ui.utils import StreamlitUserAuth
 from __test_user_storage import StreamlitTestAuth, StreamlitTestUserStorage
+from __test_password_reset import ForgotPasswordTest
 
 
 class CustomAuth(StreamlitUserAuth):
@@ -16,6 +17,7 @@ class CustomAuth(StreamlitUserAuth):
 
 
 hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else False
+hide_forgot_password = True if os.environ.get("HIDE_FORGOT_PASSWORD") == "true" else False
 hide_account_management = True if os.environ.get("HIDE_ACCOUNT_MANAGEMENT") == "true" else False
 hide_footer_bool = True if os.environ.get("HIDE_FOOTER") == "true" else False
 hide_menu_bool = True if os.environ.get("HIDE_MENU") == "true" else False
@@ -36,6 +38,11 @@ if os.environ.get("CUSTOM_USER_STORAGE") == "true":
 else:
     custom_user_storage = None
 
+if os.environ.get("CUSTOM_PASSWORD_RESET") == "true":
+    custom_reset_message = ForgotPasswordTest(message="Password via an insecure method")
+else:
+    custom_reset_message = None
+
 
 __login__obj = __login__(
     auth_token = "courier_auth_token", 
@@ -47,6 +54,7 @@ __login__obj = __login__(
     hide_footer_bool = hide_footer_bool, 
     lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
     hide_registration=hide_registration,
+    hide_forgot_password=hide_forgot_password,
     hide_account_management=hide_account_management,
     custom_authentication=custom_authentication,
     custom_user_storage=custom_user_storage
