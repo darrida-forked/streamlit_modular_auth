@@ -1,8 +1,8 @@
 import streamlit as st
-from streamlit_login_auth_ui.utils import ForgotPasswordDefault
+from streamlit_login_auth_ui.utils import ForgotPassword
 
 
-class ForgotPasswordTest(ForgotPasswordDefault):
+class ForgotPasswordTest(ForgotPassword):
     def __init__(self, message: str):
         self.method_name = "Very Insecure"
         self.message = message

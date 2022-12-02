@@ -2,7 +2,7 @@ from typing import Optional
 from datetime import datetime
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from streamlit_login_auth_ui.utils import ph, StreamlitUserStorage, StreamlitUserAuth
+from streamlit_login_auth_ui.utils import ph, UserStorage, UserAuth
 
 
 class User(SQLModel, table=True):
@@ -58,7 +58,7 @@ def select_user(engine):
         return False
 
 
-class StreamLitSQLModelAuth(StreamlitUserAuth):
+class UserAuthSQLModel(UserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
@@ -75,7 +75,7 @@ class StreamLitSQLModelAuth(StreamlitUserAuth):
         return False
 
 
-class StreamLiteSQLModelStorage(StreamlitUserStorage):
+class UserStorageSQLModel(UserStorage):
     storage_name: str = "sqlmodel"
 
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:

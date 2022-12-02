@@ -9,9 +9,9 @@ from .utils import check_valid_name
 from .utils import check_valid_email
 from .utils import generate_random_passwd
 # from .utils import send_passwd_in_email
-from .utils import StreamlitUserAuth
-from .utils import StreamlitUserStorage
-from .utils import ForgotPasswordDefault
+from .utils import UserAuth
+from .utils import UserStorage
+from .utils import ForgotPassword
 
 
 class __login__:
@@ -24,9 +24,9 @@ class __login__:
                  lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
                  hide_registration: bool = False, hide_account_management: bool = False, 
                  hide_forgot_password: bool = False,
-                 custom_authentication: StreamlitUserAuth = None,
-                 custom_user_storage: StreamlitUserStorage = None,
-                 custom_reset_message: ForgotPasswordDefault = None):
+                 custom_authentication: UserAuth = None,
+                 custom_user_storage: UserStorage = None,
+                 custom_reset_message: ForgotPassword = None):
         """
         Arguments:
         -----------
@@ -56,9 +56,9 @@ class __login__:
         self.hide_registration = hide_registration
         self.hide_forgot_password = hide_forgot_password
         self.hide_account_management = hide_account_management
-        self.auth = custom_authentication or StreamlitUserAuth()
-        self.storage = custom_user_storage or StreamlitUserStorage()
-        self.password_reset = custom_reset_message or ForgotPasswordDefault()
+        self.auth = custom_authentication or UserAuth()
+        self.storage = custom_user_storage or UserStorage()
+        self.password_reset = custom_reset_message or ForgotPassword()
 
         self.cookies = EncryptedCookieManager(
         prefix="streamlit_login_ui_yummy_cookies",

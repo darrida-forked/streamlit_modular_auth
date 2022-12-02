@@ -1,4 +1,4 @@
-from streamlit_login_auth_ui.utils import StreamlitUserStorage, StreamlitUserAuth
+from streamlit_login_auth_ui.utils import UserStorage, UserAuth
 from streamlit_login_auth_ui.utils import ph
 
 
@@ -12,7 +12,7 @@ test_storage = [
 ]
 
 
-class StreamlitTestAuth(StreamlitUserAuth):
+class UserAuthTest(UserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
@@ -27,7 +27,7 @@ class StreamlitTestAuth(StreamlitUserAuth):
         return False
 
 
-class StreamlitTestUserStorage(StreamlitUserStorage):
+class UserStorageTest(UserStorage):
     storage_name: str = "in_memory_json"
 
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:

@@ -1,12 +1,12 @@
 import os
 import streamlit as st
 from streamlit_login_auth_ui import __login__
-from streamlit_login_auth_ui.utils import StreamlitUserAuth
-from __test_user_storage import StreamlitTestAuth, StreamlitTestUserStorage
+from streamlit_login_auth_ui.utils import UserAuth
+from __test_user_storage import UserAuthTest, UserStorageTest
 from __test_password_reset import ForgotPasswordTest
 
 
-class CustomAuth(StreamlitUserAuth):
+class CustomAuth(UserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
     
@@ -33,8 +33,8 @@ else:
     custom_authentication = None
 
 if os.environ.get("CUSTOM_USER_STORAGE") == "true":
-        custom_authentication = StreamlitTestAuth(login_name="Test Login")
-        custom_user_storage = StreamlitTestUserStorage()
+        custom_authentication = UserAuthTest(login_name="Test Login")
+        custom_user_storage = UserStorageTest()
 else:
     custom_user_storage = None
 

@@ -90,7 +90,7 @@ def generate_random_passwd() -> str:
 #     )
 
 
-class StreamlitUserAuth:
+class UserAuth:
     def __init__(self, login_name: str = None, username: str = None, password: str = None):
         self.login_name = login_name or "Login"
         self.username = username
@@ -119,7 +119,7 @@ class StreamlitUserAuth:
         return False
 
 
-class StreamlitUserStorage:
+class UserStorage:
     storage_name: str = "default"
 
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
@@ -208,7 +208,7 @@ class StreamlitUserStorage:
 
 
 
-class ForgotPasswordDefault:
+class ForgotPassword:
     method_name: str = "courier"
 
     def send_password(auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
