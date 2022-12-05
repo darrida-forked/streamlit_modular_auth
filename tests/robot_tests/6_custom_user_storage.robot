@@ -7,21 +7,21 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
+Variables    ../__test_variables.py
+
 
 *** Variables ***
-${URL}             http://localhost:8009/
-${BROWSER}         headlessfirefox
-# ${BROWSER}         firefox
-${DRIVER_LOGS}      .logs/geckodriver.log
+${URL}             http://localhost:${PORT_CUSTOM_USER_STORAGE}/
 
 
 *** Test Cases ***
 Custom Storage - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Page Should Contain     Password
     Page Should Contain     Login
     Select Frame    tag:iframe
+    Wait Until Element Is Visible   //*[contains(text(),"Navigation")]
     Page Should Contain     Navigation
     Page Should Contain     Test Login
     Page Should Contain     Create Account
@@ -32,7 +32,7 @@ Custom Storage - Login Screen
 
 Custom Storage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
@@ -41,7 +41,7 @@ Custom Storage - Create Account
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    custom_storage_user@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
     Input Text      //*[@placeholder="Enter a unique username"]    custom_storage_user
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
@@ -54,7 +54,7 @@ Custom Storage - Create Account
 
 Custom Storage - Login Successful
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    custom_storage_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -67,7 +67,7 @@ Custom Storage - Login Successful
 
 Custom Storage - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    custom_storage_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -84,7 +84,7 @@ Custom Storage - Login, then Logout
 
 Custom Storage - Login Failed - Invalid Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    custom_storage_user_wrong
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -98,7 +98,7 @@ Custom Storage - Login Failed - Invalid Password
 
 Custom Storage - Login Failed - Invalid Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    custom_storage_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]

@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit_login_auth_ui import __login__
 from streamlit_login_auth_ui.utils import UserAuth
 from __test_user_storage import UserAuthTest, UserStorageTest
-from __test_password_reset import ForgotPasswordTest
+from __test_password_reset import ForgotPasswordCustomMsgTest
 
 
 class CustomAuth(UserAuth):
@@ -38,10 +38,10 @@ if os.environ.get("CUSTOM_USER_STORAGE") == "true":
 else:
     custom_user_storage = None
 
-if os.environ.get("CUSTOM_PASSWORD_RESET") == "true":
-    custom_reset_message = ForgotPasswordTest(message="Password via an insecure method")
+if os.environ.get("CUSTOM_FORGOT_PASSWORD") == "true":
+    custom_forgot_password = ForgotPasswordCustomMsgTest(message="Password via an insecure method")
 else:
-    custom_reset_message = None
+    custom_forgot_password = None
 
 
 __login__obj = __login__(
@@ -58,7 +58,7 @@ __login__obj = __login__(
     hide_account_management=hide_account_management,
     custom_authentication=custom_authentication,
     custom_user_storage=custom_user_storage,
-    custom_reset_message=custom_reset_message
+    custom_forgot_password=custom_forgot_password
 )
 
 

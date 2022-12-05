@@ -11,7 +11,7 @@ from .utils import generate_random_passwd
 # from .utils import send_passwd_in_email
 from .utils import UserAuth
 from .utils import UserStorage
-from .utils import ForgotPassword
+from .utils import ForgotPasswordMessage
 
 
 class __login__:
@@ -26,7 +26,7 @@ class __login__:
                  hide_forgot_password: bool = False,
                  custom_authentication: UserAuth = None,
                  custom_user_storage: UserStorage = None,
-                 custom_reset_message: ForgotPassword = None):
+                 custom_forgot_password: ForgotPasswordMessage = None):
         """
         Arguments:
         -----------
@@ -58,7 +58,7 @@ class __login__:
         self.hide_account_management = hide_account_management
         self.auth = custom_authentication or UserAuth()
         self.storage = custom_user_storage or UserStorage()
-        self.password_reset = custom_reset_message or ForgotPassword()
+        self.password_reset = custom_forgot_password or ForgotPasswordMessage()
 
         self.cookies = EncryptedCookieManager(
         prefix="streamlit_login_ui_yummy_cookies",
@@ -281,7 +281,7 @@ class __login__:
                 icons.remove('person-plus')
                 options.remove('Create Account')
             if self.hide_forgot_password or self.hide_account_management:
-                icons.remove('x-cirlce')
+                icons.remove('x-circle')
                 options.remove('Forgot Password?')
             if self.hide_account_management:
                 icons.remove('arrow-counterclockwise')

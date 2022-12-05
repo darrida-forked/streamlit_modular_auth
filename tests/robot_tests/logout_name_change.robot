@@ -7,18 +7,17 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
+Variables    ../__test_variables.py
+
 
 *** Variables ***
-${URL}             http://localhost:8008/
-${BROWSER}         headlessfirefox
-# ${BROWSER}         firefox
-${DRIVER_LOGS}      .logs/geckodriver.log
+${URL}             http://localhost:${PORT_LOGOUT_NAME_CHANGE}/
 
 
 *** Test Cases ***
 Logout Name - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
@@ -41,7 +40,7 @@ Logout Name - Create Account
 Logout Name - Logout Button is Exit
     Depends on test     Logout Name - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user6
     Wait Until Element Is Visible   //*[@placeholder="Your password"]

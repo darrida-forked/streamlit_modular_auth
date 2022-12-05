@@ -7,21 +7,21 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
+Variables    ../__test_variables.py
+
 
 *** Variables ***
-${URL}             http://localhost:8002/
-${BROWSER}         headlessfirefox
-# ${BROWSER}         firefox
-${DRIVER_LOGS}      .logs/geckodriver.log
+${URL}             http://localhost:${PORT_HIDE_REGISTRATION}/
 
 
 *** Test Cases ***
 No Reg - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Page Should Contain     Password
     Page Should Contain     Login
     Select Frame    tag:iframe
+    Wait Until Element Is Visible   //*[contains(text(),"Navigation")]
     Page Should Contain     Navigation
     Page Should Contain     Login
     Page Should Not Contain     Create Account
@@ -32,7 +32,7 @@ No Reg - Login Screen
 
 No Reg - Reset Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Reset Password')]
@@ -44,7 +44,7 @@ No Reg - Reset Password Screen
 
 No Reg - Forgot Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Forgot Password?')]
@@ -56,7 +56,7 @@ No Reg - Forgot Password Screen
 
 No Reg - Create Account
     Open Browser    http://localhost:8001/  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
@@ -78,7 +78,7 @@ No Reg - Create Account
 
 No Reg - Login Successful
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user5
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -91,7 +91,7 @@ No Reg - Login Successful
 
 No Reg - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user5
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -108,7 +108,7 @@ No Reg - Login, then Logout
 
 No Reg - Login Failed - Invalid Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user5
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -122,7 +122,7 @@ No Reg - Login Failed - Invalid Password
 
 No Reg - Login Failed - Invalid Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user2
     Wait Until Element Is Visible   //*[@placeholder="Your password"]

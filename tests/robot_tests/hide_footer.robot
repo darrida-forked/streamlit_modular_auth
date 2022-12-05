@@ -7,21 +7,21 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
+Variables    ../__test_variables.py
+
 
 *** Variables ***
-${URL}             http://localhost:8006/
-${BROWSER}         headlessfirefox
-# ${BROWSER}         firefox
-${DRIVER_LOGS}      .logs/geckodriver.log
+${URL}             http://localhost:${PORT_HIDE_FOOTER}/
 
 
 *** Test Cases ***
 Hide Footer - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Page Should Contain     Password
     Page Should Contain     Login
     Select Frame    tag:iframe
+    Wait Until Element Is Visible   //*[contains(text(),"Navigation")]
     Page Should Contain     Navigation
     Page Should Contain     Login
     Page Should Contain     Create Account

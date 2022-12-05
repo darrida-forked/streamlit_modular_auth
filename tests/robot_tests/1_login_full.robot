@@ -6,22 +6,29 @@ Library  SeleniumLibrary
 Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
+Library  ../__test_library.py
+
+Variables    ../__test_variables.py
 
 
 *** Variables ***
-${URL}             http://localhost:8001/
-${BROWSER}         headlessfirefox
-# ${BROWSER}         firefox
-${DRIVER_LOGS}      .logs/geckodriver.log
+${URL}            http://localhost:${PORT_DEFAULT}/
+
+
+*** Keywords ***
+${OPTIONS}=        Get_Proxy_Options    ${OPTIONS}
 
 
 *** Test Cases ***
 Default - Login Screen
-    Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Open Browser  ${URL}  browser=${BROWSER}
+        ...    service_log_path=${DRIVER_LOGS}
+        ...    options=${OPTIONS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Page Should Contain     Password
     Page Should Contain     Login
     Select Frame    tag:iframe
+    Wait Until Element Is Visible   //*[contains(text(),"Navigation")]
     Page Should Contain     Navigation
     Page Should Contain     Login
     Page Should Contain     Create Account
@@ -40,7 +47,7 @@ Default - Check For Password File
 
 Default - Reset Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Reset Password')]
@@ -52,7 +59,7 @@ Default - Reset Password Screen
 
 Default - Create Account Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
@@ -60,7 +67,7 @@ Default - Create Account Screen
     Unselect Frame
     Wait Until Page Contains    Name *
     Wait Until Page Contains    Email *
-    Wait Until Page Contains    Username *
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Page Contains    Password *
     Wait Until Page Contains    Register
     Close Browser
@@ -68,7 +75,7 @@ Default - Create Account Screen
 
 Default - Forgot Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Forgot Password?')]
@@ -80,7 +87,7 @@ Default - Forgot Password Screen
 
 Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
     Select Frame    tag:iframe
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
@@ -103,7 +110,7 @@ Default - Create Account
 Default - Login Successful
     Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -117,7 +124,7 @@ Default - Login Successful
 Default - Login, then Logout
     Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -135,7 +142,7 @@ Default - Login, then Logout
 Default - Invalid Password
     Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -150,7 +157,7 @@ Default - Invalid Password
 Default - Invalid Username
     Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
     Input Text      //*[@placeholder="Your unique username"]    user2
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
@@ -161,3 +168,38 @@ Default - Invalid Username
     Page Should Contain     Invalid Username or Password!
     Close Browser
 
+
+Default - Reset Password
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   tag:iframe
+    Select Frame    tag:iframe
+    Wait Until Element Is Visible      //a[contains(text(),'Reset Password')]
+    Click Element                   //a[contains(text(),'Reset Password')]
+    Unselect Frame
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
+    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Wait Until Element Is Visible   //*[@placeholder="Please enter the password you received in the email"]
+    Input Text      //*[@placeholder="Please enter the password you received in the email"]    password1
+    Wait Until Element Is Visible   //*[@placeholder="Please enter a new, strong password"]
+    Input Text      //*[@placeholder="Please enter a new, strong password"]    password1_new
+    Wait Until Element Is Visible   //*[@placeholder="Please re- enter the new password"]
+    Input Text      //*[@placeholder="Please re- enter the new password"]    password1_new
+    Click Button   //*[contains(text(),'Reset Password')]
+    Wait Until Element Is Visible   //*[contains(text(),"Password Reset Successfully!")]
+    Page Should Contain     Password Reset Successfully!
+    Close Browser
+
+
+Default - Reset Password Re-Login Successful
+    Depends on test     Default - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
+    Input Text      //*[@placeholder="Your unique username"]    user1
+    Wait Until Element Is Visible   //*[@placeholder="Your password"]
+    Input Text      //*[@placeholder="Your password"]    password1_new
+    Click Button   //*[contains(text(),'Login')]
+    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
+    Page Should Contain     Your Streamlit Application Begins here!
+    Close Browser

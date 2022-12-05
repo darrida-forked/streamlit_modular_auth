@@ -182,7 +182,7 @@ class UserStorage:
             json.dump(authorized_users_data, auth_json_)
 
 
-class ForgotPassword:
+class ForgotPasswordMessage:
     method_name: str = "courier"
 
     def send_password(self, auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
