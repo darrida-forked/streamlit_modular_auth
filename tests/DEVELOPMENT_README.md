@@ -1,11 +1,9 @@
 # Testing
 
-## Intial Notes
-
-### Robot Test Framework
+## **Robot Test Framework**
 - Official Website: https://robotframework.org
 
-#### Dependencies
+### **Dependencies**
 - Create and activate Python virtual environment (recommended)
 - Package editable installed
   ```shell
@@ -34,7 +32,7 @@
     - chromedriver: https://chromedriver.chromium.org/downloads
 
 
-#### Running Tests
+### **Running Tests**
 - basic execution
   ```shell
   cd tests
@@ -47,13 +45,13 @@
   ```
   - Article about re-running tests without overwriting original results: https://medium.com/@manish.pandey65/re-run-rf-tests-15d41e154572
 
-#### Manual Tests Pass/Fail Badge
+### **Manual Tests Pass/Fail Badge**
 ```shell
 pip install anybadget
 anybadge --label=tests --value=passing --file=testing.svg passing=green failing=red
 ```
 
-#### Tests Notes
+### **Tests Notes**
 - Global Variables: `tests/__test_variables.py`
   - BROWSER OPTIONS:
     - `BROWSER`: captures value passed into `robot` cli statment (i.e., `robot --variable BROWSER:headlesschrome .`) or set separately as an environment variable
@@ -70,28 +68,29 @@ anybadge --label=tests --value=passing --file=testing.svg passing=green failing=
   - It allows running `__login__` under many different configuration scenarios through the use of environment variables. Different environment variables are used with each test webserver in `tests/__init__.robot`.
   - Example: One test webserver can run the app in default mode, while another can hide the Streamlit footer, another can hide account management information, and yet another can run the app with a custom user storage bolt-on.
 
-### Coverage
+## **Coverage**
 - Official Docs: https://coverage.readthedocs.io
+- ***There is no separate execution step*** (coverage runs with Robot Test Framework execution)
 
-#### Basic Results
+### **Basic Results**
 ```shell
 coverage report
 ```
 
-#### HTML Page for Results
+### **HTML Page for Results**
 ```shell
 coverage html
 ```
 - Open `htmlcov/index.html` in web browser
 
-#### XML File for Plugins
+### **XML File for Plugins**
 ```shell
 coverage xml
 ```
 - Use a coverage plugin that supports coverage.xml
   - Example: "Coverage Gutters" for VS Code (when enabled and on a file that coverage exists for it will show green and red indicators shows which lines are covered by tests)
 
-#### Manul Coverage Percentage Badge
+### **Manul Coverage Percentage Badge**
 ```shell
 pip install anybadge
 anybadge --value=98 --overwrite --file=coverage.svg coverage
@@ -102,9 +101,18 @@ pip install coverage-badge
 coverage-badge -o coverage.svg
 ```
 
-### Troubleshooting
+### **Coverage Configuration Notes**
+- Two items result in coverage results:
+  1. `coverage    run    -a    --source    tests` statement in each of the webserver "Start Process" steps in `tests/__init__.robot`
+    - A separate "coverage" process is run for each webserver instance (different processes represent different start up settings passed to `streamlit_login_auth_ui.__login__`)
+    - `-a` results in each coverage process appending it's results to the existing `.coverage` file rather than overwriting it.
+  2. `tests/.coveragerc` configuration file
+    - Omitting "." prevents coverage from including `.py` test related files in the report
+    - Including the "source_pkgs" name of "streamlit_login_auth_ui" instructs coverage to include the library files (located in a different parent directory) in the report
 
-#### Leftover Processes
+## **Troubleshooting**
+
+### **Leftover Processes**
 Sometimes if a test run fails or is cancelled in the middle it can result in processes left running in the background. This uses up resources and can render ports unusable by processes attempting to start testing webservers, which results in failed tests.
 
 - Identify processes using ports
@@ -127,12 +135,3 @@ Sometimes if a test run fails or is cancelled in the middle it can result in pro
     ```shell
     kill -9 $(ps -x | grep chrome)
     ```
-
-#### Coverage Configuration Notes
-- Two items result in coverage results:
-  1. `coverage    run    -a    --source    tests` statement in each of the webserver "Start Process" steps in `tests/__init__.robot`
-    - A separate "coverage" process is run for each webserver instance (different processes represent different start up settings passed to `streamlit_login_auth_ui.__login__`)
-    - `-a` results in each coverage process appending it's results to the existing `.coverage` file rather than overwriting it.
-  2. `tests/.coveragerc` configuration file
-    - Omitting "." prevents coverage from including `.py` test related files in the report
-    - Including the "source_pkgs" name of "streamlit_login_auth_ui" instructs coverage to include the library files (located in a different parent directory) in the report
