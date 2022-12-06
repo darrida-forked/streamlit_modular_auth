@@ -1,10 +1,12 @@
-
 HOW TO INSTALL ALL LIBRARIES:
 python3.10 -m venv venv
 source venv/bin/activate
 python3.10 -m pip install -r requirement.txt
 
-# Streamlit Login/ Sign Up Library   [![Downloads](https://static.pepy.tech/personalized-badge/streamlit-login-auth-ui?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/streamlit-login-auth-ui)
+# Streamlit Login/ Sign Up Library
+[![Downloads](https://static.pepy.tech/personalized-badge/streamlit-login-auth-ui?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/streamlit-login-auth-ui)
+<img src="./tests/coverage.svg">
+<img src="./tests/testing.svg">
 
 The streamlit_login_auth_ui library is meant for streamlit application developers.
 It lets you connect your streamlit application to a pre-built and secure Login/ Sign-Up page.
@@ -50,8 +52,9 @@ All you need to do is create an object for the ```__login__``` class and pass th
 8. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
 9. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
 10. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
-11. custom_authentication : Option to pass custom authentication class that inherits from StreamlitUserAuth (see information further below).
-12. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitUserStorage (see information further below).
+11. custom_authentication : Option to pass custom authentication class that inherits from UserAuth (see information further below).
+12. custom_user_storage : Option to pass custom user storage class that inherits from UserStorage (see information further below).
+13. custom_forgot_password : Option to pass custom forgot password class that inherits from ForgotPasswordMessage (see information further below).
 
 #### Mandatory Arguments:
 * ```auth_token```
@@ -68,6 +71,7 @@ All you need to do is create an object for the ```__login__``` class and pass th
 * ```hide_account_management``` [default = False]
 * ```custom_authentication```   [default = None]
 * ```custom_user_storage```     [default = None]
+* ```custom_forgot_password```  [default = None]
 
 After doing that, just call the ```build_login_ui()``` function using the object you just created and store the return value in a variable.
 
@@ -115,104 +119,14 @@ Generated in the sidebar only if the user is logged in, allows users to logout. 
 
 __Cookies are automatically created and destroyed depending on the user authentication status.__
 
-## Custom Authentication
-- Empowers a developer to create their own authentication method that can be passed in when intializing the `__login__` class.
-- The most straightforward way to use this is to pair it with setting `hide_account_management` as `True`
-  - Example: a separate LDAP server will be used for authentication, and no local user storage is required (in this case, user accounts are managed elsewhere). This would utilize the login screen generated from this library, while disabling 'Create Account', 'Forgot Password?', and 'Reset Password'.
-
-### How to use
-- Create a class that inherits from `streamlit_login_auth_ui.utils.StreamlitUserAuth`
-- Add a `StreamlitUserAuth.check_password` method. Only `self` is a required parameter.
-  - `check_password` requires 2 concepts:
-    - (1) It must use `self.username` and `self.password` to validate an account
-    - (2) It must return `True` if account is validated, or `False` if validation fails.
-  - Outside of those two requirements, it can be designed to interact with an authentication method in many different ways (additional parameters in constructor in `check_password` or constructor, additional methods, etc).
-- Simple example located in tests for this library: `CustomAuth` in `/streamlit_login_auth_ui/tests/__test_app.py`
-- Database example using SQLModel to authenticate using users stored in SQLite database: `StreamLitSQLModelAuth` in `/streamlit_login_auth_ui/samples/dbmodel_storage.py`
-- Functional code example:
-```python
-import streamlit as st
-from streamlit_login_auth_ui.widgets import __login__
-from streamlit_login_auth_ui.utils import StreamlitUserAuth
-
-class SampleAuth(StreamlitUserAuth):
-    def __init__(self, login_name=None, username=None, password=None):
-        super().__init__(login_name, username, password)
-    
-    def check_password(self):
-        if self.username == "hardcoded_user" and self.password == "hardcoded_password":  # Insecure; **Example Only**
-            return True
-        return False
-
-__login__obj = __login__(auth_token = "courier_auth_token", 
-                         company_name = "Shims",
-                         width = 200, height = 250, 
-                         custom_authentication=SampleAuth())
-
-LOGGED_IN = __login__obj.build_login_ui()
-
-if LOGGED_IN == True:
-    st.markown("Your Streamlit Application Begins here!")
-```
-
-## Custom User Storage
-- Empowers a developer to create their own user storage method that can be passed in when intializing the `__login__` class.
-- This likely will also be paired with a `custom_authentication` method as well. User storage handles creating, updating, and reading user account information; authentication handles validating a login attempt. They are separate to enable only authentication to be used if required.
-
-### How to use
-- Requirements:
-  - Create a class that inherits from `streamlit_login_auth_ui.utils.StreamlitUserStorage`
-  - The class requires the following methods:
-    - `register_new_usr`
-    - `check_username_exists`
-    - `check_email_exists`
-    - `change_passwd`
-  - Use docstrings found in these 4 methods in `StreamlitUserStorage` in `streamlit_login_auth_ui.utils.StreamlitUserStorage` to find argment and return/closure requirements.
-    - Note: Don't miss the returned tuple for `check_email_exists`
-  - Outside of these requirements, the class can be designed to interact with storage in many different ways (additional methods, etc).
-- Simple example located tests for this library: `StreamlitTestUserStorage` in `/streamlit_login_auth_ui/tests/__test_user_storage.py`
-- Database example using SQLModel to authenticate using users stored in SQLite database: `StreamLitSQLModelStorage` in `/streamlit_login_auth_ui/samples/dbmodel_storage.py`
-- Code example using StreamlitSQLModelAuth and StreamlitSQLModelStorage:
-```python
-import streamlit as st
-from streamlit_login_auth_ui.widgets import __login__
-from streamlit_login_auth_ui.samples import StreamlitSQLModelAuth, StreamlitSQLModelStorage
-
-__login__obj = __login__(auth_token = "courier_auth_token", 
-                         company_name = "Shims",
-                         width = 200, height = 250, 
-                         custom_authentication=StreamlitSQLModelAuth(),
-                         custom_user_storage=StreamlitSQLModelStorage())
-
-LOGGED_IN = __login__obj.build_login_ui()
-
-if LOGGED_IN == True:
-    st.markown("Your Streamlit Application Begins here!")
-```
+## Custom Functionality
+- See `custom_functionality.md`
 
 ## Development
-- Create virtual environment
-- Install dependencies from `requirements.txt`
-- Install dependencies from `test-requirements.txt`
-- Setup `geckodriver` for OS to be tested on
-  - i.e., for MacOS Apple Silicon:
-    ```
-    export PATH=$PATH:$PWD/tests/utils/geckodriver_macos_arm64/.
-    ```
-- Change directory into tests, then execute `robotframework`
-  ```
-  cd tests
-  robot .
-  ```
+- See `tests/DEVELOPMENT_README.md` for information
 
 ## Version
 v0.2.1
 
 ## License
 [MIT](https://github.com/GauriSP10/streamlit_login_auth_ui/blob/main/LICENSE)
-
-
-
-
-
-

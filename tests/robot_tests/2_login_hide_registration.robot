@@ -1,6 +1,3 @@
-# MANUALLY SET GECKODRIVER IN PATH
-# - Linux/MacOS: `export PATH=$PATH:$PWD/tests/utils/.`
-
 *** Settings ***
 Library  SeleniumLibrary
 Library  Process

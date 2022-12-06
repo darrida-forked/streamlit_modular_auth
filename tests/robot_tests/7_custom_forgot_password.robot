@@ -1,6 +1,3 @@
-# MANUALLY SET GECKODRIVER IN PATH
-# - Linux/MacOS: `export PATH=$PATH:$PWD/tests/utils/.`
-
 *** Settings ***
 Library  SeleniumLibrary
 Library  Process
@@ -79,4 +76,20 @@ Custom Storage - Reset Password
     Page Should Contain     Secure Password Sent Successfully!
     Wait Until Element Is Visible   //*[contains(text(),"Password via an insecure method:")]
     Page Should Contain     Password via an insecure method:
+    Close Browser
+
+
+Custom Storage - Reset Password - No Email Exists
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   tag:iframe
+    Select Frame    tag:iframe
+    Wait Until Element Is Visible      //a[contains(text(),'Forgot Password')]
+    Click Element                   //a[contains(text(),'Forgot Password')]
+    Unselect Frame
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
+    Input Text      //*[@placeholder="Please enter your email"]    forgot_password_none@email.com
+    Click Button   //*[contains(text(),'Get Password')]
+    Wait Until Element Is Visible   //*[contains(text(),"Email ID not registered with us!")]
+    Page Should Contain     Email ID not registered with us!
     Close Browser

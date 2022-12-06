@@ -44,18 +44,13 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def non_empty_str_check(username_sign_up: str) -> bool:
+def check_valid_username(username: str) -> bool:
     """
-    Checks for non-empty strings.
+    Checks for username with no space characters
     """
-    empty_count = 0
-    for i in username_sign_up:
-        if i == ' ':
-            empty_count = empty_count + 1
-            if empty_count == len(username_sign_up):
-                return False
-
-    if not username_sign_up:
+    if not username:
+        return False
+    if " " in username:
         return False
     return True
 
@@ -185,9 +180,19 @@ class UserStorage:
 class ForgotPasswordMessage:
     method_name: str = "courier"
 
-    def send_password(self, auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+    def send_password(self, auth_token: str, username: str, email: str, company_name: str, reset_password: str) -> None:
         """
         Triggers an email to the user containing the randomly generated password.
+
+        Args:
+            auth_token (str): Courier api token
+            username (str): User's username
+            email (str): User's email
+            company_name (str): User in email title ("<company_name>: Login Password")
+            reset_password (str): New temporary password to send
+
+        Returns:
+            None
         """
         client = Courier(auth_token = auth_token)
 
@@ -198,7 +203,7 @@ class ForgotPasswordMessage:
                 },
                 "content": {
                 "title": company_name + ": Login Password!",
-                "body": "Hi! " + username + "," + "\n" + "\n" + "Your temporary login password is: " + password  + "\n" + "\n" + "{{info}}"
+                "body": "Hi! " + username + "," + "\n" + "\n" + "Your temporary login password is: " + reset_password  + "\n" + "\n" + "{{info}}"
                 },
                 "data":{
                 "info": "Please reset your password at the earliest for security reasons."

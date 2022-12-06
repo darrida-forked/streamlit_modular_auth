@@ -12,6 +12,7 @@ from .utils import generate_random_passwd
 from .utils import UserAuth
 from .utils import UserStorage
 from .utils import ForgotPasswordMessage
+from .utils import check_valid_username
 
 
 class __login__:
@@ -26,7 +27,7 @@ class __login__:
                  hide_forgot_password: bool = False,
                  custom_authentication: UserAuth = None,
                  custom_user_storage: UserStorage = None,
-                 custom_forgot_password: ForgotPasswordMessage = None):
+                 custom_forgot_password_msg: ForgotPasswordMessage = None):
         """
         Arguments:
         -----------
@@ -58,7 +59,7 @@ class __login__:
         self.hide_account_management = hide_account_management
         self.auth = custom_authentication or UserAuth()
         self.storage = custom_user_storage or UserStorage()
-        self.password_reset = custom_forgot_password or ForgotPasswordMessage()
+        self.password_reset = custom_forgot_password_msg or ForgotPasswordMessage()
 
         self.cookies = EncryptedCookieManager(
         prefix="streamlit_login_ui_yummy_cookies",
@@ -153,13 +154,10 @@ class __login__:
 
             email_sign_up = st.text_input("Email *", placeholder = 'Please enter your email')
             valid_email_check = check_valid_email(email_sign_up)
-            # unique_email_check = self.storage.check_unique_email(email_sign_up)
             email_exists_check, _ = self.storage.check_email_exists(email_sign_up)
             
             username_sign_up = st.text_input("Username *", placeholder = 'Enter a unique username')
-            # unique_username_check = self.storage.check_unique_usr(username_sign_up)
-            if username_sign_up == None:
-                st.error('Please enter a non - empty Username!')
+            empty_username_check = check_valid_username(username_sign_up)
             username_exists_check = self.storage.check_username_exists(username_sign_up)
 
             password_sign_up = st.text_input("Password *", placeholder = 'Create a strong password', type = 'password')
@@ -173,22 +171,19 @@ class __login__:
 
                 elif valid_email_check == False:
                     st.error("Please enter a valid Email!")
-                
+
                 elif email_exists_check == True:
                     st.error("Email already exists!")
-                
-                elif username_exists_check == True:
-                    st.error(f'Sorry, username {username_sign_up} already exists!')
-                
-                # elif username_exists_check == None:
-                #     st.error('Please enter a non - empty Username!')
 
-                if valid_name_check == True:
-                    if valid_email_check == True:
-                        if email_exists_check == False:
-                            if username_exists_check == False:
-                                self.storage.register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
-                                st.success("Registration Successful!")
+                elif empty_username_check == False:
+                    st.error('Please enter a valid Username! (no space characters)')
+
+                elif username_exists_check == True:
+                    st.error('Sorry, username already exists!')
+
+                else:
+                    self.storage.register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
+                    st.success("Registration Successful!")
 
 
     def forgot_password(self) -> None:
@@ -223,7 +218,7 @@ class __login__:
             email_reset_passwd = st.text_input("Email", placeholder= 'Please enter your email')
             email_exists_check, username_reset_passwd = self.storage.check_email_exists(email_reset_passwd)
 
-            current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter the password you received in the email')
+            current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter your current password')
             # current_passwd_check = self.storage.check_current_passwd(email_reset_passwd, current_passwd)
             self.auth.username = username_reset_passwd
             self.auth.password = current_passwd
@@ -241,7 +236,7 @@ class __login__:
                     st.error("Email does not exist!")
 
                 elif current_passwd_check == False:
-                    st.error("Incorrect temporary password!")
+                    st.error("Incorrect password!")
 
                 elif new_passwd != new_passwd_1:
                     st.error("Passwords don't match!")

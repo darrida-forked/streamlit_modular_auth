@@ -1,10 +1,24 @@
 import os
+from pathlib import Path
 import streamlit as st
 from streamlit_login_auth_ui import __login__
 from streamlit_login_auth_ui.utils import UserAuth
 from __test_user_storage import UserAuthTest, UserStorageTest
-from __test_password_reset import ForgotPasswordCustomMsgTest
+from __test_forgot_password import ForgotPasswordCustomMsgTest
 
+import importlib
+
+module_init = "streamlit_login_auth_ui"
+file_path = Path(__file__).parent / "streamlit_login_auth_ui" / "__init__.py"
+spec_init = importlib.util.spec_from_file_location(module_init, file_path)
+
+module_utils = "streamlit_login_auth_ui.utils"
+file_path = Path(__file__).parent / "streamlit_login_auth_ui" / "utils.py"
+spec_utils = importlib.util.spec_from_file_location(module_utils, file_path)
+
+module_widgets = "streamlit_login_auth_ui.widgets"
+file_path = Path(__file__).parent / "streamlit_login_auth_ui" / "widgets.py"
+spec_widgets = importlib.util.spec_from_file_location(module_widgets, file_path)
 
 class CustomAuth(UserAuth):
     def __init__(self, login_name=None, username=None, password=None):
@@ -39,9 +53,9 @@ else:
     custom_user_storage = None
 
 if os.environ.get("CUSTOM_FORGOT_PASSWORD") == "true":
-    custom_forgot_password = ForgotPasswordCustomMsgTest(message="Password via an insecure method")
+    custom_forgot_password_msg = ForgotPasswordCustomMsgTest(message="Password via an insecure method")
 else:
-    custom_forgot_password = None
+    custom_forgot_password_msg = None
 
 
 __login__obj = __login__(
@@ -51,14 +65,14 @@ __login__obj = __login__(
     height = 250, 
     logout_button_name = logout_button_name,
     hide_menu_bool = hide_menu_bool, 
-    hide_footer_bool = hide_footer_bool, 
+    hide_footer_bool = hide_footer_bool,
     lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
     hide_registration=hide_registration,
     hide_forgot_password=hide_forgot_password,
     hide_account_management=hide_account_management,
     custom_authentication=custom_authentication,
     custom_user_storage=custom_user_storage,
-    custom_forgot_password=custom_forgot_password
+    custom_forgot_password_msg=custom_forgot_password_msg
 )
 
 
