@@ -4,6 +4,8 @@ import os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
+from icecream import ic
+ic.configureOutput(includeContext=True)
 from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
@@ -62,8 +64,9 @@ class __login__:
         self.password_reset = custom_forgot_password_msg or ForgotPasswordMessage()
 
         self.cookies = EncryptedCookieManager(
-        prefix="streamlit_login_ui_yummy_cookies",
-        password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b')
+            prefix="streamlit_login_ui_yummy_cookies",
+            password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b'
+        )
 
         if not self.cookies.ready():
             st.stop()   
@@ -100,12 +103,16 @@ class __login__:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
-
+        ic("Checking login status...")
         # Checks if cookie exists.
         if st.session_state['LOGGED_IN'] == False:
+            ic(st.session_state['LOGGED_IN'])
             if st.session_state['LOGOUT_BUTTON_HIT'] == False:
+                ic(st.session_state['LOGOUT_BUTTON_HIT'])
                 fetched_cookies = self.cookies
+                ic(fetched_cookies.__dict__)
                 if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
+                    ic(fetched_cookies['__streamlit_login_signup_ui_username__'])
                     if fetched_cookies['__streamlit_login_signup_ui_username__'] != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
                         st.session_state['LOGGED_IN'] = True
 
@@ -130,10 +137,14 @@ class __login__:
 
                     else:
                         st.session_state['LOGGED_IN'] = True
+                        ic(st.session_state['LOGGED_IN'])
                         self.cookies['__streamlit_login_signup_ui_username__'] = username
                         self.cookies.save()
                         del_login.empty()
                         st.experimental_rerun()
+        ic(st.session_state['LOGGED_IN'])
+        ic(self.cookies.__dict__)
+        ic(self.cookies._cookie_manager.get('__streamlit_login_signup_ui_username__'))
 
 
     def animation(self) -> None:

@@ -50,6 +50,8 @@
 pip install anybadget
 anybadge --label=tests --value=passing --file=testing.svg passing=green failing=red
 ```
+- Source: https://tryexceptpass.org/article/conveying-info-with-repository-badges/
+- Official website: https://github.com/jongracecox/anybadge
 
 ### **Tests Notes**
 - Global Variables: `tests/__test_variables.py`

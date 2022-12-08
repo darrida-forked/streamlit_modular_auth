@@ -12,7 +12,7 @@ setup(
 
     author_email='prabhakargauri10@gmail.com',
 
-    version='0.1.0',
+    version='0.2.0',
 
     description='A streamlit library which provides a Login/Sign-Up UI with an option to reset password, also supports cookies.',
 

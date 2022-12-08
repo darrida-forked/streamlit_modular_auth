@@ -81,3 +81,6 @@ LOGGED_IN = __login__obj.build_login_ui()
 
 if LOGGED_IN == True:
     st.markdown("Your Streamlit Application Begins here!")
+
+    if st.button("Click here..."):
+        st.write("Here is some more text.")
