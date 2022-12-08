@@ -5,7 +5,6 @@ __pycache__/
 *.png
 *.xml
 *.html
-.converage
 .pytest_cache/
 archived_logs/
 latest_logs/
@@ -13,3 +12,6 @@ latest_logs/
 pabot_results/
 .*
 *.db
+!.coverage
+!.coveragerc
+!coverage.xml
