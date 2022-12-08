@@ -4,18 +4,17 @@ import os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
-from .utils import check_usr_pass
+from icecream import ic
+ic.configureOutput(includeContext=True)
 from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
-from .utils import check_unique_email
-from .utils import check_unique_usr
-from .utils import register_new_usr
-from .utils import check_email_exists
 from .utils import generate_random_passwd
-from .utils import send_passwd_in_email
-from .utils import change_passwd
-from .utils import check_current_passwd
+# from .utils import send_passwd_in_email
+from .utils import UserAuth
+from .utils import UserStorage
+from .utils import ForgotPasswordMessage
+from .utils import check_valid_username
 
 
 class __login__:
@@ -23,7 +22,14 @@ class __login__:
     Builds the UI for the Login/ Sign Up page.
     """
 
-    def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', hide_menu_bool: bool = False, hide_footer_bool: bool = False, lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json" ):
+    def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', 
+                 hide_menu_bool: bool = False, hide_footer_bool: bool = False, 
+                 lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
+                 hide_registration: bool = False, hide_account_management: bool = False, 
+                 hide_forgot_password: bool = False,
+                 custom_authentication: UserAuth = None,
+                 custom_user_storage: UserStorage = None,
+                 custom_forgot_password_msg: ForgotPasswordMessage = None):
         """
         Arguments:
         -----------
@@ -36,6 +42,11 @@ class __login__:
         7. hide_menu_bool : Pass True if the streamlit menu should be hidden.
         8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
         9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
+        10. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
+        11. hide_forgot_password : Pass True if 'Forgot Password?' option should be hidden from Navigation.
+        11. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
+        12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitUserAuth (see information further below).
+        13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitUserStorage (see information further below).
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -45,10 +56,17 @@ class __login__:
         self.hide_menu_bool = hide_menu_bool
         self.hide_footer_bool = hide_footer_bool
         self.lottie_url = lottie_url
+        self.hide_registration = hide_registration
+        self.hide_forgot_password = hide_forgot_password
+        self.hide_account_management = hide_account_management
+        self.auth = custom_authentication or UserAuth()
+        self.storage = custom_user_storage or UserStorage()
+        self.password_reset = custom_forgot_password_msg or ForgotPasswordMessage()
 
         self.cookies = EncryptedCookieManager(
-        prefix="streamlit_login_ui_yummy_cookies",
-        password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b')
+            prefix="streamlit_login_ui_yummy_cookies",
+            password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b'
+        )
 
         if not self.cookies.ready():
             st.stop()   
@@ -85,12 +103,16 @@ class __login__:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
-
+        ic("Checking login status...")
         # Checks if cookie exists.
         if st.session_state['LOGGED_IN'] == False:
+            ic(st.session_state['LOGGED_IN'])
             if st.session_state['LOGOUT_BUTTON_HIT'] == False:
+                ic(st.session_state['LOGOUT_BUTTON_HIT'])
                 fetched_cookies = self.cookies
+                ic(fetched_cookies.__dict__)
                 if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
+                    ic(fetched_cookies['__streamlit_login_signup_ui_username__'])
                     if fetched_cookies['__streamlit_login_signup_ui_username__'] != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
                         st.session_state['LOGGED_IN'] = True
 
@@ -106,17 +128,23 @@ class __login__:
                 login_submit_button = st.form_submit_button(label = 'Login')
 
                 if login_submit_button == True:
-                    authenticate_user_check = check_usr_pass(username, password)
+                    self.auth.username = username
+                    self.auth.password = password
+                    authenticate_user_check = self.auth.check_password()
 
                     if authenticate_user_check == False:
                         st.error("Invalid Username or Password!")
 
                     else:
                         st.session_state['LOGGED_IN'] = True
+                        ic(st.session_state['LOGGED_IN'])
                         self.cookies['__streamlit_login_signup_ui_username__'] = username
                         self.cookies.save()
                         del_login.empty()
                         st.experimental_rerun()
+        ic(st.session_state['LOGGED_IN'])
+        ic(self.cookies.__dict__)
+        ic(self.cookies._cookie_manager.get('__streamlit_login_signup_ui_username__'))
 
 
     def animation(self) -> None:
@@ -137,10 +165,11 @@ class __login__:
 
             email_sign_up = st.text_input("Email *", placeholder = 'Please enter your email')
             valid_email_check = check_valid_email(email_sign_up)
-            unique_email_check = check_unique_email(email_sign_up)
+            email_exists_check, _ = self.storage.check_email_exists(email_sign_up)
             
             username_sign_up = st.text_input("Username *", placeholder = 'Enter a unique username')
-            unique_username_check = check_unique_usr(username_sign_up)
+            empty_username_check = check_valid_username(username_sign_up)
+            username_exists_check = self.storage.check_username_exists(username_sign_up)
 
             password_sign_up = st.text_input("Password *", placeholder = 'Create a strong password', type = 'password')
 
@@ -153,22 +182,19 @@ class __login__:
 
                 elif valid_email_check == False:
                     st.error("Please enter a valid Email!")
-                
-                elif unique_email_check == False:
-                    st.error("Email already exists!")
-                
-                elif unique_username_check == False:
-                    st.error(f'Sorry, username {username_sign_up} already exists!')
-                
-                elif unique_username_check == None:
-                    st.error('Please enter a non - empty Username!')
 
-                if valid_name_check == True:
-                    if valid_email_check == True:
-                        if unique_email_check == True:
-                            if unique_username_check == True:
-                                register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
-                                st.success("Registration Successful!")
+                elif email_exists_check == True:
+                    st.error("Email already exists!")
+
+                elif empty_username_check == False:
+                    st.error('Please enter a valid Username! (no space characters)')
+
+                elif username_exists_check == True:
+                    st.error('Sorry, username already exists!')
+
+                else:
+                    self.storage.register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
+                    st.success("Registration Successful!")
 
 
     def forgot_password(self) -> None:
@@ -178,7 +204,7 @@ class __login__:
         """
         with st.form("Forgot Password Form"):
             email_forgot_passwd = st.text_input("Email", placeholder= 'Please enter your email')
-            email_exists_check, username_forgot_passwd = check_email_exists(email_forgot_passwd)
+            email_exists_check, username_forgot_passwd = self.storage.check_email_exists(email_forgot_passwd)
 
             st.markdown("###")
             forgot_passwd_submit_button = st.form_submit_button(label = 'Get Password')
@@ -189,8 +215,8 @@ class __login__:
 
                 if email_exists_check == True:
                     random_password = generate_random_passwd()
-                    send_passwd_in_email(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
-                    change_passwd(email_forgot_passwd, random_password)
+                    self.password_reset.send_password(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
+                    self.storage.change_passwd(email_forgot_passwd, random_password)
                     st.success("Secure Password Sent Successfully!")
 
 
@@ -201,10 +227,13 @@ class __login__:
         """
         with st.form("Reset Password Form"):
             email_reset_passwd = st.text_input("Email", placeholder= 'Please enter your email')
-            email_exists_check, username_reset_passwd = check_email_exists(email_reset_passwd)
+            email_exists_check, username_reset_passwd = self.storage.check_email_exists(email_reset_passwd)
 
-            current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter the password you received in the email')
-            current_passwd_check = check_current_passwd(email_reset_passwd, current_passwd)
+            current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter your current password')
+            # current_passwd_check = self.storage.check_current_passwd(email_reset_passwd, current_passwd)
+            self.auth.username = username_reset_passwd
+            self.auth.password = current_passwd
+            current_passwd_check = self.auth.check_password()
 
             new_passwd = st.text_input("New Password", placeholder= 'Please enter a new, strong password', type = 'password')
 
@@ -218,14 +247,14 @@ class __login__:
                     st.error("Email does not exist!")
 
                 elif current_passwd_check == False:
-                    st.error("Incorrect temporary password!")
+                    st.error("Incorrect password!")
 
                 elif new_passwd != new_passwd_1:
                     st.error("Passwords don't match!")
             
                 if email_exists_check == True:
                     if current_passwd_check == True:
-                        change_passwd(email_reset_passwd, new_passwd)
+                        self.storage.change_passwd(email_reset_passwd, new_passwd)
                         st.success("Password Reset Successfully!")
                 
 
@@ -252,11 +281,22 @@ class __login__:
         """
         main_page_sidebar = st.sidebar.empty()
         with main_page_sidebar:
+            icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise']
+            options = [self.auth.login_name, 'Create Account', 'Forgot Password?', 'Reset Password']
+            if self.hide_registration or self.hide_account_management:
+                icons.remove('person-plus')
+                options.remove('Create Account')
+            if self.hide_forgot_password or self.hide_account_management:
+                icons.remove('x-circle')
+                options.remove('Forgot Password?')
+            if self.hide_account_management:
+                icons.remove('arrow-counterclockwise')
+                options.remove('Reset Password')
             selected_option = option_menu(
                 menu_title = 'Navigation',
                 menu_icon = 'list-columns-reverse',
-                icons = ['box-arrow-in-right', 'person-plus', 'x-circle','arrow-counterclockwise'],
-                options = ['Login', 'Create Account', 'Forgot Password?', 'Reset Password'],
+                icons = icons,
+                options = options,
                 styles = {
                     "container": {"padding": "5px"},
                     "nav-link": {"font-size": "14px", "text-align": "left", "margin":"0px"}} )
@@ -291,6 +331,7 @@ class __login__:
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
 
+        # if self.storage.storage_name == "default":
         auth_json_exists_bool = self.check_auth_json_file_exists('_secret_auth_.json')
 
         if auth_json_exists_bool == False:
@@ -299,7 +340,7 @@ class __login__:
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 
-        if selected_option == 'Login':
+        if selected_option == self.auth.login_name: # 'Login':
             c1, c2 = st.columns([7,3])
             with c1:
                 self.login_widget()
@@ -307,14 +348,17 @@ class __login__:
                 if st.session_state['LOGGED_IN'] == False:
                     self.animation()
         
-        if selected_option == 'Create Account':
-            self.sign_up_widget()
+        if not self.hide_registration or not self.hide_account_management:
+            if selected_option == 'Create Account':
+                self.sign_up_widget()
 
-        if selected_option == 'Forgot Password?':
-            self.forgot_password()
+        if not self.hide_forgot_password or not self.hide_account_management:
+            if selected_option == 'Forgot Password?':
+                self.forgot_password()
 
-        if selected_option == 'Reset Password':
-            self.reset_password()
+        if not self.hide_account_management:
+            if selected_option == 'Reset Password':
+                self.reset_password()
         
         self.logout_widget()
 

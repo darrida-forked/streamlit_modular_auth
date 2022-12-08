@@ -1,3 +1,17 @@
 venv
 _secret_auth_.json
+__pycache__/
+*.log
+*.png
+*.xml
+*.html
+.pytest_cache/
+archived_logs/
+latest_logs/
+*.egg-info/
+pabot_results/
 .*
+*.db
+!.coverage
+!.coveragerc
+!coverage.xml

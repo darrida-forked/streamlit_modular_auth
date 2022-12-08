@@ -8,23 +8,6 @@ import requests
 
 ph = PasswordHasher() 
 
-def check_usr_pass(username: str, password: str) -> bool:
-    """
-    Authenticates the username and password.
-    """
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_user_data = json.load(auth_json)
-
-    for registered_user in authorized_user_data:
-        if registered_user['username'] == username:
-            try:
-                passwd_verification_bool = ph.verify(registered_user['password'], password)
-                if passwd_verification_bool == True:
-                    return True
-            except:
-                pass
-    return False
-
 
 def load_lottieurl(url: str) -> str:
     """
@@ -61,101 +44,15 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def check_unique_email(email_sign_up: str) -> bool:
+def check_valid_username(username: str) -> bool:
     """
-    Checks if the email already exists (since email needs to be unique).
+    Checks for username with no space characters
     """
-    authorized_user_data_master = list()
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
-
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['email'])
-
-    if email_sign_up in authorized_user_data_master:
+    if not username:
+        return False
+    if " " in username:
         return False
     return True
-
-
-def non_empty_str_check(username_sign_up: str) -> bool:
-    """
-    Checks for non-empty strings.
-    """
-    empty_count = 0
-    for i in username_sign_up:
-        if i == ' ':
-            empty_count = empty_count + 1
-            if empty_count == len(username_sign_up):
-                return False
-
-    if not username_sign_up:
-        return False
-    return True
-
-
-def check_unique_usr(username_sign_up: str):
-    """
-    Checks if the username already exists (since username needs to be unique),
-    also checks for non - empty username.
-    """
-    authorized_user_data_master = list()
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
-
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'])
-
-    if username_sign_up in authorized_user_data_master:
-        return False
-    
-    non_empty_check = non_empty_str_check(username_sign_up)
-
-    if non_empty_check == False:
-        return None
-    return True
-
-
-def register_new_usr(name_sign_up: str, email_sign_up: str, username_sign_up: str, password_sign_up: str) -> None:
-    """
-    Saves the information of the new user in the _secret_auth.json file.
-    """
-    new_usr_data = {'username': username_sign_up, 'name': name_sign_up, 'email': email_sign_up, 'password': ph.hash(password_sign_up)}
-
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_user_data = json.load(auth_json)
-
-    with open("_secret_auth_.json", "w") as auth_json_write:
-        authorized_user_data.append(new_usr_data)
-        json.dump(authorized_user_data, auth_json_write)
-
-
-def check_username_exists(user_name: str) -> bool:
-    """
-    Checks if the username exists in the _secret_auth.json file.
-    """
-    authorized_user_data_master = list()
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
-
-        for user in authorized_users_data:
-            authorized_user_data_master.append(user['username'])
-        
-    if user_name in authorized_user_data_master:
-        return True
-    return False
-        
-
-def check_email_exists(email_forgot_passwd: str):
-    """
-    Checks if the email entered is present in the _secret_auth.json file.
-    """
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
-
-        for user in authorized_users_data:
-            if user['email'] == email_forgot_passwd:
-                    return True, user['username']
-    return False, None
 
 
 def generate_random_passwd() -> str:
@@ -166,58 +63,155 @@ def generate_random_passwd() -> str:
     return secrets.token_urlsafe(password_length)
 
 
-def send_passwd_in_email(auth_token: str, username_forgot_passwd: str, email_forgot_passwd: str, company_name: str, random_password: str) -> None:
-    """
-    Triggers an email to the user containing the randomly generated password.
-    """
-    client = Courier(auth_token = auth_token)
-
-    resp = client.send_message(
-    message={
-        "to": {
-        "email": email_forgot_passwd
-        },
-        "content": {
-        "title": company_name + ": Login Password!",
-        "body": "Hi! " + username_forgot_passwd + "," + "\n" + "\n" + "Your temporary login password is: " + random_password  + "\n" + "\n" + "{{info}}"
-        },
-        "data":{
-        "info": "Please reset your password at the earliest for security reasons."
-        }
-    }
-    )
+class UserAuth:
+    def __init__(self, login_name: str = None, username: str = None, password: str = None):
+        self.login_name = login_name or "Login"
+        self.username = username
+        self.password = password
 
 
-def change_passwd(email_: str, random_password: str) -> None:
-    """
-    Replaces the old password with the newly generated password.
-    """
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
+    def check_password(self) -> bool:
+        """
+        Authenticates using username and password class attributes.
+        - Uses password and username from initialized object
 
-    with open("_secret_auth_.json", "w") as auth_json_:
-        for user in authorized_users_data:
-            if user['email'] == email_:
-                user['password'] = ph.hash(random_password)
-        json.dump(authorized_users_data, auth_json_)
-    
+        Return:
+            bool: If password is correct -> "True"; if not -> "False"
+        """
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_user_data = json.load(auth_json)
 
-def check_current_passwd(email_reset_passwd: str, current_passwd: str) -> bool:
-    """
-    Authenticates the password entered against the username when 
-    resetting the password.
-    """
-    with open("_secret_auth_.json", "r") as auth_json:
-        authorized_users_data = json.load(auth_json)
-
-        for user in authorized_users_data:
-            if user['email'] == email_reset_passwd:
+        for user in authorized_user_data:
+            if user['username'] == self.username:
                 try:
-                    if ph.verify(user['password'], current_passwd) == True:
+                    passwd_verification_bool = ph.verify(user['password'], self.password)
+                    if passwd_verification_bool == True:
                         return True
                 except:
                     pass
-    return False
+        return False
+
+
+class UserStorage:
+    storage_name: str = "default"
+
+    def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
+        """
+        Saves the information of the new user in the _secret_auth.json file.
+
+        Args:
+            name (str): name for new account
+            email (str): email for new account
+            username (str): username for new account
+            password (str): password for new account
+    a
+        Return:
+            None
+        """
+        new_usr_data = {'username': username, 'name': name, 'email': email, 'password': ph.hash(password)}
+
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_user_data = json.load(auth_json)
+
+        with open("_secret_auth_.json", "w") as auth_json_write:
+            authorized_user_data.append(new_usr_data)
+            json.dump(authorized_user_data, auth_json_write)
+
+    def check_username_exists(self, username: str) -> bool:
+        """
+        Checks if the username exists in the _secret_auth.json file.
+
+        Args:
+            username (str): username to check
+
+        Return:
+            bool: If username exists -> "True"; if not -> "False"
+        """
+        authorized_user_data_master = list()
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_users_data = json.load(auth_json)
+
+            for user in authorized_users_data:
+                authorized_user_data_master.append(user['username'])
+            
+        if username in authorized_user_data_master:
+            return True
+        return False
+
+    def check_email_exists(self, email: str):
+        """
+        Checks if the email entered is present in the _secret_auth.json file.
+
+        Args:
+            email (str): email connected to forgotten password
+
+        Return:
+            Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
+        """
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_users_data = json.load(auth_json)
+
+            for user in authorized_users_data:
+                if user['email'] == email:
+                        return True, user['username']
+        return False, None
+
+    def change_passwd(self, email: str, password: str) -> None:
+        """
+        Replaces the old password with the newly generated password.
+
+        Args:
+            email (str): email connected to account
+            password (str): password to set
+
+        Return:
+            None
+        """
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_users_data = json.load(auth_json)
+
+        with open("_secret_auth_.json", "w") as auth_json_:
+            for user in authorized_users_data:
+                if user['email'] == email:
+                    user['password'] = ph.hash(password)
+            json.dump(authorized_users_data, auth_json_)
+
+
+class ForgotPasswordMessage:
+    method_name: str = "courier"
+
+    def send_password(self, auth_token: str, username: str, email: str, company_name: str, reset_password: str) -> None:
+        """
+        Triggers an email to the user containing the randomly generated password.
+
+        Args:
+            auth_token (str): Courier api token
+            username (str): User's username
+            email (str): User's email
+            company_name (str): User in email title ("<company_name>: Login Password")
+            reset_password (str): New temporary password to send
+
+        Returns:
+            None
+        """
+        client = Courier(auth_token = auth_token)
+
+        resp = client.send_message(
+            message={
+                "to": {
+                "email": email
+                },
+                "content": {
+                "title": company_name + ": Login Password!",
+                "body": "Hi! " + username + "," + "\n" + "\n" + "Your temporary login password is: " + reset_password  + "\n" + "\n" + "{{info}}"
+                },
+                "data":{
+                "info": "Please reset your password at the earliest for security reasons."
+                }
+            }
+        )
+
+
 
 # Author: Gauri Prabhakar
 # GitHub: https://github.com/GauriSP10/streamlit_login_auth_ui
