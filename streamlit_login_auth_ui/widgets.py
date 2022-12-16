@@ -17,6 +17,15 @@ from .utils import ForgotPasswordMessage
 from .utils import check_valid_username
 
 
+cookies = EncryptedCookieManager(
+    prefix="auth_cookies",
+    password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b'
+)
+
+if not cookies.ready():
+    st.stop() 
+
+
 class __login__:
     """
     Builds the UI for the Login/ Sign Up page.
@@ -63,14 +72,6 @@ class __login__:
         self.storage = custom_user_storage or UserStorage()
         self.password_reset = custom_forgot_password_msg or ForgotPasswordMessage()
 
-        self.cookies = EncryptedCookieManager(
-            prefix="streamlit_login_ui_yummy_cookies",
-            password='9d68d6f2-4258-45c9-96eb-2d6bc74ddbb5-d8f49cab-edbb-404a-94d0-b25b1d4a564b'
-        )
-
-        if not self.cookies.ready():
-            st.stop()   
-
 
     def check_auth_json_file_exists(self, auth_filename: str) -> bool:
         """
@@ -93,58 +94,68 @@ class __login__:
 
     def get_username(self):
         if st.session_state['LOGOUT_BUTTON_HIT'] == False:
-            fetched_cookies = self.cookies
+            fetched_cookies = cookies
             if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
                 username=fetched_cookies['__streamlit_login_signup_ui_username__']
                 return username
  
+
+    def check_for_auth_cookie(self):
+        if '__streamlit_login_signup_ui_username__' in cookies.keys() and st.session_state['LOGOUT_BUTTON_HIT'] == False:
+            if cookies.get('__streamlit_login_signup_ui_username__') == 'ben':
+                st.session_state['LOGGED_IN'] = True
+
+
+    def expire_auth_cookie(self):
+        if '__streamlit_login_signup_ui_username__' in cookies.keys():
+            ic('LOGGING OUT.............................')
+            cookies['__streamlit_login_signup_ui_username__'] = ""
+            cookies.save()
+            ic(cookies.__dict__)
+
 
     def login_widget(self) -> None:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
         ic("Checking login status...")
-        # Checks if cookie exists.
-        if st.session_state['LOGGED_IN'] == False:
-            ic(st.session_state['LOGGED_IN'])
-            if st.session_state['LOGOUT_BUTTON_HIT'] == False:
-                ic(st.session_state['LOGOUT_BUTTON_HIT'])
-                fetched_cookies = self.cookies
-                ic(fetched_cookies.__dict__)
-                if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
-                    ic(fetched_cookies['__streamlit_login_signup_ui_username__'])
-                    if fetched_cookies['__streamlit_login_signup_ui_username__'] != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
-                        st.session_state['LOGGED_IN'] = True
 
         if st.session_state['LOGGED_IN'] == False:
-            st.session_state['LOGOUT_BUTTON_HIT'] = False 
+            self.check_for_auth_cookie()
 
-            del_login = st.empty()
-            with del_login.form("Login Form"):
-                username = st.text_input("Username", placeholder = 'Your unique username')
-                password = st.text_input("Password", placeholder = 'Your password', type = 'password')
+            if st.session_state["LOGGED_IN"] == False:
 
-                st.markdown("###")
-                login_submit_button = st.form_submit_button(label = 'Login')
+                st.session_state['LOGOUT_BUTTON_HIT'] = False
 
-                if login_submit_button == True:
-                    self.auth.username = username
-                    self.auth.password = password
-                    authenticate_user_check = self.auth.check_password()
+                del_login = st.empty()
+                with del_login.form("Login Form"):
+                    username = st.text_input("Username", placeholder = 'Your unique username')
+                    password = st.text_input("Password", placeholder = 'Your password', type = 'password')
 
-                    if authenticate_user_check == False:
-                        st.error("Invalid Username or Password!")
+                    st.markdown("###")
+                    login_submit_button = st.form_submit_button(label = 'Login')
 
-                    else:
-                        st.session_state['LOGGED_IN'] = True
-                        ic(st.session_state['LOGGED_IN'])
-                        self.cookies['__streamlit_login_signup_ui_username__'] = username
-                        self.cookies.save()
-                        del_login.empty()
-                        st.experimental_rerun()
+                    if login_submit_button == True:
+                        self.auth.username = username
+                        self.auth.password = password
+                        authenticate_user_check = self.auth.check_password()
+
+                        if authenticate_user_check == False:
+                            st.error("Invalid Username or Password!")
+
+                        else:
+                            ic('Login successful!!!!!!!!')
+                            st.session_state['LOGGED_IN'] = True
+                            ic(st.session_state['LOGGED_IN'])
+                            ic(self.auth.username)
+                            cookies['__streamlit_login_signup_ui_username__'] = self.auth.username
+                            cookies.save()
+                            ic(f"New cookie: {cookies.get('__streamlit_login_signup_ui_username__')}")
+                            del_login.empty()
+                            st.experimental_rerun()
         ic(st.session_state['LOGGED_IN'])
-        ic(self.cookies.__dict__)
-        ic(self.cookies._cookie_manager.get('__streamlit_login_signup_ui_username__'))
+        ic(cookies.__dict__)
+        ic(cookies.get('__streamlit_login_signup_ui_username__'))
 
 
     def animation(self) -> None:
@@ -263,14 +274,15 @@ class __login__:
         Creates the logout widget in the sidebar only if the user is logged in.
         """
         if st.session_state['LOGGED_IN'] == True:
+            ic('Logout button still shows up.............')
             del_logout = st.sidebar.empty()
             del_logout.markdown("#")
             logout_click_check = del_logout.button(self.logout_button_name)
 
             if logout_click_check == True:
                 st.session_state['LOGOUT_BUTTON_HIT'] = True
+                self.expire_auth_cookie()
                 st.session_state['LOGGED_IN'] = False
-                self.cookies['__streamlit_login_signup_ui_username__'] = '1c9a923f-fb21-4a91-b3f3-5f18e3f01182'
                 del_logout.empty()
                 st.experimental_rerun()
         
