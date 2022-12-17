@@ -11,9 +11,9 @@ from .utils import check_valid_name
 from .utils import check_valid_email
 from .utils import generate_random_passwd
 # from .utils import send_passwd_in_email
-from .utils import UserAuth
-from .utils import UserStorage
-from .utils import ForgotPasswordMessage
+from .utils import DefaultUserAuth
+from .utils import DefaultUserStorage
+from .utils import DefaultForgotPasswordMsg
 from .utils import check_valid_username
 
 
@@ -36,9 +36,9 @@ class __login__:
                  lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
                  hide_registration: bool = False, hide_account_management: bool = False, 
                  hide_forgot_password: bool = False,
-                 custom_authentication: UserAuth = None,
-                 custom_user_storage: UserStorage = None,
-                 custom_forgot_password_msg: ForgotPasswordMessage = None):
+                 custom_authentication: DefaultUserAuth = None,
+                 custom_user_storage: DefaultUserStorage = None,
+                 custom_forgot_password_msg: DefaultForgotPasswordMsg = None):
         """
         Arguments:
         -----------
@@ -54,8 +54,8 @@ class __login__:
         10. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
         11. hide_forgot_password : Pass True if 'Forgot Password?' option should be hidden from Navigation.
         11. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
-        12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitUserAuth (see information further below).
-        13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitUserStorage (see information further below).
+        12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitDefaultUserAuth (see information further below).
+        13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitDefaultUserStorage (see information further below).
         """
         self.auth_token = auth_token
         self.company_name = company_name
@@ -68,9 +68,9 @@ class __login__:
         self.hide_registration = hide_registration
         self.hide_forgot_password = hide_forgot_password
         self.hide_account_management = hide_account_management
-        self.auth = custom_authentication or UserAuth()
-        self.storage = custom_user_storage or UserStorage()
-        self.password_reset = custom_forgot_password_msg or ForgotPasswordMessage()
+        self.auth = custom_authentication or DefaultUserAuth()
+        self.storage = custom_user_storage or DefaultUserStorage()
+        self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
 
 
     def check_auth_json_file_exists(self, auth_filename: str) -> bool:
@@ -102,7 +102,7 @@ class __login__:
 
     def check_for_auth_cookie(self):
         if '__streamlit_login_signup_ui_username__' in cookies.keys() and st.session_state['LOGOUT_BUTTON_HIT'] == False:
-            if cookies.get('__streamlit_login_signup_ui_username__') == 'ben':
+            if cookies.get('__streamlit_login_signup_ui_username__') == 'ben': # self.storage.hashed_cookie(extend=True)
                 st.session_state['LOGGED_IN'] = True
 
 
@@ -110,6 +110,7 @@ class __login__:
         if '__streamlit_login_signup_ui_username__' in cookies.keys():
             ic('LOGGING OUT.............................')
             cookies['__streamlit_login_signup_ui_username__'] = ""
+            # self.storage.hashed_cookie(expire=True)
             cookies.save()
             ic(cookies.__dict__)
 
@@ -153,9 +154,10 @@ class __login__:
                             ic(f"New cookie: {cookies.get('__streamlit_login_signup_ui_username__')}")
                             del_login.empty()
                             st.experimental_rerun()
+
         ic(st.session_state['LOGGED_IN'])
         ic(cookies.__dict__)
-        ic(cookies.get('__streamlit_login_signup_ui_username__'))
+        # ic(cookies.get('__streamlit_login_signup_ui_username__'))
 
 
     def animation(self) -> None:

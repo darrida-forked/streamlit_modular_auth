@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import streamlit as st
 from streamlit_login_auth_ui import __login__
-from streamlit_login_auth_ui.utils import UserAuth
+from streamlit_login_auth_ui.protocols import UserAuth
 from __test_user_storage import UserAuthTest, UserStorageTest
 from __test_forgot_password import ForgotPasswordCustomMsgTest
 

@@ -4,6 +4,7 @@ from trycourier import Courier
 import secrets
 from argon2 import PasswordHasher
 import requests
+from protocols import UserAuth, UserStorage, ForgotPasswordMessage
 
 
 ph = PasswordHasher() 
@@ -63,7 +64,7 @@ def generate_random_passwd() -> str:
     return secrets.token_urlsafe(password_length)
 
 
-class UserAuth:
+class DefaultUserAuth(UserAuth):
     def __init__(self, login_name: str = None, username: str = None, password: str = None):
         self.login_name = login_name or "Login"
         self.username = username
@@ -92,7 +93,7 @@ class UserAuth:
         return False
 
 
-class UserStorage:
+class DefaultUserStorage(UserStorage):
     storage_name: str = "default"
 
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
@@ -177,7 +178,7 @@ class UserStorage:
             json.dump(authorized_users_data, auth_json_)
 
 
-class ForgotPasswordMessage:
+class DefaultForgotPasswordMsg(ForgotPasswordMessage):
     method_name: str = "courier"
 
     def send_password(self, auth_token: str, username: str, email: str, company_name: str, reset_password: str) -> None:

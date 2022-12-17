@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_login_auth_ui.utils import ForgotPasswordMessage
+from streamlit_login_auth_ui.protocols import ForgotPasswordMessage
 
 
 class ForgotPasswordCustomMsgTest(ForgotPasswordMessage):

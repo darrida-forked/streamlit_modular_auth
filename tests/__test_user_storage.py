@@ -1,4 +1,4 @@
-from streamlit_login_auth_ui.utils import UserStorage, UserAuth
+from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
 from streamlit_login_auth_ui.utils import ph
 
 

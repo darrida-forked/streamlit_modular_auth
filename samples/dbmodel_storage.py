@@ -2,7 +2,8 @@ from typing import Optional
 from datetime import datetime
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from streamlit_login_auth_ui.utils import ph, UserStorage, UserAuth
+from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
+from streamlit_login_auth_ui.utils import  ph
 
 
 class User(SQLModel, table=True):
