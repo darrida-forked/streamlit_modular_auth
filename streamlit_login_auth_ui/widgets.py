@@ -1,6 +1,4 @@
 import streamlit as st
-import json
-import os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
@@ -141,35 +139,26 @@ class __login__:
         Creates the sign-up widget and stores the user info in a secure way in user storage.
         """
         with st.form("Sign Up Form"):
-            name_sign_up = st.text_input("Name *", placeholder = 'Please enter your name')
-            valid_name_check = check_valid_name(name_sign_up)
-
-            email_sign_up = st.text_input("Email *", placeholder = 'Please enter your email')
-            valid_email_check = check_valid_email(email_sign_up)
-            user_exists = self.storage.get_username_from_email(email_sign_up)
-            
-            username_sign_up = st.text_input("Username *", placeholder = 'Enter a unique username')
-            empty_username_check = check_valid_username(username_sign_up)
-            username_exists_check = self.storage.check_username_exists(username_sign_up)
-
+            name = st.text_input("Name *", placeholder = 'Please enter your name')
+            email = st.text_input("Email *", placeholder = 'Please enter your email')
+            username = st.text_input("Username *", placeholder = 'Enter a unique username')
             password = st.text_input("Password *", placeholder = 'Create a strong password', type = 'password')
-
             st.markdown("###")
             sign_up_submit_button = st.form_submit_button(label = 'Register')
 
         if sign_up_submit_button:
-            if valid_name_check == False:
+            if check_valid_name(name) == False:
                 st.error("Please enter a valid name!")
-            elif valid_email_check == False:
+            elif check_valid_email(email) == False:
                 st.error("Please enter a valid Email!")
-            elif user_exists:
-                st.error("Email already exists!")
-            elif empty_username_check == False:
+            elif check_valid_username(username) == False:
                 st.error('Please enter a valid Username! (no space characters)')
-            elif username_exists_check == True:
+            elif self.storage.get_username_from_email(email):
+                st.error("Email already exists!")
+            elif self.storage.check_username_exists(username) == True:
                 st.error('Sorry, username already exists!')
             else:
-                self.storage.register_new_usr(name_sign_up, email_sign_up, username_sign_up, password)
+                self.storage.register_new_usr(name, email, username, password)
                 st.success("Registration Successful!")
 
 
@@ -200,21 +189,17 @@ class __login__:
         """
         with st.form("Reset Password Form"):
             email = st.text_input("Email", placeholder= 'Please enter your email')
-            username = self.storage.get_username_from_email(email)
-
-            current_passwd = st.text_input("Temporary Password", placeholder= 'Please enter your current password')
-            current_passwd_check = self.auth.check_password(username, current_passwd)
-
+            password = st.text_input("Temporary Password", placeholder= 'Please enter your current password')
             new_password = st.text_input("New Password", placeholder= 'Please enter a new, strong password', type = 'password')
             new_password_check = st.text_input("Re - Enter New Password", placeholder= 'Please re- enter the new password', type = 'password')
-
             st.markdown("###")
             reset_passwd_submit_button = st.form_submit_button(label = 'Reset Password')
 
         if reset_passwd_submit_button:
+            username = self.storage.get_username_from_email(email)
             if not username:
                 st.error("Email does not exist!")
-            elif current_passwd_check == False:
+            elif self.auth.check_password(username, password) == False:
                 st.error("Incorrect password!")
             elif new_password != new_password_check:
                 st.error("Passwords don't match!")
@@ -228,7 +213,6 @@ class __login__:
         Creates the logout widget in the sidebar only if the user is logged in.
         """
         if st.session_state['LOGGED_IN'] == True:
-            ic('Logout button still shows up.............')
             del_logout = st.sidebar.empty()
             del_logout.markdown("#")
             logout_click_check = del_logout.button(self.logout_button_name)

@@ -6,18 +6,6 @@ from __test_forgot_password import ForgotPasswordCustomMsgTest
 from __test_auth import CustomAuthTest
 
 
-# class CustomAuth:
-#     def __init__(self, login_name="Login", username=None, password=None):
-#         self.login_name = login_name
-#         self.username = username
-#         self.password = password
-    
-#     def check_password(self):
-#         if self.username == "custom_auth_user" and self.password == "custom_auth_pass":
-#             return True
-#         return False
-
-
 hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else False
 hide_forgot_password = True if os.environ.get("HIDE_FORGOT_PASSWORD") == "true" else False
 hide_account_management = True if os.environ.get("HIDE_ACCOUNT_MANAGEMENT") == "true" else False
