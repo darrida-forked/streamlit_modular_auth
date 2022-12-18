@@ -12,7 +12,7 @@ ${URL}             http://localhost:${PORT_CUSTOM_FORGOT_PASSWORD}/
 
 
 *** Test Cases ***
-Custom Storage - Login Screen
+Custom Forgot Pwd Msg - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Page Should Contain     Password
@@ -26,7 +26,7 @@ Custom Storage - Login Screen
     Close Browser
 
 
-Custom Storage - Create Account
+Custom Forgot Pwd Msg - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -48,7 +48,7 @@ Custom Storage - Create Account
     Close Browser
 
 
-Custom Storage - Login Successful
+Custom Forgot Pwd Msg - Login Successful
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -61,7 +61,7 @@ Custom Storage - Login Successful
     Close Browser
 
 
-Custom Storage - Reset Password
+Custom Forgot Pwd Msg - Reset Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -79,7 +79,7 @@ Custom Storage - Reset Password
     Close Browser
 
 
-Custom Storage - Reset Password - No Email Exists
+Custom Forgot Pwd Msg - Reset Password - No Email Exists
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -90,6 +90,6 @@ Custom Storage - Reset Password - No Email Exists
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    forgot_password_none@email.com
     Click Button   //*[contains(text(),'Get Password')]
-    Wait Until Element Is Visible   //*[contains(text(),"Email ID not registered with us!")]
-    Page Should Contain     Email ID not registered with us!
+    Wait Until Element Is Visible   //*[contains(text(),"No account with this email was found!")]
+    Page Should Contain     No account with this email was found!
     Close Browser

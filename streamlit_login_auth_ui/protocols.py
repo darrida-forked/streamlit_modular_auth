@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Optional
 
 
 class UserAuth(Protocol):
@@ -41,15 +41,27 @@ class UserStorage(Protocol):
         """
         ...
 
-    def check_email_exists(self, email: str):
+    # def check_email_exists(self, email: str):
+    #     """
+    #     Checks if the email exists in user storage.
+
+    #     Args:
+    #         email (str): email connected to forgotten password
+
+    #     Return:
+    #         Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
+    #     """
+    #     ...
+
+    def get_username_from_email(self, email: str) -> Optional[str]:
         """
-        Checks if the email exists in user storage.
+        Retrieve username, if it exists, from user storage from provided email.
 
         Args:
             email (str): email connected to forgotten password
 
         Return:
-            Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
+            Optional[str]: If exists -> <username>; If not -> None
         """
         ...
 

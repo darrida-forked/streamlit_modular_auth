@@ -1,9 +1,11 @@
 import re
+from typing import Optional
 import json
 from trycourier import Courier
 import secrets
 from argon2 import PasswordHasher
 import requests
+from icecream import ic
 
 
 ph = PasswordHasher() 
@@ -78,8 +80,7 @@ class DefaultUserAuth:
         for user in authorized_user_data:
             if user['username'] == username:
                 try:
-                    passwd_verification_bool = ph.verify(user['password'], password)
-                    if passwd_verification_bool == True:
+                    if ph.verify(user['password'], password):
                         return True
                 except:
                     pass
@@ -142,11 +143,28 @@ class DefaultUserStorage:
         """
         with open("_secret_auth_.json", "r") as auth_json:
             authorized_users_data = json.load(auth_json)
-
             for user in authorized_users_data:
                 if user['email'] == email:
-                        return True, user['username']
+                    return True, user['username']
         return False, None
+
+    def get_username_from_email(self, email: str) -> Optional[str]:
+        """
+        Retrieve username, if it exists, from the _secret_auth.json file.
+
+        Args:
+            email (str): email connected to forgotten password
+
+        Return:
+            Optional[str]]: If exists -> <username>); If not -> None
+        """
+        with open("_secret_auth_.json", "r") as auth_json:
+            authorized_users_data = json.load(auth_json)
+        for user in authorized_users_data:
+            if user['email'] == email:
+                return user['username']
+        return None
+
 
     def change_passwd(self, email: str, password: str) -> None:
         """

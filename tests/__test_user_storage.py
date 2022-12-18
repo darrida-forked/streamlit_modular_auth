@@ -1,4 +1,4 @@
-from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
+from typing import Optional
 from streamlit_login_auth_ui.utils import ph
 
 
@@ -62,22 +62,28 @@ class UserStorageTest:
             return True
         return False
 
-    def check_email_exists(self, email: str):
-        """
-        Checks if the email entered is present in the _secret_auth.json file.
+    # def check_email_exists(self, email: str):
+    #     """
+    #     Checks if the email entered is present in the _secret_auth.json file.
 
-        Args:
-            email (str): email connected to forgotten password
+    #     Args:
+    #         email (str): email connected to forgotten password
 
-        Return:
-            Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
-        """
+    #     Return:
+    #         Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
+    #     """
+    #     user_l = [x for x in test_storage if x["email"] == email]
+    #     if user_l:
+    #         return True, user_l[0]["username"]
+    #     return False, None
+
+    def get_username_from_email(self, email: str) -> Optional[str]:
         user_l = [x for x in test_storage if x["email"] == email]
         if user_l:
-            return True, user_l[0]["username"]
-        return False, None
+            return user_l[0]["username"]
+        return None
 
-    def change_passwd(self, email: str, password: str) -> None:
+    def change_password(self, email: str, password: str) -> None:
         """
         Replaces the old password with the newly generated password.
 

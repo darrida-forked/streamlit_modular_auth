@@ -122,25 +122,45 @@ class UserStorageSQLModel(UserStorage):
             return False
         return False
 
-    def check_email_exists(self, email: str):
+    # def check_email_exists(self, email: str):
+    #     """
+    #     Checks if the email entered is present in the _secret_auth.json file.
+
+    #     Args:
+    #         email (str): email connected to forgotten password
+
+    #     Return:
+    #         Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
+    #     """
+    #     try:
+    #         with Session(engine) as session:
+    #             statement = select(User).where(User.email == email)
+    #             user = session.exec(statement).one()
+    #             if user:
+    #                 return True, user.username
+    #     except NoResultFound:
+    #         return False, None
+    #     return False, None
+
+    def get_username_from_email(self, email: str) -> Optional[str]:
         """
-        Checks if the email entered is present in the _secret_auth.json file.
+        Retrieve username, if it exists, from database from provided email.
 
         Args:
             email (str): email connected to forgotten password
 
         Return:
-            Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
+            Optional[str]: If exists -> <username>; If not -> None
         """
         try:
             with Session(engine) as session:
                 statement = select(User).where(User.email == email)
                 user = session.exec(statement).one()
                 if user:
-                    return True, user.username
+                    return user.username
         except NoResultFound:
-            return False, None
-        return False, None
+            return None
+        return None
 
     def change_passwd(self, email: str, password: str) -> None:
         """

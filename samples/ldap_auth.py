@@ -1,15 +1,11 @@
-from typing import Optional
-from datetime import datetime
-from sqlmodel import Field, SQLModel, create_engine, Session, select
-from sqlalchemy.exc import IntegrityError, NoResultFound
 from streamlit_login_auth_ui.protocols import UserAuth
-from streamlit_login_auth_ui.utils import  ph
 
 
 class UserAuthLDAP(UserAuth):
-    def __init__(self, login_name=None, username=None, password=None, 
-                 ldap_server: str = None, ldap_port: str = None, ldap_group: str = None):
-        super().__init__(login_name, username, password)
+    def __init__(self, ldap_server: str = None, ldap_port: str = None, ldap_group: str = None):
+        self.ldap_server = ldap_server
+        self.ldap_port = ldap_port
+        self.ldap_group = ldap_group
     
     def check_password(self):
         """
