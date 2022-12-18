@@ -10,7 +10,6 @@ from .utils import load_lottieurl
 from .utils import check_valid_name
 from .utils import check_valid_email
 from .utils import generate_random_passwd
-# from .utils import send_passwd_in_email
 from .utils import DefaultUserAuth
 from .utils import DefaultUserStorage
 from .utils import DefaultForgotPasswordMsg
@@ -75,25 +74,6 @@ class __login__:
         self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
 
 
-    def check_auth_json_file_exists(self, auth_filename: str) -> bool:
-        """
-        Checks if the auth file (where the user info is stored) already exists.
-        """
-        file_names = []
-        for path in os.listdir('./'):
-            if os.path.isfile(os.path.join('./', path)):
-                file_names.append(path)
-
-        present_files = []
-        for file_name in file_names:
-            if auth_filename in file_name:
-                present_files.append(file_name)
-                    
-            present_files = sorted(present_files)
-            if len(present_files) > 0:
-                return True
-        return False
-
     def get_username(self):
         if st.session_state['LOGOUT_BUTTON_HIT'] == False:
             fetched_cookies = cookies
@@ -102,7 +82,7 @@ class __login__:
                 return username
  
 
-    def check_for_auth_cookie(self):
+    def check_auth_cookie(self):
         if '__streamlit_login_signup_ui_username__' in cookies.keys() and st.session_state['LOGOUT_BUTTON_HIT'] == False:
             if cookies.get('__streamlit_login_signup_ui_username__') == 'ben': # self.storage.hashed_cookie(extend=True)
                 st.session_state['LOGGED_IN'] = True
@@ -127,7 +107,7 @@ class __login__:
         if st.session_state["LOGGED_IN"] == True:
             return
 
-        if self.check_for_auth_cookie():
+        if self.check_auth_cookie():
             return
         
         st.session_state['LOGOUT_BUTTON_HIT'] = False
@@ -158,7 +138,7 @@ class __login__:
 
     def sign_up_widget(self) -> None:
         """
-        Creates the sign-up widget and stores the user info in a secure way in the _secret_auth_.json file.
+        Creates the sign-up widget and stores the user info in a secure way in user storage.
         """
         with st.form("Sign Up Form"):
             name_sign_up = st.text_input("Name *", placeholder = 'Please enter your name')
@@ -216,7 +196,7 @@ class __login__:
     def reset_password(self) -> None:
         """
         Creates the reset password widget and after user authentication (email and the password shared over that email), 
-        resets the password and updates the same in the _secret_auth_.json file.
+        resets the password and updates the same in the user storage
         """
         with st.form("Reset Password Form"):
             email = st.text_input("Email", placeholder= 'Please enter your email')
@@ -316,12 +296,6 @@ class __login__:
 
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
-
-        auth_json_exists_bool = self.check_auth_json_file_exists('_secret_auth_.json')
-
-        if auth_json_exists_bool == False:
-            with open("_secret_auth_.json", "w") as auth_json:
-                json.dump([], auth_json)
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 

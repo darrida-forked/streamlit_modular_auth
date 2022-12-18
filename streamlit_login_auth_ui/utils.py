@@ -1,4 +1,7 @@
 import re
+import os
+import json
+from pathlib import Path
 from typing import Optional
 import json
 from trycourier import Courier
@@ -66,6 +69,9 @@ def generate_random_passwd() -> str:
 
 
 class DefaultUserAuth:
+    def __init__(self, auth_filename: str = "_secret_auth_.json"):
+        self.auth_filename = auth_filename
+
     def check_password(self, username, password) -> bool:
         """
         Authenticates using username and password class attributes.
@@ -74,7 +80,7 @@ class DefaultUserAuth:
         Return:
             bool: If password is correct -> "True"; if not -> "False"
         """
-        with open("_secret_auth_.json", "r") as auth_json:
+        with open(self.auth_filename, "r") as auth_json:
             authorized_user_data = json.load(auth_json)
 
         for user in authorized_user_data:
@@ -88,9 +94,14 @@ class DefaultUserAuth:
 
 
 class DefaultUserStorage:
+    def __init__(self, auth_filename: str = "_secret_auth_.json"):
+        self.auth_filename = auth_filename
+        self.check_auth_json_file_exists()
+    
+    
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
         """
-        Saves the information of the new user in the _secret_auth.json file.
+        Saves the information of the new user in the json auth file.
 
         Args:
             name (str): name for new account
@@ -103,16 +114,16 @@ class DefaultUserStorage:
         """
         new_usr_data = {'username': username, 'name': name, 'email': email, 'password': ph.hash(password)}
 
-        with open("_secret_auth_.json", "r") as auth_json:
+        with open(self.auth_filename, "r") as auth_json:
             authorized_user_data = json.load(auth_json)
 
-        with open("_secret_auth_.json", "w") as auth_json_write:
+        with open(self.auth_filename, "w") as auth_json_write:
             authorized_user_data.append(new_usr_data)
             json.dump(authorized_user_data, auth_json_write)
 
     def check_username_exists(self, username: str) -> bool:
         """
-        Checks if the username exists in the _secret_auth.json file.
+        Checks if the username exists in the json auth file.
 
         Args:
             username (str): username to check
@@ -121,7 +132,7 @@ class DefaultUserStorage:
             bool: If username exists -> "True"; if not -> "False"
         """
         authorized_user_data_master = list()
-        with open("_secret_auth_.json", "r") as auth_json:
+        with open(self.auth_filename, "r") as auth_json:
             authorized_users_data = json.load(auth_json)
 
             for user in authorized_users_data:
@@ -133,7 +144,7 @@ class DefaultUserStorage:
 
     def check_email_exists(self, email: str):
         """
-        Checks if the email entered is present in the _secret_auth.json file.
+        Checks if the email entered is present in the json auth file.
 
         Args:
             email (str): email connected to forgotten password
@@ -141,7 +152,7 @@ class DefaultUserStorage:
         Return:
             Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
         """
-        with open("_secret_auth_.json", "r") as auth_json:
+        with open(self.auth_filename, "r") as auth_json:
             authorized_users_data = json.load(auth_json)
             for user in authorized_users_data:
                 if user['email'] == email:
@@ -150,7 +161,7 @@ class DefaultUserStorage:
 
     def get_username_from_email(self, email: str) -> Optional[str]:
         """
-        Retrieve username, if it exists, from the _secret_auth.json file.
+        Retrieve username, if it exists, from the json auth file.
 
         Args:
             email (str): email connected to forgotten password
@@ -158,13 +169,12 @@ class DefaultUserStorage:
         Return:
             Optional[str]]: If exists -> <username>); If not -> None
         """
-        with open("_secret_auth_.json", "r") as auth_json:
+        with open(self.auth_filename, "r") as auth_json:
             authorized_users_data = json.load(auth_json)
         for user in authorized_users_data:
             if user['email'] == email:
                 return user['username']
         return None
-
 
     def change_passwd(self, email: str, password: str) -> None:
         """
@@ -177,14 +187,23 @@ class DefaultUserStorage:
         Return:
             None
         """
-        with open("_secret_auth_.json", "r") as auth_json:
+        with open(self.auth_filename, "r") as auth_json:
             authorized_users_data = json.load(auth_json)
 
-        with open("_secret_auth_.json", "w") as auth_json_:
+        with open(self.auth_filename, "w") as auth_json_:
             for user in authorized_users_data:
                 if user['email'] == email:
                     user['password'] = ph.hash(password)
             json.dump(authorized_users_data, auth_json_)
+
+    def check_auth_json_file_exists(self) -> bool:
+        """
+        Checks if the auth file (where the user info is stored) already exists.
+        """
+        filename = Path(self.auth_filename)
+        if not filename.exists():
+            with open(filename, "w") as auth_json:
+                json.dump([], auth_json)
 
 
 class DefaultForgotPasswordMsg:
