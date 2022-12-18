@@ -1,33 +1,21 @@
 import os
-from pathlib import Path
 import streamlit as st
 from streamlit_login_auth_ui import __login__
-from streamlit_login_auth_ui.protocols import UserAuth
 from __test_user_storage import UserAuthTest, UserStorageTest
 from __test_forgot_password import ForgotPasswordCustomMsgTest
+from __test_auth import CustomAuthTest
 
-import importlib
 
-module_init = "streamlit_login_auth_ui"
-file_path = Path(__file__).parent / "streamlit_login_auth_ui" / "__init__.py"
-spec_init = importlib.util.spec_from_file_location(module_init, file_path)
-
-module_utils = "streamlit_login_auth_ui.utils"
-file_path = Path(__file__).parent / "streamlit_login_auth_ui" / "utils.py"
-spec_utils = importlib.util.spec_from_file_location(module_utils, file_path)
-
-module_widgets = "streamlit_login_auth_ui.widgets"
-file_path = Path(__file__).parent / "streamlit_login_auth_ui" / "widgets.py"
-spec_widgets = importlib.util.spec_from_file_location(module_widgets, file_path)
-
-class CustomAuth(UserAuth):
-    def __init__(self, login_name=None, username=None, password=None):
-        super().__init__(login_name, username, password)
+# class CustomAuth:
+#     def __init__(self, login_name="Login", username=None, password=None):
+#         self.login_name = login_name
+#         self.username = username
+#         self.password = password
     
-    def check_password(self):
-        if self.username == "custom_auth_user" and self.password == "custom_auth_pass":
-            return True
-        return False
+#     def check_password(self):
+#         if self.username == "custom_auth_user" and self.password == "custom_auth_pass":
+#             return True
+#         return False
 
 
 hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else False
@@ -38,16 +26,19 @@ hide_menu_bool = True if os.environ.get("HIDE_MENU") == "true" else False
 logout_button_name = (
     os.environ.get("LOGOUT_BUTTON_NAME") if os.environ.get("LOGOUT_BUTTON_NAME") else "Logout"
 )
+custom_login_label = None
 if os.environ.get("CUSTOM_AUTH"):
     if os.environ.get("CUSTOM_AUTH") != "true":
-        custom_authentication = CustomAuth(login_name=os.environ.get("CUSTOM_AUTH"))
+        custom_authentication = CustomAuthTest()
+        custom_login_label = os.environ.get("CUSTOM_AUTH")
     else:
-        custom_authentication = CustomAuth()
+        custom_authentication = CustomAuthTest()
 else:
     custom_authentication = None
 
 if os.environ.get("CUSTOM_USER_STORAGE") == "true":
-        custom_authentication = UserAuthTest(login_name="Test Login")
+        custom_authentication = UserAuthTest()
+        custom_login_label = "Test Login"
         custom_user_storage = UserStorageTest()
 else:
     custom_user_storage = None
@@ -70,6 +61,7 @@ __login__obj = __login__(
     hide_registration=hide_registration,
     hide_forgot_password=hide_forgot_password,
     hide_account_management=hide_account_management,
+    custom_login_label=custom_login_label,
     custom_authentication=custom_authentication,
     custom_user_storage=custom_user_storage,
     custom_forgot_password_msg=custom_forgot_password_msg

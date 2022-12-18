@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_login_auth_ui.protocols import ForgotPasswordMessage
 
 
-class ForgotPasswordCustomMsgTest(ForgotPasswordMessage):
+class ForgotPasswordCustomMsgTest:
     def __init__(self, message: str):
         self.method_name = "Very Insecure"
         self.message = message

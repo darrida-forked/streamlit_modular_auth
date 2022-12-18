@@ -12,24 +12,19 @@ test_storage = [
 ]
 
 
-class UserAuthTest(UserAuth):
-    def __init__(self, login_name=None, username=None, password=None):
-        super().__init__(login_name, username, password)
-    
-    def check_password(self):
-        user_l = [x for x in test_storage if x["username"] == self.username]
+class UserAuthTest:
+    def check_password(self, username, password):
+        user_l = [x for x in test_storage if x["username"] == username]
         if user_l:
             try:
-                if ph.verify(user_l[0]["hashed_password"], self.password):
+                if ph.verify(user_l[0]["hashed_password"], password):
                     return True
             except:
                 pass
         return False
 
 
-class UserStorageTest(UserStorage):
-    storage_name: str = "in_memory_json"
-
+class UserStorageTest:
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.

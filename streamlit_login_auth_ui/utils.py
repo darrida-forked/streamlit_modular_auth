@@ -4,7 +4,6 @@ from trycourier import Courier
 import secrets
 from argon2 import PasswordHasher
 import requests
-from protocols import UserAuth, UserStorage, ForgotPasswordMessage
 
 
 ph = PasswordHasher() 
@@ -64,14 +63,8 @@ def generate_random_passwd() -> str:
     return secrets.token_urlsafe(password_length)
 
 
-class DefaultUserAuth(UserAuth):
-    def __init__(self, login_name: str = None, username: str = None, password: str = None):
-        self.login_name = login_name or "Login"
-        self.username = username
-        self.password = password
-
-
-    def check_password(self) -> bool:
+class DefaultUserAuth:
+    def check_password(self, username, password) -> bool:
         """
         Authenticates using username and password class attributes.
         - Uses password and username from initialized object
@@ -83,9 +76,9 @@ class DefaultUserAuth(UserAuth):
             authorized_user_data = json.load(auth_json)
 
         for user in authorized_user_data:
-            if user['username'] == self.username:
+            if user['username'] == username:
                 try:
-                    passwd_verification_bool = ph.verify(user['password'], self.password)
+                    passwd_verification_bool = ph.verify(user['password'], password)
                     if passwd_verification_bool == True:
                         return True
                 except:
@@ -93,9 +86,7 @@ class DefaultUserAuth(UserAuth):
         return False
 
 
-class DefaultUserStorage(UserStorage):
-    storage_name: str = "default"
-
+class DefaultUserStorage:
     def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
@@ -105,7 +96,7 @@ class DefaultUserStorage(UserStorage):
             email (str): email for new account
             username (str): username for new account
             password (str): password for new account
-    a
+
         Return:
             None
         """
@@ -178,9 +169,7 @@ class DefaultUserStorage(UserStorage):
             json.dump(authorized_users_data, auth_json_)
 
 
-class DefaultForgotPasswordMsg(ForgotPasswordMessage):
-    method_name: str = "courier"
-
+class DefaultForgotPasswordMsg:
     def send_password(self, auth_token: str, username: str, email: str, company_name: str, reset_password: str) -> None:
         """
         Triggers an email to the user containing the randomly generated password.
@@ -189,7 +178,7 @@ class DefaultForgotPasswordMsg(ForgotPasswordMessage):
             auth_token (str): Courier api token
             username (str): User's username
             email (str): User's email
-            company_name (str): User in email title ("<company_name>: Login Password")
+            company_name (str): Used in email title ("<company_name>: Login Password")
             reset_password (str): New temporary password to send
 
         Returns:
