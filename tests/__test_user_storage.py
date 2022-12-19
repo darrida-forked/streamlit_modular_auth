@@ -13,7 +13,7 @@ test_storage = [
 
 
 class UserAuthTest:
-    def check_password(self, username, password):
+    def check_credentials(self, username, password):
         user_l = [x for x in test_storage if x["username"] == username]
         if user_l:
             try:
@@ -25,7 +25,7 @@ class UserAuthTest:
 
 
 class UserStorageTest:
-    def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
+    def register(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
 
@@ -61,21 +61,6 @@ class UserStorageTest:
         if user_l:
             return True
         return False
-
-    # def check_email_exists(self, email: str):
-    #     """
-    #     Checks if the email entered is present in the _secret_auth.json file.
-
-    #     Args:
-    #         email (str): email connected to forgotten password
-
-    #     Return:
-    #         Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
-    #     """
-    #     user_l = [x for x in test_storage if x["email"] == email]
-    #     if user_l:
-    #         return True, user_l[0]["username"]
-    #     return False, None
 
     def get_username_from_email(self, email: str) -> Optional[str]:
         user_l = [x for x in test_storage if x["email"] == email]

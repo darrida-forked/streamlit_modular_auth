@@ -81,7 +81,7 @@ if LOGGED_IN == True:
 - Requirements:
   - Create a class that inherits from `streamlit_login_auth_ui.utils.ForgotPasswordMessage`
   - The class requires the following methods:
-    - `send_password`
+    - `send`
   - Use docstrings found in this method in `ForgotPasswordMessage` in `streamlit_login_auth_ui.utils.ForgotPasswordMessage` to find argment and return/closure requirements.
     - **Note**: Additional arguments can be added to the end of the current list, but not in the middle (existing code uses position based arguments when calling the method)
   - Outside of these requirements, the class can be designed to interact with storage in many different ways (additional methods, etc).

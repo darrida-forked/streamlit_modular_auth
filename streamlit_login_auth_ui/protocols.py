@@ -1,8 +1,11 @@
-from typing import Protocol, Optional
+from typing import Protocol, Optional, Any
+from streamlit_cookies_manager import EncryptedCookieManager
+
+from streamlit_login_auth_ui.auth_cookie_manager import CookieManager
 
 
 class UserAuth(Protocol):
-    def check_password(self, username, password) -> bool:
+    def check_credentials(self, username, password) -> bool:
         """
         Authenticates using username and password class attributes.
         - Uses password and username from initialized object
@@ -14,7 +17,7 @@ class UserAuth(Protocol):
 
 
 class UserStorage(Protocol):
-    def register_new_user(self, name: str, email: str, username: str, password: str) -> None:
+    def register(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in user storage.
 
@@ -41,18 +44,6 @@ class UserStorage(Protocol):
         """
         ...
 
-    # def check_email_exists(self, email: str):
-    #     """
-    #     Checks if the email exists in user storage.
-
-    #     Args:
-    #         email (str): email connected to forgotten password
-
-    #     Return:
-    #         Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
-    #     """
-    #     ...
-
     def get_username_from_email(self, email: str) -> Optional[str]:
         """
         Retrieve username, if it exists, from user storage from provided email.
@@ -65,9 +56,8 @@ class UserStorage(Protocol):
         """
         ...
 
-    def change_passwd(self, email: str, password: str) -> None:
-        """
-        Replaces password in user storage.
+    def change_password(self, email: str, password: str) -> None:
+        """Replace password in user storage.
 
         Args:
             email (str): email connected to account
@@ -80,11 +70,10 @@ class UserStorage(Protocol):
 
 
 class ForgotPasswordMessage(Protocol):
-    def send_password(
+    def send(
         self, auth_token: str, username: str, email: str, company_name: str, reset_password: str
     ) -> None:
-        """
-        Triggers an email to the user containing the randomly generated password.
+        """Trigger an email to the user containing the randomly generated password.
 
         Args:
             auth_token (str): api token
@@ -99,3 +88,63 @@ class ForgotPasswordMessage(Protocol):
         ...
 
 
+class AuthCookies(Protocol):
+    def check(self, cookies: CookieManager) -> bool:
+        """
+        Checks that auth cookies exist and are valid.
+        - Exact internal setup isn't important, so long as it takes the specified parameter below, and
+          validates existing cookies (if they exist)
+
+        To Use:
+        - Any logic here MUST include `cookies.get("<name>") to acquire the values to validate against
+          - "<name>" must match the cookie name used in `self.cookie.set`
+          - validate against the same data structure used in `self.cookie.set`
+
+        Args:
+            cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
+        
+        Returns:
+            bool: If cookie(s) are valid -> True; if not valid -> False
+        """
+        ...
+
+    def set(self, username, cookies: CookieManager) -> None:
+        """
+        Sets auth cookie using initialized EncryptedCookieManager.
+        - Exact internal setup isn't important, so long as it takes the specified parameters, 
+          and sets cookies that indicate an authorized session, and can be interacted with by this class.
+
+        To Use:
+        - Any logic here MUST include `cookies.set("<name>", <value>)`
+        - "<value>" can be of type STR or DICT
+
+        Args:
+            username (str): Authorized user
+            cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
+        
+        Returns:
+            None
+        """
+        ...
+
+    def expire(self, cookies: CookieManager) -> None:
+        """
+        Expires auth cookie using initialized EncryptedCookieManager.
+        - Exact internal setup isn't important, so long as it takes the specified parameters, 
+          and changes the existing cookies status to indicate an invalid session.
+        
+        To Use:
+        - Any logic here MUST include `cookies.expire("<name>")`
+        - "<name>" must match the cookie name used in `self.cookie.set`
+        - Options:
+          - When only a name is passed to `cookies.expire` the existing cookie is replaced with an empty string
+          - A alternate value can also be passed using `cookies.expire("<name>", "<value")`, as long as it still
+            results in an invalid check in `self.cookies.check`
+
+        Args:
+            cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
+        
+        Returns:
+            None
+        """
+        ...

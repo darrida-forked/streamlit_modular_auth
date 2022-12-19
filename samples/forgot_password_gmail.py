@@ -33,7 +33,7 @@ class ForgotPasswordGmail(ForgotPasswordMessage):
         """
         return text, html
 
-    def send_password(self,
+    def send(self,
         auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
         from_email = self.email_user
         receiver_email = email
