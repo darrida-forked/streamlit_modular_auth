@@ -1,5 +1,6 @@
 from typing import Optional
 from argon2 import PasswordHasher
+from icecream import ic
 
 
 ph = PasswordHasher() 
@@ -16,7 +17,9 @@ test_storage = [
 
 
 class UserAuthTest:
+    ic("UserAuthTest() initialized")
     def check_credentials(self, username, password):
+        ic("Attempting to login with check_credentials()")
         user_l = [x for x in test_storage if x["username"] == username]
         if user_l:
             try:
@@ -28,6 +31,9 @@ class UserAuthTest:
 
 
 class UserStorageTest:
+    ic("UserStorageTest() initialized")
+    ic(test_storage)
+    
     def register(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
@@ -41,6 +47,7 @@ class UserStorageTest:
         Return:
             None
         """
+        ic("Trying to create user in custom storage")
         test_storage.append(
             {
                 'username': username,

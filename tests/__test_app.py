@@ -4,6 +4,7 @@ from streamlit_login_auth_ui import Login
 from __test_user_storage import UserAuthTest, UserStorageTest
 from __test_forgot_password import ForgotPasswordCustomMsgTest
 from __test_auth import CustomAuthTest
+from __test_cookies import UserAuthCookiesTest
 
 
 hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else False
@@ -37,10 +38,15 @@ else:
     custom_forgot_password_msg = None
 
 if os.environ.get("CUSTOM_AUTH_COOKIES") == "true":
-    custom_auth_cookies = "CustomAuthCookies()"
+    custom_auth_cookies = UserAuthCookiesTest()
 else:
     custom_auth_cookies = None
 
+# TEMP
+# custom_authentication = UserAuthTest()
+# custom_login_label = "Test Login"
+# custom_user_storage = UserStorageTest()
+# custom_auth_cookies = UserAuthCookiesTest()
 
 
 login_obj = Login(

@@ -24,7 +24,7 @@ class CookieManager:
 
     def set(self, name, val) -> None:
         self.cookies[name] = val
-        self.cookies.save()
+        # self.cookies.save()
 
     def expire(self, name: str, val: Any = None) -> None:
         if not val:

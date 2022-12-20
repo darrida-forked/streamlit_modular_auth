@@ -4,7 +4,6 @@ Library  SeleniumLibrary
 Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
-# Library  __test_library.py
 
 Variables    __test_variables.py
 
@@ -109,6 +108,15 @@ Start the webserver
         ...    env:CUSTOM_FORGOT_PASSWORD=true
     Set suite variable    ${PROCESS_CUSTOM_FORGOT_PASSWORD}
     Log To Console     ${PROCESS_CUSTOM_FORGOT_PASSWORD}
+
+    ${PROCESS_CUSTOM_AUTH_COOKIES}    Start Process    python3
+        ...    -m    coverage    run    -a    --source    tests   
+        ...    -m    streamlit    run    ${CURDIR}/__test_app.py    
+        ...    --server.port    ${PORT_CUSTOM_AUTH_COOKIES} 
+        ...    --server.headless   true
+        ...    env:CUSTOM_AUTH_COOKIES=true
+    Set suite variable    ${PROCESS_CUSTOM_AUTH_COOKIES}
+    Log To Console     ${PROCESS_CUSTOM_AUTH_COOKIES}
 
     sleep    2s
 
