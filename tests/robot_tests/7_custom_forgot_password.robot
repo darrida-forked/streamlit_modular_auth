@@ -48,7 +48,7 @@ Custom Forgot Pwd Msg - Create Account
     Close Browser
 
 
-Custom Forgot Pwd Msg - Login Successful
+Custom Forgot Pwd Msg - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -58,6 +58,10 @@ Custom Forgot Pwd Msg - Login Successful
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
+    Wait Until Element Is Visible   //*[contains(text(),"Logout")]
+    Click Button    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
     Close Browser
 
 

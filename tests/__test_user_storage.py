@@ -1,5 +1,8 @@
 from typing import Optional
-from streamlit_login_auth_ui.utils import ph
+from argon2 import PasswordHasher
+
+
+ph = PasswordHasher() 
 
 
 test_storage = [

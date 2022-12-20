@@ -1,1 +1,2 @@
-from streamlit_login_auth_ui.widgets import __login__
+from streamlit_login_auth_ui._widgets import Login
+from streamlit_login_auth_ui._widgets import cookies

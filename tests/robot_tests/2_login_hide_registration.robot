@@ -73,19 +73,6 @@ No Reg - Create Account
     Close Browser
 
 
-No Reg - Login Successful
-    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username    timeout=${TIMEOUT}
-    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user5
-    Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password5
-    Click Button   //*[contains(text(),'Login')]
-    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
-    Page Should Contain     Your Streamlit Application Begins here!
-    Close Browser
-
-
 No Reg - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}

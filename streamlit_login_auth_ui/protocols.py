@@ -1,7 +1,5 @@
-from typing import Protocol, Optional, Any
-from streamlit_cookies_manager import EncryptedCookieManager
-
-from streamlit_login_auth_ui.auth_cookie_manager import CookieManager
+from typing import Protocol, Optional
+from streamlit_login_auth_ui._cookie_manager import CookieManager
 
 
 class UserAuth(Protocol):

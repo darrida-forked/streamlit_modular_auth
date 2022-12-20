@@ -98,20 +98,6 @@ Default - Create Account
     Close Browser
 
 
-Default - Login Successful
-    Depends on test     Default - Create Account
-    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username    timeout=${TIMEOUT}
-    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
-    Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password1
-    Click Button   //*[contains(text(),'Login')]
-    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
-    Page Should Contain     Your Streamlit Application Begins here!
-    Close Browser
-
-
 Default - Login, then Logout
     Depends on test     Default - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
@@ -127,6 +113,54 @@ Default - Login, then Logout
     Click Button    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain     Login
+    Close Browser
+
+
+Default - Login, Refresh, Logout, Refresh (check auth cookies)
+    Depends on test     Default - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
+    Input Text      //*[@placeholder="Your unique username"]    user1
+    Wait Until Element Is Visible   //*[@placeholder="Your password"]
+    Input Text      //*[@placeholder="Your password"]    password1
+    Click Button   //*[contains(text(),'Login')]
+    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
+    Page Should Contain     Your Streamlit Application Begins here!
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Page Should Contain    Logout
+    Reload Page
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Page Should Contain    Logout
+    Click Button    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Reload Page
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Close Browser
+
+
+Default - Login, Close Browser, Open (check auth cookies)
+    Depends on test     Default - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
+    Input Text      //*[@placeholder="Your unique username"]    user1
+    Wait Until Element Is Visible   //*[@placeholder="Your password"]
+    Input Text      //*[@placeholder="Your password"]    password1
+    Click Button   //*[contains(text(),'Login')]
+    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
+    Page Should Contain     Your Streamlit Application Begins here!
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Page Should Contain    Logout
+    Close Browser
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Page Should Contain    Logout
+    Click Button    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
     Close Browser
 
 
@@ -193,6 +227,10 @@ Default - Reset Password Re-Login Successful
     Click Button   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
+    Wait Until Element Is Visible   //*[contains(text(),"Logout")]
+    Click Button    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
     Close Browser
 
 

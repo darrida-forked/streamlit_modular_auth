@@ -27,19 +27,6 @@ Custom Auth Login Name - Login Screen
     Close Browser
 
 
-Custom Auth Login Name - Login Successful
-    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username    timeout=${TIMEOUT}
-    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    custom_auth_user
-    Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    custom_auth_pass
-    Click Button   //*[contains(text(),'Login')]
-    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
-    Page Should Contain     Your Streamlit Application Begins here!
-    Close Browser
-
-
 Custom Auth Login Name - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}

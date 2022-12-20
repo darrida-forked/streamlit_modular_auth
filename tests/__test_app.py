@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from streamlit_login_auth_ui import __login__
+from streamlit_login_auth_ui import Login
 from __test_user_storage import UserAuthTest, UserStorageTest
 from __test_forgot_password import ForgotPasswordCustomMsgTest
 from __test_auth import CustomAuthTest
@@ -36,8 +36,14 @@ if os.environ.get("CUSTOM_FORGOT_PASSWORD") == "true":
 else:
     custom_forgot_password_msg = None
 
+if os.environ.get("CUSTOM_AUTH_COOKIES") == "true":
+    custom_auth_cookies = "CustomAuthCookies()"
+else:
+    custom_auth_cookies = None
 
-__login__obj = __login__(
+
+
+login_obj = Login(
     auth_token = "courier_auth_token", 
     company_name = "Sample Name",
     width = 200, 
@@ -52,14 +58,15 @@ __login__obj = __login__(
     custom_login_label=custom_login_label,
     custom_authentication=custom_authentication,
     custom_user_storage=custom_user_storage,
-    custom_forgot_password_msg=custom_forgot_password_msg
+    custom_forgot_password_msg=custom_forgot_password_msg,
+    custom_auth_cookies=custom_auth_cookies
 )
 
 
-LOGGED_IN = __login__obj.build_login_ui()
+logged_in = login_obj.build_login_ui()
 
 
-if LOGGED_IN == True:
+if logged_in == True:
     st.markdown("Your Streamlit Application Begins here!")
 
     if st.button("Click here..."):

@@ -49,19 +49,6 @@ No Acc Mgmt - Create Account (using webserver w/acc mgmt)
     Close Browser
 
 
-No Acc Mgmt - Login Successful
-    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username    timeout=${TIMEOUT}
-    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user8
-    Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    password8
-    Click Button   //*[contains(text(),'Login')]
-    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
-    Page Should Contain     Your Streamlit Application Begins here!
-    Close Browser
-
-
 No Acc Mgmt - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}

@@ -1,3 +1,4 @@
+import os
 from typing import Any
 import secrets
 import streamlit as st
@@ -34,11 +35,9 @@ class CookieManager:
         return self.cookies.keys()
 
 
-def initialize_cookie_manbager():
-    cookies = EncryptedCookieManager(prefix="auth_cookies", password=secrets.token_urlsafe(48))
+def _initialize_cookie_manbager() -> CookieManager:
+    prefix = os.environ.get("ALT_AUTH_COOKIE_PREFIX") or "auth_cookies"  # Makes robot_tests easier
+    cookies = EncryptedCookieManager(prefix=prefix, password=secrets.token_urlsafe(48))
     if not cookies.ready():
         st.stop() 
     return CookieManager(cookies)
-
-
-cookies = initialize_cookie_manbager()

@@ -49,19 +49,6 @@ Custom Storage - Create Account
     Close Browser
 
 
-Custom Storage - Login Successful
-    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-    Wait Until Page Contains    Username    timeout=${TIMEOUT}
-    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    custom_storage_user
-    Wait Until Element Is Visible   //*[@placeholder="Your password"]
-    Input Text      //*[@placeholder="Your password"]    custom_storage_pass
-    Click Button   //*[contains(text(),'Login')]
-    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
-    Page Should Contain     Your Streamlit Application Begins here!
-    Close Browser
-
-
 Custom Storage - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}

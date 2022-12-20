@@ -1,9 +1,12 @@
 from typing import Optional
 from datetime import datetime
 from sqlmodel import Field, SQLModel, create_engine, Session, select
+from argon2 import PasswordHasher
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
-from streamlit_login_auth_ui.utils import  ph
+
+
+ph = PasswordHasher() 
 
 
 class User(SQLModel, table=True):

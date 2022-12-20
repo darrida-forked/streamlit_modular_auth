@@ -5,7 +5,7 @@ import json
 from trycourier import Courier
 from argon2 import PasswordHasher
 import streamlit as st
-from streamlit_login_auth_ui.auth_cookie_manager import CookieManager
+from streamlit_login_auth_ui.protocols import CookieManager
 
 
 ph = PasswordHasher()
@@ -50,7 +50,7 @@ class DefaultAuthCookies:
             bool: If cookie(s) are valid -> True; if not valid -> False
         """
         if '__streamlit_login_signup_ui_username__' in cookies.keys() and st.session_state['LOGOUT_BUTTON_HIT'] == False:
-            if cookies.get('__streamlit_login_signup_ui_username__') == 'ben': # self.storage.hashed_cookie(extend=True)
+            if cookies.get('__streamlit_login_signup_ui_username__') not in ("", None): # self.storage.hashed_cookie(extend=True)
                 return True
         return False
 

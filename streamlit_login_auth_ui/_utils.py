@@ -7,7 +7,7 @@ import requests
 ph = PasswordHasher() 
 
 
-def load_lottieurl(url: str) -> str:
+def _load_lottieurl(url: str) -> str:
     """
     Fetches the lottie animation using the URL.
     """
@@ -20,7 +20,7 @@ def load_lottieurl(url: str) -> str:
         pass
 
 
-def check_valid_name(name_sign_up: str) -> bool:
+def _check_valid_name(name_sign_up: str) -> bool:
     """
     Checks if the user entered a valid name while creating the account.
     """
@@ -31,7 +31,7 @@ def check_valid_name(name_sign_up: str) -> bool:
     return False
 
 
-def check_valid_email(email_sign_up: str) -> bool:
+def _check_valid_email(email_sign_up: str) -> bool:
     """
     Checks if the user entered a valid email while creating the account.
     """
@@ -42,7 +42,7 @@ def check_valid_email(email_sign_up: str) -> bool:
     return False
 
 
-def check_valid_username(username: str) -> bool:
+def _check_valid_username(username: str) -> bool:
     """
     Checks for username with no space characters
     """
@@ -53,7 +53,7 @@ def check_valid_username(username: str) -> bool:
     return True
 
 
-def generate_random_passwd() -> str:
+def _generate_random_passwd() -> str:
     """
     Generates a random password to be sent in email.
     """

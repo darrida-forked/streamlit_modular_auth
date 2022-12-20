@@ -7,37 +7,46 @@ from .protocols import (
     UserAuth,
     UserStorage
 )
-from .handlers import (
+from ._handlers import (
     DefaultAuthCookies,
     DefaultForgotPasswordMsg,
     DefaultUserAuth,
     DefaultUserStorage
 )
-from .utils import (
-    check_valid_name,
-    check_valid_email,
-    check_valid_username,
-    generate_random_passwd,
-    load_lottieurl
+from ._utils import (
+    _check_valid_name,
+    _check_valid_email,
+    _check_valid_username,
+    _generate_random_passwd,
+    _load_lottieurl
 )
-from .auth_cookie_manager import cookies
+from ._cookie_manager import _initialize_cookie_manbager
 
 
-class __login__:
+cookies = _initialize_cookie_manbager()
+
+
+class Login:
+    """Builds the UI for the Login/Sign Up page and manages all authentication logic.
     """
-    Builds the UI for the Login/ Sign Up page.
-    """
-
-    def __init__(self, auth_token: str, company_name: str, width: int, height: int, logout_button_name: str = 'Logout',
-                 hide_menu_bool: bool = False, hide_footer_bool: bool = False, 
-                 lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
-                 hide_registration: bool = False, hide_account_management: bool = False, 
-                 hide_forgot_password: bool = False,
-                 custom_login_label: str = None,
-                 custom_authentication: UserAuth = None,
-                 custom_user_storage: UserStorage = None,
-                 custom_forgot_password_msg: ForgotPasswordMessage = None,
-                 custom_auth_cookies: AuthCookies = None):
+    def __init__(self, 
+        auth_token: str, 
+        company_name: str, 
+        width: int = 200, 
+        height: int = 250,
+        logout_button_name: str = 'Logout',
+        hide_menu_bool: bool = False, 
+        hide_footer_bool: bool = False, 
+        lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
+        hide_registration: bool = False, 
+        hide_account_management: bool = False, 
+        hide_forgot_password: bool = False,
+        custom_login_label: str = None,
+        custom_authentication: UserAuth = None,
+        custom_user_storage: UserStorage = None,
+        custom_forgot_password_msg: ForgotPasswordMessage = None,
+        custom_auth_cookies: AuthCookies = None
+    ):
         """
         Arguments:
         -----------
@@ -74,7 +83,7 @@ class __login__:
         self.auth_cookies = custom_auth_cookies or DefaultAuthCookies()
 
 
-    def login_widget(self) -> None:
+    def __login_widget(self) -> None:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
@@ -103,15 +112,15 @@ class __login__:
                 st.experimental_rerun()
 
 
-    def animation(self) -> None:
+    def __animation(self) -> None:
         """
         Renders the lottie animation.
         """
-        lottie_json = load_lottieurl(self.lottie_url)
+        lottie_json = _load_lottieurl(self.lottie_url)
         st_lottie(lottie_json, width = self.width, height = self.height)
 
 
-    def sign_up_widget(self) -> None:
+    def __sign_up_widget(self) -> None:
         """
         Creates the sign-up widget and stores the user info in a secure way in user storage.
         """
@@ -124,11 +133,11 @@ class __login__:
             sign_up_submit_button = st.form_submit_button(label = 'Register')
 
         if sign_up_submit_button:
-            if check_valid_name(name) == False:
+            if _check_valid_name(name) == False:
                 st.error("Please enter a valid name!")
-            elif check_valid_email(email) == False:
+            elif _check_valid_email(email) == False:
                 st.error("Please enter a valid Email!")
-            elif check_valid_username(username) == False:
+            elif _check_valid_username(username) == False:
                 st.error('Please enter a valid Username! (no space characters)')
             elif self.storage.get_username_from_email(email):
                 st.error("Email already exists!")
@@ -139,7 +148,7 @@ class __login__:
                 st.success("Registration Successful!")
 
 
-    def forgot_password(self) -> None:
+    def __forgot_password(self) -> None:
         """
         Creates the forgot password widget and after user authentication (email), triggers an email to the user 
         containing a random password.
@@ -151,7 +160,7 @@ class __login__:
 
         if forgot_passwd_submit_button:
             if username := self.storage.get_username_from_email(email):
-                random_password = generate_random_passwd()
+                random_password = _generate_random_passwd()
                 self.password_reset.send(self.auth_token, username, email, self.company_name, random_password)
                 self.storage.change_password(email, random_password)
                 st.success("Secure Password Sent Successfully!")
@@ -159,7 +168,7 @@ class __login__:
                 st.error("No account with this email was found!")
 
 
-    def reset_password(self) -> None:
+    def __reset_password(self) -> None:
         """
         Creates the reset password widget and after user authentication (email and the password shared over that email),
         resets the password and updates the same in the user storage
@@ -189,7 +198,7 @@ class __login__:
                 st.success("Password Reset Successfully!")
                 
 
-    def logout_widget(self) -> None:
+    def __logout_widget(self) -> None:
         """
         Creates the logout widget in the sidebar only if the user is logged in.
         """
@@ -206,7 +215,7 @@ class __login__:
                 st.experimental_rerun()
         
 
-    def nav_sidebar(self):
+    def __nav_sidebar(self):
         """
         Creates the side navigaton bar
         """
@@ -234,7 +243,7 @@ class __login__:
         return main_page_sidebar, selected_option
     
 
-    def hide_menu(self) -> None:
+    def __hide_menu(self) -> None:
         """
         Hides the streamlit menu situated in the top right.
         """
@@ -243,9 +252,9 @@ class __login__:
         </style> """, unsafe_allow_html=True)
     
 
-    def hide_footer(self) -> None:
+    def __hide_footer(self) -> None:
         """
-        Hides the 'made with streamlit' footer.
+        Hides the 'made with streamlit' footer.`
         """
         st.markdown(""" <style>
         footer {visibility: hidden;}
@@ -262,38 +271,38 @@ class __login__:
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
 
-        main_page_sidebar, selected_option = self.nav_sidebar()
+        main_page_sidebar, selected_option = self.__nav_sidebar()
 
         if selected_option == self.login_label:
             c1, c2 = st.columns([7,3])
             with c1:
-                self.login_widget()
+                self.__login_widget()
             with c2:
                 if st.session_state['LOGGED_IN'] == False:
-                    self.animation()
+                    self.__animation()
         
         if not self.hide_registration or not self.hide_account_management:
             if selected_option == 'Create Account':
-                self.sign_up_widget()
+                self.__sign_up_widget()
 
         if not self.hide_forgot_password or not self.hide_account_management:
             if selected_option == 'Forgot Password?':
-                self.forgot_password()
+                self.__forgot_password()
 
         if not self.hide_account_management:
             if selected_option == 'Reset Password':
-                self.reset_password()
+                self.__reset_password()
         
-        self.logout_widget()
+        self.__logout_widget()
 
         if st.session_state['LOGGED_IN'] == True:
             main_page_sidebar.empty()
         
         if self.hide_menu_bool == True:
-            self.hide_menu()
+            self.__hide_menu()
         
         if self.hide_footer_bool == True:
-            self.hide_footer()
+            self.__hide_footer()
         
         return st.session_state['LOGGED_IN']
 
