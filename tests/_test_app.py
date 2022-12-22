@@ -1,10 +1,10 @@
 import os
 import streamlit as st
 from streamlit_login_auth_ui import Login
-from __test_user_storage import UserAuthTest, UserStorageTest
-from __test_forgot_password import ForgotPasswordCustomMsgTest
-from __test_auth import CustomAuthTest
-from __test_cookies import UserAuthCookiesTest
+from _test_user_storage import UserAuthTest, UserStorageTest
+from _test_forgot_password import ForgotPasswordCustomMsgTest
+from _test_auth import CustomAuthTest
+from _test_cookies import UserAuthCookiesTest
 
 
 hide_registration = True if os.environ.get("HIDE_REGISTRATION") == "true" else False

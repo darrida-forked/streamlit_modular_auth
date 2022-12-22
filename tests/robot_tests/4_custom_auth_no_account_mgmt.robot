@@ -4,7 +4,7 @@ Library  Process
 Library  OperatingSystem
 Library  DependencyLibrary
 
-Variables    ../__test_variables.py
+Variables    ../_test_variables.py
 
 
 *** Variables ***

@@ -30,9 +30,9 @@ class UserAuthCookiesTest:
         local_token = cookies.get("auth_token")
 
         with open(self.auth_filename, "r") as auth_json:
-            authorized_user_data = json.load(auth_json)
+            json_user_storage = json.load(auth_json)
 
-        for user in authorized_user_data:
+        for user in json_user_storage:
             if user.get("username") == local_username:
                 if (user["auth_session"]["auth_token"] == local_token
                         and datetime.fromisoformat(user["auth_session"]["expires"]) >= datetime.now()):
@@ -56,11 +56,11 @@ class UserAuthCookiesTest:
         """
 
         with open(self.auth_filename, "r") as auth_json:
-            authorized_user_data = json.load(auth_json)
+            json_user_storage = json.load(auth_json)
 
         auth_token = secrets.token_urlsafe(48)
         expires = datetime.now() + timedelta(seconds=15)
-        for user in authorized_user_data:
+        for user in json_user_storage:
             if user.get("username") == username:
                 ic(user)
                 user["auth_session"] = {
@@ -72,7 +72,7 @@ class UserAuthCookiesTest:
         cookies.set("auth_username", username)
 
         with open(self.auth_filename, "w") as auth_json_write:
-            json.dump(authorized_user_data, auth_json_write)
+            json.dump(json_user_storage, auth_json_write)
 
     def expire(self, cookies: CookieManager):
         """

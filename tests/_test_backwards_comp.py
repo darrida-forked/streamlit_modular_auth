@@ -15,4 +15,3 @@ if logged_in == True:
    st.markdown("Your Streamlit Application Begins here!")
    st.markdown(st.session_state)
    st.write(username)
-                                      

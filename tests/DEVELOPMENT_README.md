@@ -54,7 +54,7 @@ anybadge --label=tests --value=passing --file=testing.svg passing=green failing=
 - Official website: https://github.com/jongracecox/anybadge
 
 ### **Tests Notes**
-- Global Variables: `tests/__test_variables.py`
+- Global Variables: `tests/_test_variables.py`
   - BROWSER OPTIONS:
     - `BROWSER`: captures value passed into `robot` cli statment (i.e., `robot --variable BROWSER:headlesschrome .`) or set separately as an environment variable
       - "firefox": Runs tests in Firefox, and opens a visible browser for each
@@ -65,7 +65,7 @@ anybadge --label=tests --value=passing --file=testing.svg passing=green failing=
     - `TIMEOUT`: How long a test is attempted before it fails. Default is 20 (seconds). Pass `--variable TIMEOUT:<int>` to "robot" cli statment to change this.
   - PORTS:
     - Each test webserver (representing different `streamlit_login_auth_ui.__login__` initialization settings) needs to run on a different port number. The associated tests for each `__login__` setting type need to make calls to the correct port. These variables provide a central location to set the port for both a test webserver and it's associated sets file.
-- Main Test App File: `tests/__tests_app.py`
+- Main Test App File: `tests/_test_app.py`
   - All of the tests webservers launched from `tests/__init__.robot` execute this file.
   - It allows running `__login__` under many different configuration scenarios through the use of environment variables. Different environment variables are used with each test webserver in `tests/__init__.robot`.
   - Example: One test webserver can run the app in default mode, while another can hide the Streamlit footer, another can hide account management information, and yet another can run the app with a custom user storage bolt-on.

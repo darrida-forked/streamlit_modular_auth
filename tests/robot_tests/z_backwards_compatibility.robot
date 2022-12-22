@@ -8,11 +8,11 @@ Variables    ../_test_variables.py
 
 
 *** Variables ***
-${URL}            http://localhost:${PORT_DEFAULT}/
+${URL}            http://localhost:${PORT_BACKWARDS_COMPATIBILITY}/
 
 
 *** Test Cases ***
-Default - Login Screen
+Backwards Compatible - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}
         ...    service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
@@ -31,12 +31,12 @@ Default - Login Screen
     Close Browser
 
 
-Default - Check For Password File
-    Depends on test     Default - Login Screen
+Backwards Compatible - Check For Password File
+    Depends on test     Backwards Compatible - Login Screen
     File Should Exist   _secret_auth_.json
 
 
-Default - Reset Password Screen
+Backwards Compatible - Reset Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -48,7 +48,7 @@ Default - Reset Password Screen
     Close Browser
 
 
-Default - Create Account Screen
+Backwards Compatible - Create Account Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -64,7 +64,7 @@ Default - Create Account Screen
     Close Browser
 
 
-Default - Forgot Password Screen
+Backwards Compatible - Forgot Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -76,7 +76,7 @@ Default - Forgot Password Screen
     Close Browser
 
 
-Default - Create Account
+Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -87,9 +87,9 @@ Default - Create Account
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-    Input Text      //*[@placeholder="Enter a unique username"]    user1
+    Input Text      //*[@placeholder="Enter a unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Button   //*[contains(text(),'Register')]
@@ -98,12 +98,12 @@ Default - Create Account
     Close Browser
 
 
-Default - Login, then Logout
-    Depends on test     Default - Create Account
+Backwards Compatible - Login, then Logout
+    Depends on test     Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
     Click Button   //*[contains(text(),'Login')]
@@ -116,12 +116,12 @@ Default - Login, then Logout
     Close Browser
 
 
-Default - Login, Refresh, Logout, Refresh (check auth cookies)
-    Depends on test     Default - Create Account
+Backwards Compatible - Login, Refresh, Logout, Refresh (check auth cookies)
+    Depends on test     Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
     Click Button   //*[contains(text(),'Login')]
@@ -141,12 +141,12 @@ Default - Login, Refresh, Logout, Refresh (check auth cookies)
     Close Browser
 
 
-Default - Login, Close Browser, Open (check auth cookies)
-    Depends on test     Default - Create Account
+Backwards Compatible - Login, Close Browser, Open (check auth cookies)
+    Depends on test     Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
     Click Button   //*[contains(text(),'Login')]
@@ -164,12 +164,12 @@ Default - Login, Close Browser, Open (check auth cookies)
     Close Browser
 
 
-Default - Invalid Password
-    Depends on test     Default - Create Account
+Backwards Compatible - Invalid Password
+    Depends on test     Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password2
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
@@ -179,12 +179,12 @@ Default - Invalid Password
     Close Browser
 
 
-Default - Invalid Username - Special First
-    Depends on test     Default - Create Account
+Backwards Compatible - Invalid Username - Special First
+    Depends on test     Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user2
+    Input Text      //*[@placeholder="Your unique username"]    legacy2
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
@@ -194,7 +194,7 @@ Default - Invalid Username - Special First
     Close Browser
 
 
-Default - Reset Password
+Backwards Compatible - Reset Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -203,7 +203,7 @@ Default - Reset Password
     Click Element                   //a[contains(text(),'Reset Password')]
     Unselect Frame
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy@email.com
     Wait Until Element Is Visible   //*[@placeholder="Please enter your current password"]
     Input Text      //*[@placeholder="Please enter your current password"]    password1
     Wait Until Element Is Visible   //*[@placeholder="Please enter a new, strong password"]
@@ -216,12 +216,12 @@ Default - Reset Password
     Close Browser
 
 
-Default - Reset Password Re-Login Successful
-    Depends on test     Default - Create Account
+Backwards Compatible - Reset Password Re-Login Successful
+    Depends on test     Backwards Compatible - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user1
+    Input Text      //*[@placeholder="Your unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1_new
     Click Button   //*[contains(text(),'Login')]
@@ -234,7 +234,7 @@ Default - Reset Password Re-Login Successful
     Close Browser
 
 
-Default - Reset Password - Wrong Password
+Backwards Compatible - Reset Password - Wrong Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -243,7 +243,7 @@ Default - Reset Password - Wrong Password
     Click Element                   //a[contains(text(),'Reset Password')]
     Unselect Frame
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy@email.com
     Wait Until Element Is Visible   //*[@placeholder="Please enter your current password"]
     Input Text      //*[@placeholder="Please enter your current password"]    password_wrong
     Wait Until Element Is Visible   //*[@placeholder="Please enter a new, strong password"]
@@ -256,7 +256,7 @@ Default - Reset Password - Wrong Password
     Close Browser
 
 
-Default - Reset Password - Don't Match
+Backwards Compatible - Reset Password - Don't Match
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -265,7 +265,7 @@ Default - Reset Password - Don't Match
     Click Element                   //a[contains(text(),'Reset Password')]
     Unselect Frame
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy@email.com
     Wait Until Element Is Visible   //*[@placeholder="Please enter your current password"]
     Input Text      //*[@placeholder="Please enter your current password"]    password1_new
     Wait Until Element Is Visible   //*[@placeholder="Please enter a new, strong password"]
@@ -278,7 +278,7 @@ Default - Reset Password - Don't Match
     Close Browser
 
 
-Default - Reset Password - Email Doesn't Exist
+Backwards Compatible - Reset Password - Email Doesn't Exist
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -300,7 +300,7 @@ Default - Reset Password - Email Doesn't Exist
     Close Browser
 
 
-Default - Create Account - No Username
+Backwards Compatible - Create Account - No Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -313,7 +313,7 @@ Default - Create Account - No Username
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname111@email.com
     # Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-    # Input Text      //*[@placeholder="Enter a unique username"]    user1
+    # Input Text      //*[@placeholder="Enter a unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Button   //*[contains(text(),'Register')]
@@ -322,7 +322,7 @@ Default - Create Account - No Username
     Close Browser
 
 
-Default - Create Account - Invalid Username
+Backwards Compatible - Create Account - Invalid Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -344,7 +344,7 @@ Default - Create Account - Invalid Username
     Close Browser
 
 
-Default - Create Account - Invalid Email
+Backwards Compatible - Create Account - Invalid Email
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -355,9 +355,9 @@ Default - Create Account - Invalid Email
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email
+    Input Text      //*[@placeholder="Please enter your email"]    legacy2@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-    Input Text      //*[@placeholder="Enter a unique username"]    user2
+    Input Text      //*[@placeholder="Enter a unique username"]    legacy2
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Button   //*[contains(text(),'Register')]
@@ -366,7 +366,7 @@ Default - Create Account - Invalid Email
     Close Browser
 
 
-Default - Create Account - Invalid Name
+Backwards Compatible - Create Account - Invalid Name
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -377,9 +377,9 @@ Default - Create Account - Invalid Name
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    .starts with period
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email
+    Input Text      //*[@placeholder="Please enter your email"]    legacy2@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-    Input Text      //*[@placeholder="Enter a unique username"]    user2
+    Input Text      //*[@placeholder="Enter a unique username"]    legacy2
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Button   //*[contains(text(),'Register')]
@@ -388,7 +388,7 @@ Default - Create Account - Invalid Name
     Close Browser
 
 
-Default - Create Account - Username Exists
+Backwards Compatible - Create Account - Username Exists
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -401,7 +401,7 @@ Default - Create Account - Username Exists
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname5@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-    Input Text      //*[@placeholder="Enter a unique username"]    user1
+    Input Text      //*[@placeholder="Enter a unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Button   //*[contains(text(),'Register')]
@@ -410,7 +410,7 @@ Default - Create Account - Username Exists
     Close Browser
 
 
-Default - Create Account - Email Exists
+Backwards Compatible - Create Account - Email Exists
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -421,9 +421,9 @@ Default - Create Account - Email Exists
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-    Input Text      //*[@placeholder="Enter a unique username"]    user12
+    Input Text      //*[@placeholder="Enter a unique username"]    legacy12
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Button   //*[contains(text(),'Register')]
