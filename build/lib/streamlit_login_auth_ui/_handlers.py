@@ -27,9 +27,9 @@ class DefaultUserAuth:
             authorized_user_data = json.load(auth_json)
 
         for user in authorized_user_data:
-            if user["username"] == username:
+            if user['username'] == username:
                 try:
-                    if ph.verify(user["password"], password):
+                    if ph.verify(user['password'], password):
                         return True
                 except:
                     pass
@@ -45,31 +45,25 @@ class DefaultAuthCookies:
 
         Args:
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
+        
         Returns:
             bool: If cookie(s) are valid -> True; if not valid -> False
         """
-        if (
-            "__streamlit_login_signup_ui_username__" in cookies.keys()
-            and st.session_state["LOGOUT_BUTTON_HIT"] == False
-        ):
-            if cookies.get("__streamlit_login_signup_ui_username__") not in (
-                "",
-                None,
-            ):  # self.storage.hashed_cookie(extend=True)
+        if '__streamlit_login_signup_ui_username__' in cookies.keys() and st.session_state['LOGOUT_BUTTON_HIT'] == False:
+            if cookies.get('__streamlit_login_signup_ui_username__') not in ("", None): # self.storage.hashed_cookie(extend=True)
                 return True
         return False
 
     def set(self, username, cookies: CookieManager):
         """
         Sets auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters,
+        - Exact internal setup isn't important, so long as it takes the specified parameters, 
           and sets cookies that indicate an authorized session, and can be interacted with by this class.
 
         Args:
             username (str): Authorized user
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
+        
         Returns:
             None
         """
@@ -78,28 +72,28 @@ class DefaultAuthCookies:
     def expire(self, cookies: CookieManager):
         """
         Expires auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters,
+        - Exact internal setup isn't important, so long as it takes the specified parameters, 
           and changes the existing cookies status to indicate an invalid session.
 
         Args:
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
+        
         Returns:
             None
         """
         cookies.expire("__streamlit_login_signup_ui_username__")
 
     def get_username(self, cookies: CookieManager):
-        if st.session_state["LOGOUT_BUTTON_HIT"] == False:
-            if "__streamlit_login_signup_ui_username__" in cookies.keys():
-                return cookies.get("__streamlit_login_signup_ui_username__")
+        if st.session_state['LOGOUT_BUTTON_HIT'] == False:
+            if '__streamlit_login_signup_ui_username__' in cookies.keys():
+                return cookies.get('__streamlit_login_signup_ui_username__')
 
 
 class DefaultUserStorage:
     def __init__(self, auth_filename: str = "_secret_auth_.json"):
         self.auth_filename = auth_filename
         self.check_auth_json_file_exists()
-
+    
     def register(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the json auth file.
@@ -113,12 +107,7 @@ class DefaultUserStorage:
         Return:
             None
         """
-        new_usr_data = {
-            "username": username,
-            "name": name,
-            "email": email,
-            "password": ph.hash(password),
-        }
+        new_usr_data = {'username': username, 'name': name, 'email': email, 'password': ph.hash(password)}
 
         with open(self.auth_filename, "r") as auth_json:
             authorized_user_data = json.load(auth_json)
@@ -142,8 +131,8 @@ class DefaultUserStorage:
             authorized_users_data = json.load(auth_json)
 
             for user in authorized_users_data:
-                authorized_user_data_master.append(user["username"])
-
+                authorized_user_data_master.append(user['username'])
+            
         if username in authorized_user_data_master:
             return True
         return False
@@ -161,8 +150,8 @@ class DefaultUserStorage:
         with open(self.auth_filename, "r") as auth_json:
             authorized_users_data = json.load(auth_json)
             for user in authorized_users_data:
-                if user["email"] == email:
-                    return True, user["username"]
+                if user['email'] == email:
+                    return True, user['username']
         return False, None
 
     def get_username_from_email(self, email: str) -> Optional[str]:
@@ -178,8 +167,8 @@ class DefaultUserStorage:
         with open(self.auth_filename, "r") as auth_json:
             authorized_users_data = json.load(auth_json)
         for user in authorized_users_data:
-            if user["email"] == email:
-                return user["username"]
+            if user['email'] == email:
+                return user['username']
         return None
 
     def change_password(self, email: str, password: str) -> None:
@@ -198,8 +187,8 @@ class DefaultUserStorage:
 
         with open(self.auth_filename, "w") as auth_json_:
             for user in authorized_users_data:
-                if user["email"] == email:
-                    user["password"] = ph.hash(password)
+                if user['email'] == email:
+                    user['password'] = ph.hash(password)
             json.dump(authorized_users_data, auth_json_)
 
     def check_auth_json_file_exists(self) -> bool:
@@ -213,14 +202,7 @@ class DefaultUserStorage:
 
 
 class DefaultForgotPasswordMsg:
-    def send(
-        self,
-        auth_token: str,
-        username: str,
-        email: str,
-        company_name: str,
-        reset_password: str,
-    ) -> None:
+    def send(self, auth_token: str, username: str, email: str, company_name: str, reset_password: str) -> None:
         """
         Triggers an email to the user containing the randomly generated password.
 
@@ -234,24 +216,20 @@ class DefaultForgotPasswordMsg:
         Returns:
             None
         """
-        client = Courier(auth_token=auth_token)
+        client = Courier(auth_token = auth_token)
 
         resp = client.send_message(
             message={
-                "to": {"email": email},
+                "to": {
+                    "email": email
+                },
                 "content": {
                     "title": company_name + ": Login Password!",
-                    "body": "Hi! "
-                    + username
-                    + ","
-                    + "\n"
-                    + "\n"
-                    + "Your temporary login password is: "
-                    + reset_password
-                    + "\n"
-                    + "\n"
-                    + "{{info}}",
+                    "body": "Hi! " + username + "," + "\n" + "\n" + "Your temporary login password is: "
+                                   + reset_password  + "\n" + "\n" + "{{info}}"
                 },
-                "data": {"info": "Please reset your password at the earliest for security reasons."},
+                "data":{
+                    "info": "Please reset your password at the earliest for security reasons."
+                }
             }
         )

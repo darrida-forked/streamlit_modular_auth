@@ -69,12 +69,7 @@ class UserStorage(Protocol):
 
 class ForgotPasswordMessage(Protocol):
     def send(
-        self,
-        auth_token: str,
-        username: str,
-        email: str,
-        company_name: str,
-        reset_password: str,
+        self, auth_token: str, username: str, email: str, company_name: str, reset_password: str
     ) -> None:
         """Trigger an email to the user containing the randomly generated password.
 
@@ -105,7 +100,7 @@ class AuthCookies(Protocol):
 
         Args:
             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
+        
         Returns:
             bool: If cookie(s) are valid -> True; if not valid -> False
         """
@@ -114,7 +109,7 @@ class AuthCookies(Protocol):
     def set(self, username, cookies: CookieManager) -> None:
         """
         Sets auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters,
+        - Exact internal setup isn't important, so long as it takes the specified parameters, 
           and sets cookies that indicate an authorized session, and can be interacted with by this class.
 
         To Use:
@@ -124,7 +119,7 @@ class AuthCookies(Protocol):
         Args:
             username (str): Authorized user
             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
+        
         Returns:
             None
         """
@@ -133,9 +128,9 @@ class AuthCookies(Protocol):
     def expire(self, cookies: CookieManager) -> None:
         """
         Expires auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters,
+        - Exact internal setup isn't important, so long as it takes the specified parameters, 
           and changes the existing cookies status to indicate an invalid session.
-
+        
         To Use:
         - Any logic here MUST include `cookies.expire("<name>")`
         - "<name>" must match the cookie name used in `self.cookie.set`
@@ -146,7 +141,7 @@ class AuthCookies(Protocol):
 
         Args:
             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
+        
         Returns:
             None
         """

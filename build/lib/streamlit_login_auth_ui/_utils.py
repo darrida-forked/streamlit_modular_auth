@@ -4,7 +4,7 @@ from argon2 import PasswordHasher
 import requests
 
 
-ph = PasswordHasher()
+ph = PasswordHasher() 
 
 
 def _load_lottieurl(url: str) -> str:
@@ -24,7 +24,7 @@ def _check_valid_name(name_sign_up: str) -> bool:
     """
     Checks if the user entered a valid name while creating the account.
     """
-    name_regex = r"^[A-Za-z_][A-Za-z0-9_]*"
+    name_regex = (r'^[A-Za-z_][A-Za-z0-9_]*')
 
     if re.search(name_regex, name_sign_up):
         return True
@@ -35,7 +35,7 @@ def _check_valid_email(email_sign_up: str) -> bool:
     """
     Checks if the user entered a valid email while creating the account.
     """
-    regex = re.compile(r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+")
+    regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
 
     if re.fullmatch(regex, email_sign_up):
         return True

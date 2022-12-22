@@ -11,7 +11,7 @@ class UserAuthCookiesTest:
     def __init__(self, auth_filename: str = "_secret_auth_.json"):
         self.auth_filename = auth_filename
         self.check_auth_json_file_exists()
-    
+
     def check(self, cookies: CookieManager):
         """
         Checks that auth cookies exist and are valid.
@@ -20,7 +20,7 @@ class UserAuthCookiesTest:
 
         Args:
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-        
+
         Returns:
             bool: If cookie(s) are valid -> True; if not valid -> False
         """
@@ -34,8 +34,10 @@ class UserAuthCookiesTest:
 
         for user in json_user_storage:
             if user.get("username") == local_username:
-                if (user["auth_session"]["auth_token"] == local_token
-                        and datetime.fromisoformat(user["auth_session"]["expires"]) >= datetime.now()):
+                if (
+                    user["auth_session"]["auth_token"] == local_token
+                    and datetime.fromisoformat(user["auth_session"]["expires"]) >= datetime.now()
+                ):
                     return True
                 else:
                     st.error("Session expired...")
@@ -44,13 +46,13 @@ class UserAuthCookiesTest:
     def set(self, username, cookies: CookieManager):
         """
         Sets auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters, 
+        - Exact internal setup isn't important, so long as it takes the specified parameters,
           and sets cookies that indicate an authorized session, and can be interacted with by this class.
 
         Args:
             username (str): Authorized user
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-        
+
         Returns:
             None
         """
@@ -64,8 +66,8 @@ class UserAuthCookiesTest:
             if user.get("username") == username:
                 ic(user)
                 user["auth_session"] = {
-                    "auth_token": auth_token, 
-                    "expires": expires.isoformat()
+                    "auth_token": auth_token,
+                    "expires": expires.isoformat(),
                 }
                 break
         cookies.set("auth_token", auth_token)
@@ -77,12 +79,12 @@ class UserAuthCookiesTest:
     def expire(self, cookies: CookieManager):
         """
         Expires auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters, 
+        - Exact internal setup isn't important, so long as it takes the specified parameters,
           and changes the existing cookies status to indicate an invalid session.
 
         Args:
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-        
+
         Returns:
             None
         """

@@ -6,7 +6,7 @@ class UserAuthLDAP(UserAuth):
         self.ldap_server = ldap_server
         self.ldap_port = ldap_port
         self.ldap_group = ldap_group
-    
+
     def check_password(self):
         """
         User `self.username` and `self.username` to verify credentials with LDAP server

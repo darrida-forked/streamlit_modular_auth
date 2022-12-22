@@ -377,7 +377,7 @@ Backwards Compatible - Create Account - Invalid Name
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    .starts with period
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    legacy2@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy2@email
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
     Input Text      //*[@placeholder="Enter a unique username"]    legacy2
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
@@ -399,7 +399,7 @@ Backwards Compatible - Create Account - Username Exists
     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
     Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-    Input Text      //*[@placeholder="Please enter your email"]    flname5@email.com
+    Input Text      //*[@placeholder="Please enter your email"]    legacy5@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
     Input Text      //*[@placeholder="Enter a unique username"]    legacy1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]

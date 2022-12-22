@@ -7,5 +7,12 @@ class ForgotPasswordCustomMsgTest:
         self.method_name = "Very Insecure"
         self.message = message
 
-    def send(self, auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+    def send(
+        self,
+        auth_token: str,
+        username: str,
+        email: str,
+        company_name: str,
+        password: str,
+    ) -> None:
         st.write(f"{self.message}: {password}")

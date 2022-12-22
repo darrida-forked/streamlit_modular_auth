@@ -12,9 +12,7 @@ hide_forgot_password = True if os.environ.get("HIDE_FORGOT_PASSWORD") == "true" 
 hide_account_management = True if os.environ.get("HIDE_ACCOUNT_MANAGEMENT") == "true" else False
 hide_footer_bool = True if os.environ.get("HIDE_FOOTER") == "true" else False
 hide_menu_bool = True if os.environ.get("HIDE_MENU") == "true" else False
-logout_button_name = (
-    os.environ.get("LOGOUT_BUTTON_NAME") if os.environ.get("LOGOUT_BUTTON_NAME") else "Logout"
-)
+logout_button_name = os.environ.get("LOGOUT_BUTTON_NAME") if os.environ.get("LOGOUT_BUTTON_NAME") else "Logout"
 custom_login_label = None
 if os.environ.get("CUSTOM_AUTH"):
     if os.environ.get("CUSTOM_AUTH") != "true":
@@ -26,9 +24,9 @@ else:
     custom_authentication = None
 
 if os.environ.get("CUSTOM_USER_STORAGE") == "true":
-        custom_authentication = UserAuthTest()
-        custom_login_label = "Test Login"
-        custom_user_storage = UserStorageTest()
+    custom_authentication = UserAuthTest()
+    custom_login_label = "Test Login"
+    custom_user_storage = UserStorageTest()
 else:
     custom_user_storage = None
 
@@ -50,14 +48,14 @@ else:
 
 
 login_obj = Login(
-    auth_token = "courier_auth_token", 
-    company_name = "Sample Name",
-    width = 200, 
-    height = 250, 
-    logout_button_name = logout_button_name,
-    hide_menu_bool = hide_menu_bool, 
-    hide_footer_bool = hide_footer_bool,
-    lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
+    auth_token="courier_auth_token",
+    company_name="Sample Name",
+    width=200,
+    height=250,
+    logout_button_name=logout_button_name,
+    hide_menu_bool=hide_menu_bool,
+    hide_footer_bool=hide_footer_bool,
+    lottie_url="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json",
     hide_registration=hide_registration,
     hide_forgot_password=hide_forgot_password,
     hide_account_management=hide_account_management,
@@ -65,7 +63,7 @@ login_obj = Login(
     custom_authentication=custom_authentication,
     custom_user_storage=custom_user_storage,
     custom_forgot_password_msg=custom_forgot_password_msg,
-    custom_auth_cookies=custom_auth_cookies
+    custom_auth_cookies=custom_auth_cookies,
 )
 
 

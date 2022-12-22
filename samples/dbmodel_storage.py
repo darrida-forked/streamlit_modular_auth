@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
 
 
-ph = PasswordHasher() 
+ph = PasswordHasher()
 
 
 class User(SQLModel, table=True):
@@ -24,7 +24,7 @@ class User(SQLModel, table=True):
 def initialize_db_engine():
     sqlite_file_name = "sqlmodel_storage.db"
     sqlite_url = f"sqlite:///{sqlite_file_name}"
-    return create_engine(sqlite_url)#, echo=True)
+    return create_engine(sqlite_url)  # , echo=True)
 
 
 engine = initialize_db_engine()
@@ -40,7 +40,7 @@ def create_user(engine):
             username="user9",
             email="user9@email.com",
             name="flname",
-            hashed_password=ph.hash("password9")
+            hashed_password=ph.hash("password9"),
         )
         with Session(engine) as session:
             session.add(user)
@@ -65,7 +65,7 @@ def select_user(engine):
 class UserAuthSQLModel(UserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
-    
+
     def check_password(self):
         with Session(engine) as session:
             statement = select(User).where(User.username == self.username)
@@ -95,12 +95,7 @@ class UserStorageSQLModel(UserStorage):
         Return:
             None
         """
-        user = User(
-            username=username,
-            email=email,
-            name=name,
-            hashed_password=ph.hash(password)
-        )
+        user = User(username=username, email=email, name=name, hashed_password=ph.hash(password))
         with Session(engine) as session:
             session.add(user)
             session.commit()
@@ -183,7 +178,7 @@ class UserStorageSQLModel(UserStorage):
                 user.hashed_password = ph.hash(password)
                 session.add(user)
                 session.commit()
-                
+
 
 if __name__ == "__main__":
     create_db_and_tables(engine)

@@ -33,8 +33,14 @@ class ForgotPasswordGmail(ForgotPasswordMessage):
         """
         return text, html
 
-    def send(self,
-        auth_token: str, username: str, email: str, company_name: str, password: str) -> None:
+    def send(
+        self,
+        auth_token: str,
+        username: str,
+        email: str,
+        company_name: str,
+        password: str,
+    ) -> None:
         from_email = self.email_user
         receiver_email = email
 
@@ -42,7 +48,6 @@ class ForgotPasswordGmail(ForgotPasswordMessage):
         message["Subject"] = f"{company_name}: Login Password!"
         message["From"] = from_email
         message["To"] = receiver_email
-
 
         # Set plain/html MIMEText objects
         text, html = self.__build_message_body(username, password)

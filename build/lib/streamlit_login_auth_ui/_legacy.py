@@ -3,8 +3,8 @@ from streamlit_login_auth_ui._handlers import DefaultAuthCookies
 
 
 class __login__(Login):
-    """Builds the UI for the Login/Sign Up page and manages all authentication logic."""
-
+    """Builds the UI for the Login/Sign Up page and manages all authentication logic.
+    """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
