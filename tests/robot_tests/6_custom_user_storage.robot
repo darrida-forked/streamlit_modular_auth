@@ -43,7 +43,7 @@ Custom Storage - Create Account
     Input Text      //*[@placeholder="Enter a unique username"]    custom_storage_user
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    custom_storage_pass
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
     Page Should Contain     Registration Successful!
     Close Browser
@@ -56,11 +56,11 @@ Custom Storage - Login, then Logout
     Input Text      //*[@placeholder="Your unique username"]    custom_storage_user
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    custom_storage_pass
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain     Login
     Close Browser
@@ -74,7 +74,7 @@ Custom Storage - Login Failed - Invalid Password
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    custom_storage_pass
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
     Close Browser
@@ -88,7 +88,7 @@ Custom Storage - Login Failed - Invalid Username
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    custom_storage_pass_wrong
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
     Close Browser

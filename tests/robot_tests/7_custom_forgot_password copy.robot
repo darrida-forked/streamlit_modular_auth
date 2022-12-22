@@ -42,7 +42,7 @@ Custom Forgot Pwd Msg - Create Account
     Input Text      //*[@placeholder="Enter a unique username"]    forgot_password
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    forgot_password
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
     Page Should Contain     Registration Successful!
     Close Browser
@@ -55,11 +55,11 @@ Custom Forgot Pwd Msg - Login, then Logout
     Input Text      //*[@placeholder="Your unique username"]    forgot_password
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    forgot_password
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),"Logout")]
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
     Close Browser
@@ -75,7 +75,7 @@ Custom Forgot Pwd Msg - Reset Password
     Unselect Frame
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    forgot_password@email.com
-    Click Button   //*[contains(text(),'Get Password')]
+    Click Element   //*[contains(text(),'Get Password')]
     Wait Until Element Is Visible   //*[contains(text(),"Secure Password Sent Successfully!")]
     Page Should Contain     Secure Password Sent Successfully!
     Wait Until Element Is Visible   //*[contains(text(),"Password via an insecure method:")]
@@ -93,7 +93,7 @@ Custom Forgot Pwd Msg - Reset Password - No Email Exists
     Unselect Frame
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    forgot_password_none@email.com
-    Click Button   //*[contains(text(),'Get Password')]
+    Click Element   //*[contains(text(),'Get Password')]
     Wait Until Element Is Visible   //*[contains(text(),"No account with this email was found!")]
     Page Should Contain     No account with this email was found!
     Close Browser

@@ -14,6 +14,8 @@ pabot_results/
 *.db
 build/
 dist/
+*.gz
+*.wheel
 !.coverage
 !.coveragerc
 !coverage.xml

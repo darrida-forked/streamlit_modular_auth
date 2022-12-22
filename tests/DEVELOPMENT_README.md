@@ -15,7 +15,6 @@
   - robotframework-SeleniumLibrary
   - robotframework-dependencylibrary
   - robotframework-stacktrace
-  - extra-streamlit-components
   - selenium
   - coverage
   - seleniumbase

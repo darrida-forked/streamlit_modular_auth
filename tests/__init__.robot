@@ -22,7 +22,7 @@ Start the webserver
         ...    -m    streamlit    run    ${CURDIR}/_test_app.py    
         ...    --server.port    ${PORT_DEFAULT}    
         ...    --server.headless   true
-        ...    env:ALT_AUTH_COOKIE_PREFIX=auth_cookie_2
+        # ...    env:ALT_AUTH_COOKIE_PREFIX=auth_cookie_2
     Set suite variable    ${PROCESS_DEFAULT}
     Log To Console     ${PROCESS_DEFAULT}
 

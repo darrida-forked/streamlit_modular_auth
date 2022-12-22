@@ -92,7 +92,8 @@ Default - Create Account
     Input Text      //*[@placeholder="Enter a unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Wait Until Element Is Visible    //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
     Page Should Contain     Registration Successful!
     Close Browser
@@ -106,11 +107,11 @@ Default - Login, then Logout
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain     Login
     Close Browser
@@ -124,7 +125,7 @@ Default - Login, Refresh, Logout, Refresh (check auth cookies)
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
@@ -132,7 +133,7 @@ Default - Login, Refresh, Logout, Refresh (check auth cookies)
     Reload Page
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
     Page Should Contain    Logout
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
     Reload Page
@@ -149,7 +150,7 @@ Default - Login, Close Browser, Open (check auth cookies)
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
@@ -158,7 +159,7 @@ Default - Login, Close Browser, Open (check auth cookies)
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
     Page Should Contain    Logout
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
     Close Browser
@@ -173,7 +174,7 @@ Default - Invalid Password
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password2
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
     Close Browser
@@ -188,7 +189,7 @@ Default - Invalid Username - Special First
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Invalid Username or Password!")]
     Page Should Contain     Invalid Username or Password!
     Close Browser
@@ -210,7 +211,7 @@ Default - Reset Password
     Input Text      //*[@placeholder="Please enter a new, strong password"]    password1_new
     Wait Until Element Is Visible   //*[@placeholder="Please re- enter the new password"]
     Input Text      //*[@placeholder="Please re- enter the new password"]    password1_new
-    Click Button   //*[contains(text(),'Reset Password')]
+    Click Element   //*[contains(text(),'Reset Password')]
     Wait Until Element Is Visible   //*[contains(text(),"Password Reset Successfully!")]
     Page Should Contain     Password Reset Successfully!
     Close Browser
@@ -224,11 +225,11 @@ Default - Reset Password Re-Login Successful
     Input Text      //*[@placeholder="Your unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password1_new
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),"Logout")]
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
     Close Browser
@@ -250,7 +251,7 @@ Default - Reset Password - Wrong Password
     Input Text      //*[@placeholder="Please enter a new, strong password"]    password1_new
     Wait Until Element Is Visible   //*[@placeholder="Please re- enter the new password"]
     Input Text      //*[@placeholder="Please re- enter the new password"]    password1_new
-    Click Button   //*[contains(text(),'Reset Password')]
+    Click Element   //*[contains(text(),'Reset Password')]
     Wait Until Element Is Visible   //*[contains(text(),"Incorrect password!")]
     Page Should Contain     Incorrect password!
     Close Browser
@@ -272,7 +273,7 @@ Default - Reset Password - Don't Match
     Input Text      //*[@placeholder="Please enter a new, strong password"]    password1_match1
     Wait Until Element Is Visible   //*[@placeholder="Please re- enter the new password"]
     Input Text      //*[@placeholder="Please re- enter the new password"]    password1_match2
-    Click Button   //*[contains(text(),'Reset Password')]
+    Click Element   //*[contains(text(),'Reset Password')]
     Wait Until Element Is Visible   //*[contains(text(),"Passwords don't match!")]
     Page Should Contain     Passwords don't match!
     Close Browser
@@ -294,7 +295,7 @@ Default - Reset Password - Email Doesn't Exist
     Input Text      //*[@placeholder="Please enter a new, strong password"]    password1_new2
     Wait Until Element Is Visible   //*[@placeholder="Please re- enter the new password"]
     Input Text      //*[@placeholder="Please re- enter the new password"]    password1_new2
-    Click Button   //*[contains(text(),'Reset Password')]
+    Click Element   //*[contains(text(),'Reset Password')]
     Wait Until Element Is Visible   //*[contains(text(),"Email does not exist!")]
     Page Should Contain     Email does not exist!
     Close Browser
@@ -316,7 +317,7 @@ Default - Create Account - No Username
     # Input Text      //*[@placeholder="Enter a unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid Username! (no space characters)")]
     Page Should Contain     Please enter a valid Username! (no space characters)
     Close Browser
@@ -338,7 +339,7 @@ Default - Create Account - Invalid Username
     Input Text      //*[@placeholder="Enter a unique username"]    userwith space
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid Username! (no space characters)")]
     Page Should Contain     Please enter a valid Username! (no space characters)
     Close Browser
@@ -360,7 +361,7 @@ Default - Create Account - Invalid Email
     Input Text      //*[@placeholder="Enter a unique username"]    user2
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid Email!")]
     Page Should Contain     Please enter a valid Email!
     Close Browser
@@ -382,7 +383,7 @@ Default - Create Account - Invalid Name
     Input Text      //*[@placeholder="Enter a unique username"]    user2
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid name!")]
     Page Should Contain     Please enter a valid name!
     Close Browser
@@ -404,7 +405,7 @@ Default - Create Account - Username Exists
     Input Text      //*[@placeholder="Enter a unique username"]    user1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Sorry, username already exists!")]
     Page Should Contain     Sorry, username already exists!
     Close Browser
@@ -426,7 +427,7 @@ Default - Create Account - Email Exists
     Input Text      //*[@placeholder="Enter a unique username"]    user12
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Email already exists!")]
     Page Should Contain     Email already exists!
     Close Browser

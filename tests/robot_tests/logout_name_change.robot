@@ -28,7 +28,7 @@ Logout Name - Create Account
     Input Text      //*[@placeholder="Enter a unique username"]    user6
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password6
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
     Page Should Contain     Registration Successful!
     Close Browser
@@ -42,11 +42,11 @@ Logout Name - Logout Button is Exit
     Input Text      //*[@placeholder="Your unique username"]    user6
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password6
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Exit')]
-    Click Button    //*[contains(text(),'Exit')]
+    Click Element    //*[contains(text(),'Exit')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain     Login
     Close Browser

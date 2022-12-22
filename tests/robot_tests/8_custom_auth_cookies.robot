@@ -28,7 +28,7 @@ Custom Auth Cookies - Create Account
     Input Text      //*[@placeholder="Enter a unique username"]    user_cookies1
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password_cookies1
-    Click Button   //*[contains(text(),'Register')]
+    Click Element   //*[contains(text(),'Register')]
     Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
     Page Should Contain     Registration Successful!
     Close Browser
@@ -42,11 +42,11 @@ Custom Auth Cookies - Login, then Logout
     Input Text      //*[@placeholder="Your unique username"]    user_cookies1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password_cookies1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain     Login
     Close Browser
@@ -60,7 +60,7 @@ Custom Auth Cookies - Login, Refresh, Logout, Refresh
     Input Text      //*[@placeholder="Your unique username"]    user_cookies1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password_cookies1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
@@ -68,7 +68,7 @@ Custom Auth Cookies - Login, Refresh, Logout, Refresh
     Reload Page
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
     Page Should Contain    Logout
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
     Reload Page
@@ -85,7 +85,7 @@ Custom Auth Cookies - Login, Close Browser, Open
     Input Text      //*[@placeholder="Your unique username"]    user_cookies1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password_cookies1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
@@ -94,7 +94,7 @@ Custom Auth Cookies - Login, Close Browser, Open
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]
     Page Should Contain    Logout
-    Click Button    //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
     Close Browser
@@ -108,7 +108,7 @@ Custom Auth Cookies - Session Expire (15s)
     Input Text      //*[@placeholder="Your unique username"]    user_cookies1
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password_cookies1
-    Click Button   //*[contains(text(),'Login')]
+    Click Element   //*[contains(text(),'Login')]
     Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
     Page Should Contain     Your Streamlit Application Begins here!
     Wait Until Element Is Visible   //*[contains(text(),'Logout')]

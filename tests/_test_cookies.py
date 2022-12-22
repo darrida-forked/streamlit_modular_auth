@@ -3,7 +3,6 @@ from pathlib import Path
 import json
 from datetime import datetime, timedelta
 import streamlit as st
-from icecream import ic
 from streamlit_login_auth_ui.protocols import CookieManager
 
 
@@ -64,7 +63,6 @@ class UserAuthCookiesTest:
         expires = datetime.now() + timedelta(seconds=15)
         for user in json_user_storage:
             if user.get("username") == username:
-                ic(user)
                 user["auth_session"] = {
                     "auth_token": auth_token,
                     "expires": expires.isoformat(),
