@@ -12,6 +12,9 @@ latest_logs/
 pabot_results/
 .*
 *.db
+build/
+dist/
 !.coverage
 !.coveragerc
 !coverage.xml
+
