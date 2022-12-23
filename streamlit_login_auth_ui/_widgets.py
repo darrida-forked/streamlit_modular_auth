@@ -3,6 +3,7 @@ from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from .protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
 from ._handlers import (
+    CourierForgotPasswordMsg,
     DefaultAuthCookies,
     DefaultForgotPasswordMsg,
     DefaultUserAuth,
@@ -26,8 +27,7 @@ class Login:
 
     def __init__(
         self,
-        auth_token: str,
-        company_name: str,
+        *,
         width: int = 200,
         height: int = 250,
         logout_button_name: str = "Logout",
@@ -42,6 +42,8 @@ class Login:
         custom_user_storage: UserStorage = None,
         custom_forgot_password_msg: ForgotPasswordMessage = None,
         custom_auth_cookies: AuthCookies = None,
+        auth_token: str = None,
+        company_name: str = None
     ):
         """
         Arguments:
@@ -75,7 +77,9 @@ class Login:
         self.login_label = custom_login_label or "Login"
         self.auth = custom_authentication or DefaultUserAuth()
         self.storage = custom_user_storage or DefaultUserStorage()
-        self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
+        self.password_reset = custom_forgot_password_msg or CourierForgotPasswordMsg(auth_token, company_name)
+        # else:
+        #     self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
         self.auth_cookies = custom_auth_cookies or DefaultAuthCookies()
 
     def __login_widget(self) -> None:
@@ -153,7 +157,7 @@ class Login:
         if forgot_passwd_submit_button:
             if username := self.storage.get_username_from_email(email):
                 random_password = _generate_random_passwd()
-                self.password_reset.send(self.auth_token, username, email, self.company_name, random_password)
+                self.password_reset.send(username, email, random_password)
                 self.storage.change_password(email, random_password)
                 st.success("Secure Password Sent Successfully!")
             else:

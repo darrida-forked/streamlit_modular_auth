@@ -53,11 +53,8 @@ class DefaultAuthCookies:
             "__streamlit_login_signup_ui_username__" in cookies.keys()
             and st.session_state["LOGOUT_BUTTON_HIT"] == False
         ):
-            if cookies.get("__streamlit_login_signup_ui_username__") not in (
-                "",
-                None,
-            ):  # self.storage.hashed_cookie(extend=True)
-                return True
+            if cookies.get("__streamlit_login_signup_ui_username__") != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
+                    return True
         return False
 
     def set(self, username, cookies: CookieManager):
@@ -87,7 +84,7 @@ class DefaultAuthCookies:
         Returns:
             None
         """
-        cookies.expire("__streamlit_login_signup_ui_username__")
+        cookies.expire("__streamlit_login_signup_ui_username__", '1c9a923f-fb21-4a91-b3f3-5f18e3f01182')
 
     def get_username(self, cookies: CookieManager):
         if st.session_state["LOGOUT_BUTTON_HIT"] == False:
@@ -212,15 +209,12 @@ class DefaultUserStorage:
                 json.dump([], auth_json)
 
 
-class DefaultForgotPasswordMsg:
-    def send(
-        self,
-        auth_token: str,
-        username: str,
-        email: str,
-        company_name: str,
-        reset_password: str,
-    ) -> None:
+class CourierForgotPasswordMsg:
+    def __init__(self, auth_token, company_name):
+        self.company_name = company_name
+        self.auth_token = auth_token
+    
+    def send(self, username: str, email: str, reset_password: str) -> None:
         """
         Triggers an email to the user containing the randomly generated password.
 
@@ -234,13 +228,13 @@ class DefaultForgotPasswordMsg:
         Returns:
             None
         """
-        client = Courier(auth_token=auth_token)
+        client = Courier(auth_token=self.auth_token)
 
         resp = client.send_message(
             message={
                 "to": {"email": email},
                 "content": {
-                    "title": company_name + ": Login Password!",
+                    "title": self.company_name + ": Login Password!",
                     "body": "Hi! "
                     + username
                     + ","
@@ -255,3 +249,8 @@ class DefaultForgotPasswordMsg:
                 "data": {"info": "Please reset your password at the earliest for security reasons."},
             }
         )
+
+
+class DefaultForgotPasswordMsg:
+    def send(self, username: str, email: str, reset_password: str) -> None:
+        st.write(f"Talk to your system administrator.")

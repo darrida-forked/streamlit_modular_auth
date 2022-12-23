@@ -181,11 +181,6 @@ if __name__ == "__main__":
     select_user(engine)
 
     login_obj = Login(
-        auth_token="courier_auth_token",
-        company_name="Sample Name",
-        width=200,
-        height=250,
-        lottie_url="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json",
         custom_authentication=UserAuthSQLModel(),
         custom_user_storage=UserStorageSQLModel(),
     )

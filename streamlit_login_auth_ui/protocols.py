@@ -68,14 +68,7 @@ class UserStorage(Protocol):
 
 
 class ForgotPasswordMessage(Protocol):
-    def send(
-        self,
-        auth_token: str,
-        username: str,
-        email: str,
-        company_name: str,
-        reset_password: str,
-    ) -> None:
+    def send(self, username: str, email: str,reset_password: str) -> None:
         """Trigger an email to the user containing the randomly generated password.
 
         Args:
