@@ -1,5 +1,5 @@
 from streamlit_login_auth_ui._widgets import Login, cookies
-from streamlit_login_auth_ui._handlers import DefaultAuthCookies, DefaultForgotPasswordMsg
+from streamlit_login_auth_ui._handlers import DefaultAuthCookies, CourierForgotPasswordMsg
 
 
 class __login__(Login):
@@ -7,7 +7,7 @@ class __login__(Login):
 
     def __init__(self, auth_token, company_name, **kwargs):
         super().__init__(**kwargs)
-        self.password_reset = DefaultForgotPasswordMsg(auth_token, company_name)
+        self.password_reset = CourierForgotPasswordMsg(auth_token, company_name)
 
     def get_username(self, cookies=cookies):
         return DefaultAuthCookies().get_username(cookies)
