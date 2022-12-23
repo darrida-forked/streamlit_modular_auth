@@ -1,5 +1,0 @@
-[run]
-omit =
-    .
-source_pkgs =
-    streamlit_login_auth_ui

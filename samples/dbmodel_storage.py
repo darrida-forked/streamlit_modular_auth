@@ -2,14 +2,22 @@ from typing import Optional
 from datetime import datetime
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 from argon2 import PasswordHasher
+import streamlit as st
+from icecream import ic
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
+from streamlit_login_auth_ui import Login
 
 
 ph = PasswordHasher()
 
 
-class User(SQLModel, table=True):
+#######################################################################
+# BOILERPLATE SPECIFIC TO SQLMODEL DATA (not the custom handler itself)
+#######################################################################
+class User(SQLModel, table=True, ):
+    __table_args__ = {'keep_existing': True}
+    
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
     email: str = Field(unique=True)
@@ -62,17 +70,26 @@ def select_user(engine):
         return False
 
 
+#######################################################################
+# CUSTOM HANDLERS
+#######################################################################
 class UserAuthSQLModel(UserAuth):
-    def __init__(self, login_name=None, username=None, password=None):
-        super().__init__(login_name, username, password)
+    def check_credentials(self, username, password):
+        """
+        Authenticates using username and password class attributes.
+        - Uses password and username from initialized object
+        - Queries user in SQLModel database (SQLite)
+        - Checks password provided by streamlit_login_auth_ui against hashed password from database.
 
-    def check_password(self):
+        Return:
+            bool: If password is correct -> "True"; if not -> "False"
+        """
         with Session(engine) as session:
-            statement = select(User).where(User.username == self.username)
+            statement = select(User).where(User.username == username)
             user = session.exec(statement).one()
             if user:
                 try:
-                    if ph.verify(user.hashed_password, self.password):
+                    if ph.verify(user.hashed_password, password):
                         return True
                 except:
                     pass
@@ -80,11 +97,9 @@ class UserAuthSQLModel(UserAuth):
 
 
 class UserStorageSQLModel(UserStorage):
-    storage_name: str = "sqlmodel"
-
-    def register_new_usr(self, name: str, email: str, username: str, password: str) -> None:
+    def register(self, name: str, email: str, username: str, password: str) -> None:
         """
-        Saves the information of the new user in the _secret_auth.json file.
+        Saves the information of the new user in SQLModel database (SQLite)
 
         Args:
             name (str): name for new account
@@ -102,7 +117,7 @@ class UserStorageSQLModel(UserStorage):
 
     def check_username_exists(self, username: str) -> bool:
         """
-        Checks if the username exists in the _secret_auth.json file.
+        Checks is username already exists in SQLModel database (SQLite)
 
         Args:
             username (str): username to check
@@ -120,29 +135,9 @@ class UserStorageSQLModel(UserStorage):
             return False
         return False
 
-    # def check_email_exists(self, email: str):
-    #     """
-    #     Checks if the email entered is present in the _secret_auth.json file.
-
-    #     Args:
-    #         email (str): email connected to forgotten password
-
-    #     Return:
-    #         Tuple[bool, Optional[str]]: If exists -> (True, <username>); If not, (False, None)
-    #     """
-    #     try:
-    #         with Session(engine) as session:
-    #             statement = select(User).where(User.email == email)
-    #             user = session.exec(statement).one()
-    #             if user:
-    #                 return True, user.username
-    #     except NoResultFound:
-    #         return False, None
-    #     return False, None
-
     def get_username_from_email(self, email: str) -> Optional[str]:
         """
-        Retrieve username, if it exists, from database from provided email.
+        Retrieve username, if it exists, from SQLModel database (SQLite) from provided email.
 
         Args:
             email (str): email connected to forgotten password
@@ -160,9 +155,9 @@ class UserStorageSQLModel(UserStorage):
             return None
         return None
 
-    def change_passwd(self, email: str, password: str) -> None:
+    def change_password(self, email: str, password: str) -> None:
         """
-        Replaces the old password with the newly generated password.
+        Replaces the old password in SQLModel database (SQLite) with the newly generated password.
 
         Args:
             email (str): email connected to account
@@ -184,3 +179,18 @@ if __name__ == "__main__":
     create_db_and_tables(engine)
     create_user(engine)
     select_user(engine)
+
+    login_obj = Login(
+        auth_token="courier_auth_token",
+        company_name="Sample Name",
+        width=200,
+        height=250,
+        lottie_url="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json",
+        custom_authentication=UserAuthSQLModel(),
+        custom_user_storage=UserStorageSQLModel(),
+    )
+
+    is_logged_in = login_obj.build_login_ui()
+
+    if is_logged_in:
+        st.markdown("Your Streamlit Application Begins here!")
