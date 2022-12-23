@@ -63,8 +63,6 @@ class Login:
         12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitDefaultUserAuth (see information further below).
         13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitDefaultUserStorage (see information further below).
         """
-        self.auth_token = auth_token
-        self.company_name = company_name
         self.width = width
         self.height = height
         self.logout_button_name = logout_button_name
@@ -78,8 +76,6 @@ class Login:
         self.auth = custom_authentication or DefaultUserAuth()
         self.storage = custom_user_storage or DefaultUserStorage()
         self.password_reset = custom_forgot_password_msg or CourierForgotPasswordMsg(auth_token, company_name)
-        # else:
-        #     self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
         self.auth_cookies = custom_auth_cookies or DefaultAuthCookies()
 
     def __login_widget(self) -> None:
