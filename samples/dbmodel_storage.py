@@ -73,7 +73,7 @@ def select_user(engine):
 #######################################################################
 # CUSTOM HANDLERS
 #######################################################################
-class UserAuthSQLModel(UserAuth):
+class UserAuthSQLModel:
     def check_credentials(self, username, password):
         """
         Authenticates using username and password class attributes.
@@ -96,7 +96,7 @@ class UserAuthSQLModel(UserAuth):
         return False
 
 
-class UserStorageSQLModel(UserStorage):
+class UserStorageSQLModel:
     def register(self, name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in SQLModel database (SQLite)
