@@ -5,8 +5,8 @@ from argon2 import PasswordHasher
 import streamlit as st
 from icecream import ic
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from streamlit_login_auth_ui.protocols import UserStorage, UserAuth
-from streamlit_login_auth_ui import Login
+# from streamlit_modular_auth.protocols import UserStorage, UserAuth
+from streamlit_modular_auth import Login
 
 
 ph = PasswordHasher()

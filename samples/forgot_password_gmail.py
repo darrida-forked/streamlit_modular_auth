@@ -1,7 +1,7 @@
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from streamlit_login_auth_ui.protocols import ForgotPasswordMessage
+from streamlit_modular_auth.protocols import ForgotPasswordMessage
 
 
 class ForgotPasswordGmail(ForgotPasswordMessage):

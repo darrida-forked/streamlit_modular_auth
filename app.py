@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_login_auth_ui import __login__
+from streamlit_modular_auth import __login__
 
 __login__obj = __login__(
     auth_token="courier_auth_token",

@@ -5,7 +5,7 @@ import json
 from trycourier import Courier
 from argon2 import PasswordHasher
 import streamlit as st
-from streamlit_login_auth_ui.protocols import CookieManager
+from streamlit_modular_auth.protocols import CookieManager
 
 
 ph = PasswordHasher()

@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from streamlit_login_auth_ui import Login
+from streamlit_modular_auth import Login
 from _test_user_storage import UserAuthTest, UserStorageTest
 from _test_forgot_password import ForgotPasswordCustomMsgTest
 from _test_auth import CustomAuthTest
@@ -39,12 +39,6 @@ if os.environ.get("CUSTOM_AUTH_COOKIES") == "true":
     custom_auth_cookies = UserAuthCookiesTest()
 else:
     custom_auth_cookies = None
-
-# TEMP
-# custom_authentication = UserAuthTest()
-# custom_login_label = "Test Login"
-# custom_user_storage = UserStorageTest()
-# custom_auth_cookies = UserAuthCookiesTest()
 
 
 login_obj = Login(

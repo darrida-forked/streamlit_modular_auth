@@ -1,5 +1,5 @@
 from typing import Protocol, Optional
-from streamlit_login_auth_ui._cookie_manager import CookieManager
+from streamlit_modular_auth._cookie_manager import CookieManager
 
 
 class UserAuth(Protocol):
@@ -68,14 +68,12 @@ class UserStorage(Protocol):
 
 
 class ForgotPasswordMessage(Protocol):
-    def send(self, username: str, email: str,reset_password: str) -> None:
+    def send(self, username: str, email: str, reset_password: str) -> None:
         """Trigger an email to the user containing the randomly generated password.
 
         Args:
-            auth_token (str): api token
             username (str): User's username
             email (str): User's [TO:] email
-            company_name (str): Used in message title ("<company_name>: Login Password")
             reset_password (str): New temporary password to send
 
         Returns:

@@ -1,4 +1,4 @@
-from streamlit_login_auth_ui.protocols import UserAuth
+from streamlit_modular_auth.protocols import UserAuth
 
 
 class UserAuthLDAP(UserAuth):

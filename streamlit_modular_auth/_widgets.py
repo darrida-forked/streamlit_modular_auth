@@ -5,7 +5,6 @@ from .protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
 from ._handlers import (
     CourierForgotPasswordMsg,
     DefaultAuthCookies,
-    DefaultForgotPasswordMsg,
     DefaultUserAuth,
     DefaultUserStorage,
 )

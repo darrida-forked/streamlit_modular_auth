@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "streamlit_modular_auth"
+version = "2023.01.01"
+description = ""
+authors = ["darrida <darrida.py@gmail.com>"]
+readme = "README.md"
+# packages = [{include = "climate_data_dashboard"}]
+
+[tool.poetry.dependencies]
+python = "^3.9.6"
+streamlit = "^1.0.0"
+streamlit-cookies-manager = "^0.2.0"
+trycourier = "^4.4.0"
+argon2-cffi = "^21.3.0"
+streamlit-lottie = "^0.0.3"
+streamlit-option-menu = "^0.3.2"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+robotframework = "6.0.1"
+robotframework-dependencylibrary = "4.0.0"
+robotframework-pythonlibcore = "4.0.0"
+robotframework-seleniumlibrary = "6.0.0"
+robotframework-stacktrace = "0.4.1"
+selenium = "4.7.2"
+seleniumbase = "4.9.10"
+coverage = "7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

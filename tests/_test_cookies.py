@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 from datetime import datetime, timedelta
 import streamlit as st
-from streamlit_login_auth_ui.protocols import CookieManager
+from streamlit_modular_auth.protocols import CookieManager
 
 
 class UserAuthCookiesTest:
