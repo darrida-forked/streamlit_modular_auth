@@ -17,6 +17,11 @@ class PageView:
     cookies = cookies
 
     def check_permissions(self) -> bool:
+        """Checks if user is (1) logged in, and (2) has permission for the page/section in question
+
+        Returns:
+            bool: authorization status
+        """
         if not model.check_existing_session():
             st.warning("Not logged in...")
             with st.spinner("Redirecting..."):
@@ -25,6 +30,8 @@ class PageView:
         return model.check_group_access(self.groups)
 
     def check_state(self):
+        """Helper method that resets "page" value if a different page is loaded
+        """
         if (
             self.state.get("page")
             and self.state["page"].get("name") == self.name
