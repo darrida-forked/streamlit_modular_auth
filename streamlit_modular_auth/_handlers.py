@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-# from trycourier import Courier
+from trycourier import Courier
 from argon2 import PasswordHasher
 import streamlit as st
 from streamlit_modular_auth.protocols import CookieManager
@@ -231,28 +231,27 @@ class CourierForgotPasswordMsg:
         Returns:
             None
         """
-        ...
-        # client = Courier(auth_token=self.auth_token)
+        client = Courier(auth_token=self.auth_token)
 
-        # resp = client.send_message(
-        #     message={
-        #         "to": {"email": email},
-        #         "content": {
-        #             "title": self.company_name + ": Login Password!",
-        #             "body": "Hi! "
-        #             + username
-        #             + ","
-        #             + "\n"
-        #             + "\n"
-        #             + "Your temporary login password is: "
-        #             + reset_password
-        #             + "\n"
-        #             + "\n"
-        #             + "{{info}}",
-        #         },
-        #         "data": {"info": "Please reset your password at the earliest for security reasons."},
-        #     }
-        # )
+        client.send_message(
+            message={
+                "to": {"email": email},
+                "content": {
+                    "title": self.company_name + ": Login Password!",
+                    "body": "Hi! "
+                    + username
+                    + ","
+                    + "\n"
+                    + "\n"
+                    + "Your temporary login password is: "
+                    + reset_password
+                    + "\n"
+                    + "\n"
+                    + "{{info}}",
+                },
+                "data": {"info": "Please reset your password at the earliest for security reasons."},
+            }
+        )
 
 
 class DefaultForgotPasswordMsg:

@@ -6,8 +6,8 @@ from ._handlers import (
     DefaultAuthCookies,
     DefaultUserAuth,
     DefaultUserStorage,
-    # DefaultForgotPasswordMsg,
-    CourierForgotPasswordMsg,
+    DefaultForgotPasswordMsg,
+    # CourierForgotPasswordMsg,
 )
 from ._utils import (
     _check_valid_name,
@@ -77,7 +77,7 @@ class Login:
         self.login_label = custom_login_label or "Login"
         self.auth = custom_authentication or DefaultUserAuth()
         self.storage = custom_user_storage or DefaultUserStorage()
-        self.password_reset = (custom_forgot_password_msg or CourierForgotPasswordMsg(),)
+        self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
         self.auth_cookies = custom_auth_cookies or DefaultAuthCookies()
 
     def __login_widget(self) -> None:

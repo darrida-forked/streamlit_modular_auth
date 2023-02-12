@@ -19,3 +19,4 @@ dist/
 !.coverage
 !.coveragerc
 !coverage.xml
+!.pre-commit-config.yaml
