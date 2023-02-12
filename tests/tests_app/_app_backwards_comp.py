@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_modular_auth import __login__
 
+
 __login__obj = __login__(
     auth_token="courier_auth_token",
     company_name="Shims",
@@ -12,8 +13,10 @@ __login__obj = __login__(
     lottie_url="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json",
 )
 
+
 logged_in = __login__obj.build_login_ui()
 username = __login__obj.get_username()
+
 
 if logged_in is True:
     st.markdown("Your Streamlit Application Begins here!")
