@@ -22,15 +22,15 @@ from streamlit_login_auth_ui.utils import UserAuth
 class SampleAuth(UserAuth):
     def __init__(self, login_name=None, username=None, password=None):
         super().__init__(login_name, username, password)
-    
+
     def check_password(self):
         if self.username == "hardcoded_user" and self.password == "hardcoded_password":  # Insecure; **Example Only**
             return True
         return False
 
-__login__obj = __login__(auth_token = "courier_auth_token", 
+__login__obj = __login__(auth_token = "courier_auth_token",
                          company_name = "Shims",
-                         width = 200, height = 250, 
+                         width = 200, height = 250,
                          custom_authentication=SampleAuth())
 
 LOGGED_IN = __login__obj.build_login_ui()
@@ -62,9 +62,9 @@ import streamlit as st
 from streamlit_login_auth_ui.widgets import __login__
 from streamlit_login_auth_ui.samples import UserAuthSQLModel, UserStorageSQLModel
 
-__login__obj = __login__(auth_token = "courier_auth_token", 
+__login__obj = __login__(auth_token = "courier_auth_token",
                          company_name = "Shims",
-                         width = 200, height = 250, 
+                         width = 200, height = 250,
                          custom_authentication=UserAuthSQLModel(),
                          custom_user_storage=UserStorageSQLModel())
 
@@ -92,9 +92,9 @@ from streamlit_login_auth_ui.widgets import __login__
 from from __test_forgot_password import ForgotPasswordCustomMsgTest
 
 __login__obj = __login__(
-    auth_token = "courier_auth_token", 
+    auth_token = "courier_auth_token",
     company_name = "Shims",
-    width = 200, height = 250, 
+    width = 200, height = 250,
     custom_forgot_password = ForgotPasswordCustomMsgTest(
         message="Password via an insecure method"
     )

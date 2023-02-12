@@ -15,7 +15,7 @@ __login__obj = __login__(
 logged_in = __login__obj.build_login_ui()
 username = __login__obj.get_username()
 
-if logged_in == True:
+if logged_in is True:
     st.markdown("Your Streamlit Application Begins here!")
     st.markdown(st.session_state)
     st.write(username)

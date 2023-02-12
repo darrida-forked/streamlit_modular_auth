@@ -30,12 +30,8 @@ class PageView:
         return model.check_group_access(self.groups)
 
     def check_state(self):
-        """Helper method that resets "page" value if a different page is loaded
-        """
-        if (
-            self.state.get("page")
-            and self.state["page"].get("name") == self.name
-        ):
+        """Helper method that resets "page" value if a different page is loaded"""
+        if self.state.get("page") and self.state["page"].get("name") == self.name:
             return
         if self.state.get("page"):
             self.state.pop("page")
@@ -76,5 +72,8 @@ class PageView:
                     attempt_nav_page("%s", new Date(), %d);
                 });
             </script>
-        """ % (page_name, timeout_secs)
+        """ % (
+            page_name,
+            timeout_secs,
+        )
         html(nav_script)

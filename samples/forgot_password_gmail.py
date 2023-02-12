@@ -1,4 +1,5 @@
-import smtplib, ssl
+import smtplib
+import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from streamlit_modular_auth.protocols import ForgotPasswordMessage
@@ -12,7 +13,7 @@ class ForgotPasswordGmail(ForgotPasswordMessage):
     def __build_message_body(self, username, password):
         text = f"""\
             Hi! {username},
-            
+
             Your temporary login password is: {password}
 
             Login and change the password as soon as possible.

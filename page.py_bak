@@ -20,7 +20,7 @@ class Page:
     secret: DarridaSecret = secret
     config: Config = Config()
     cookies = cookies
-    
+
     # def check_permissions(self, expected: Union[str, List[str]], provided: str = None) -> bool:
     def check_permissions(self, provided: str = None) -> bool:
         if self.state.get("LOGGED_IN") != True:
@@ -47,10 +47,7 @@ class Page:
         return any(True for x in self.groups if x in user_groups)
 
     def check_state(self):
-        if (
-            self.state.get("page")
-            and self.state["page"].get("name") == self.name
-        ):
+        if self.state.get("page") and self.state["page"].get("name") == self.name:
             return
         if self.state.get("page"):
             self.state.pop("page")
@@ -98,10 +95,13 @@ class Page:
                     attempt_nav_page("%s", new Date(), %d);
                 });
             </script>
-        """ % (page_name, timeout_secs)
+        """ % (
+            page_name,
+            timeout_secs,
+        )
         html(nav_script)
-        
-        
+
+
 # src.handlers.auth.py
 
 from sqlmodel import Session, select
@@ -129,10 +129,9 @@ class SQLModelUserAuth:
             if user and user.active == True:
                 ph = PasswordHasher()
                 try:
-                    if (
-                        self.ldap_auth(username, password)  # Attempt to authenticate using LDAP
-                        or ph.verify(user.hashed_password, password)  # Attempt to authenticate using local password hash
-                    ):
+                    if self.ldap_auth(username, password) or ph.verify(  # Attempt to authenticate using LDAP
+                        user.hashed_password, password
+                    ):  # Attempt to authenticate using local password hash
                         if user.groups:
                             groups = [x.name for x in user.groups]
                             st.session_state["groups"] = groups
@@ -143,7 +142,8 @@ class SQLModelUserAuth:
                     if str(e) != "The password does not match the supplied hash":
                         raise VerifyMismatchError(e) from e
         return False
-      
+
+
 # src.handlers.cookies.py
 
 import secrets
@@ -198,10 +198,7 @@ class DiskcacheAuthCookies:
         """
         auth_token = secrets.token_urlsafe(48)
         expires = datetime.now() + timedelta(seconds=200)
-        user_session_cache = {
-            "auth_token": auth_token,
-            "expires": expires.isoformat()
-        }
+        user_session_cache = {"auth_token": auth_token, "expires": expires.isoformat()}
         dc.set(username, user_session_cache)
         cookies.set("auth_token", auth_token)
         cookies.set("auth_username", username)
@@ -219,7 +216,8 @@ class DiskcacheAuthCookies:
         cookies.expire("auth_token")
         cookies.expire("groups")
         st.session_state.pop("groups")
-        
+
+
 # src.handlers.user.py
 
 from typing import Optional
@@ -232,7 +230,9 @@ from src.db.db import a_engine as engine
 
 
 class SQLModelUserStorage:
-    def register(self, name: str, email: str, username: str, password: str, first_name: str, last_name: str, ldap: bool = True) -> None:
+    def register(
+        self, name: str, email: str, username: str, password: str, first_name: str, last_name: str, ldap: bool = True
+    ) -> None:
         """
         Saves the information of the new user in SQLModel database (SQLite)
         Args:
@@ -245,14 +245,15 @@ class SQLModelUserStorage:
         """
         ph = PasswordHasher()
         user = User(
-            username=username, 
-            email=email, 
+            username=username,
+            email=email,
             first_name=first_name,
-            last_name=last_name, 
+            last_name=last_name,
             hashed_password=ph.hash(password),
             active=True,
             ldap=ldap,
-            create_date=datetime.now())
+            create_date=datetime.now(),
+        )
         with Session(engine) as session:
             session.add(user)
             session.commit()
@@ -308,6 +309,7 @@ class SQLModelUserStorage:
                 session.add(user)
                 session.commit()
 
+
 # src.apps.admin.models.py
 
 from typing import Optional, List
@@ -318,16 +320,12 @@ from sqlmodel import Field, SQLModel, Relationship
 class UserGroupsLink(SQLModel, table=True):
     __table_args__ = {
         # 'schema': "apps",
-        'keep_existing': True,
+        "keep_existing": True,
         # 'extend_existing': True
     }
 
-    group_id: Optional[int] = Field(
-        default=None, foreign_key="streamlit_groups.id", primary_key=True
-    )
-    user_id: Optional[int] = Field(
-        default=None, foreign_key="streamlit_users.id", primary_key=True
-    )
+    group_id: Optional[int] = Field(default=None, foreign_key="streamlit_groups.id", primary_key=True)
+    user_id: Optional[int] = Field(default=None, foreign_key="streamlit_users.id", primary_key=True)
     create_date: Optional[datetime] = datetime.now()
     created_by: str = "ADMIN"
     update_date: datetime = datetime.now()
@@ -337,7 +335,7 @@ class UserGroupsLink(SQLModel, table=True):
 class Group(SQLModel, table=True):
     __table_args__ = {
         # 'schema': "apps",
-        'keep_existing': True,
+        "keep_existing": True,
         # 'extend_existing': True
     }
     __tablename__ = "streamlit_groups"
@@ -356,11 +354,11 @@ class Group(SQLModel, table=True):
 class User(SQLModel, table=True):
     __table_args__ = {
         # 'schema': "apps",
-        'keep_existing': True,
+        "keep_existing": True,
         # 'extend_existing': True
     }
     __tablename__ = "streamlit_users"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
     email: str = Field(unique=True)
@@ -377,7 +375,7 @@ class User(SQLModel, table=True):
 
     groups: List[Group] = Relationship(back_populates="users", link_model=UserGroupsLink)
 
-      
+
 # src.apps.admin.admin.py
 
 from typing import List
@@ -398,14 +396,12 @@ class AdminPage(Page):
     groups = ["admin"]
     db = app_engine
 
-
     # CALLABLES FOR INPUT WIDGETS
     def change_user_status(self, username, active):
         if active == True:
             self.user_disable(username)
         else:
             self.user_enable(username)
-
 
     def change_group_status(self, name, active):
         print(name, active)
@@ -416,13 +412,11 @@ class AdminPage(Page):
             print("Attempt to enable")
             self.group_enable(name)
 
-
     def change_user_group_status(self, username: str, group: str, granted):
         if not granted:
             self.user_add_groups(username, group)
         else:
             self.user_delete_group(username, group)
-
 
     def open_user_info(self, username):
         with Session(self.db) as session:
@@ -430,14 +424,13 @@ class AdminPage(Page):
             if user := session.exec(statement).one():
                 st.session_state["page"]["open_user"] = user
 
-
     # FUNCTIONALITY
     def user_info(self, user: User = None):
         st.markdown("### User Info")
 
         password = None
         # USER INFORMATION
-        col1, _, col2, col3, _ = st.columns((0.4, 0.1, 0.05, 0.2, 0.25), gap="small")#["Information", "Groups"])
+        col1, _, col2, col3, _ = st.columns((0.4, 0.1, 0.05, 0.2, 0.25), gap="small")  # ["Information", "Groups"])
         with col1:
             user.username = st.text_input("Username", value=user.username or None)
             user.first_name = st.text_input("First Name", value=user.first_name or None)
@@ -458,8 +451,11 @@ class AdminPage(Page):
             if group:
                 granted = group in permissions
             group_checkbox.checkbox(
-                label="", value=granted, key=f"{i}_group_list", 
-                on_change=self.change_user_group_status, args=[user.username, group, granted]
+                label="",
+                value=granted,
+                key=f"{i}_group_list",
+                on_change=self.change_user_group_status,
+                args=[user.username, group, granted],
             )
 
         # RECORD DATES
@@ -485,7 +481,6 @@ class AdminPage(Page):
                 st.session_state["page"].pop("open_user")
                 st.experimental_rerun()
 
-
     def create_user(self):
         # CREATE USER
         create_user = st.empty()
@@ -503,7 +498,8 @@ class AdminPage(Page):
             storage = SQLModelUserStorage()
             try:
                 storage.register(
-                    "", email, username, password=password, first_name=first_name, last_name=last_name, ldap=ldap)
+                    "", email, username, password=password, first_name=first_name, last_name=last_name, ldap=ldap
+                )
                 with Session(self.db) as session:
                     statement = select(User).where(User.username == username)
                     if results := session.exec(statement).one():
@@ -516,8 +512,7 @@ class AdminPage(Page):
             st.session_state["page"].pop("create_user")
             st.experimental_rerun()
 
-
-    def users_list(self, users: List[User]):        
+    def users_list(self, users: List[User]):
         st.write("### User List")
         for i, user in enumerate(users, start=1):
             col1, col2, col3, col4, col5 = st.columns((0.5, 1, 1, 1, 1))
@@ -526,14 +521,15 @@ class AdminPage(Page):
             col3.write(f"{user.first_name} {user.last_name}")
             col4.write("Active" if user.active else "Inactive")
             open_button = col5.empty()
-            
-            active_checkbox.checkbox(label="", value=user.active, key=i, on_change=self.change_user_status, args=[user.username, user.active])
+
+            active_checkbox.checkbox(
+                label="", value=user.active, key=i, on_change=self.change_user_status, args=[user.username, user.active]
+            )
             open_button.button("Open", key=f"{i}_open_user", on_click=self.open_user_info, args=[user.username])
 
-
-    def groups_list(self, groups: List[Group]):        
+    def groups_list(self, groups: List[Group]):
         page_state = st.session_state["page"]
-        
+
         st.write("### Group List")
         if page_state.get("show_all_groups") != True:
             if st.button("Show Inactive"):
@@ -549,8 +545,13 @@ class AdminPage(Page):
             active_checkbox = col1.empty()
             col2.write(group.name)
 
-            active_checkbox.checkbox(label="", value=group.active, key=f"{i}_groups", on_change=self.change_group_status, args=[group.name, group.active])
-
+            active_checkbox.checkbox(
+                label="",
+                value=group.active,
+                key=f"{i}_groups",
+                on_change=self.change_group_status,
+                args=[group.name, group.active],
+            )
 
     def user_add_groups(self, username: str, groups: str) -> None:
         with Session(self.db) as session:
@@ -564,8 +565,8 @@ class AdminPage(Page):
                 return True
             else:
                 import streamlit as st
-                st.error("Found no record for user.")
 
+                st.error("Found no record for user.")
 
     def user_delete_group(self, username: str, group: str):
         with Session(self.db) as session:
@@ -580,8 +581,8 @@ class AdminPage(Page):
                     return True
             else:
                 import streamlit as st
-                st.error("Found no record for user.")
 
+                st.error("Found no record for user.")
 
     def user_get_groups(self, username: str):
         with Session(self.db) as session:
@@ -591,15 +592,14 @@ class AdminPage(Page):
             else:
                 st.error("Found no record for user.")
 
-
     def user_get_all(self):
         with Session(self.db) as session:
             statement = select(User)
             if users := session.exec(statement):
                 return list(users)
             import streamlit as st
-            st.error("Found no users.")
 
+            st.error("Found no users.")
 
     def user_update(self, user: User) -> None:
         """
@@ -625,10 +625,8 @@ class AdminPage(Page):
             session.add(saved_user)
             session.commit()
 
-
     def user_disable(self, username: str):
         self._user_change_status(False, username)
-
 
     def user_enable(self, username: str):
         self._user_change_status(True, username)
@@ -652,8 +650,8 @@ class AdminPage(Page):
                 return True
             else:
                 import streamlit as st
-                st.error("Found no record for user.")
 
+                st.error("Found no record for user.")
 
     ##################################################################
     # GROUPS
@@ -671,7 +669,6 @@ class AdminPage(Page):
             return False
         return True
 
-
     def group_get_all(self, return_str=True) -> List["Group"]:
         groups_l = []
         with Session(self.db) as session:
@@ -683,17 +680,15 @@ class AdminPage(Page):
                 groups_l = list(groups)
             else:
                 import streamlit as st
+
                 st.error("Found no groups.")
         return groups_l
-
 
     def group_disable(self, name: str):
         self._change_group_status(False, name)
 
-
     def group_enable(self, name: str):
         self._change_group_status(True, name)
-
 
     def _change_group_status(self, change_to: bool, name: str):
         with Session(self.db) as session:
@@ -705,7 +700,9 @@ class AdminPage(Page):
                 return True
             else:
                 import streamlit as st
+
                 st.error("Found no record for group.")
+
 
 # src.pages.Admin.py
 
@@ -750,7 +747,7 @@ else:
         if add_group_button == True:
             if result := page.user_add_groups(username, groups):
                 st.success("Added group(s).")
-        
+
         # REMOVE GROUP
         remove_group = st.empty()
         with remove_group.form("Remove Group"):

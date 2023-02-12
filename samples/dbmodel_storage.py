@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 from argon2 import PasswordHasher
 import streamlit as st
-from icecream import ic
 from sqlalchemy.exc import IntegrityError, NoResultFound
+
 # from streamlit_modular_auth.protocols import UserStorage, UserAuth
 from streamlit_modular_auth import Login
 
@@ -15,9 +15,9 @@ ph = PasswordHasher()
 #######################################################################
 # BOILERPLATE SPECIFIC TO SQLMODEL DATA (not the custom handler itself)
 #######################################################################
-class User(SQLModel, table=True, ):
-    __table_args__ = {'keep_existing': True}
-    
+class User(SQLModel, table=True):
+    __table_args__ = {"keep_existing": True}
+
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
     email: str = Field(unique=True)
@@ -91,8 +91,8 @@ class UserAuthSQLModel:
                 try:
                     if ph.verify(user.hashed_password, password):
                         return True
-                except:
-                    pass
+                except Exception:
+                    print("Put better exception - dbmodule_storage.py like 95")
         return False
 
 

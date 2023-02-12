@@ -16,8 +16,8 @@ def _load_lottieurl(url: str) -> str:
         if r.status_code != 200:
             return None
         return r.json()
-    except:
-        pass
+    except Exception:
+        print("create better exception for _utils.py line 20")
 
 
 def _check_valid_name(name_sign_up: str) -> bool:

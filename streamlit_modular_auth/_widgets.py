@@ -3,10 +3,11 @@ from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from .protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
 from ._handlers import (
-    CourierForgotPasswordMsg,
     DefaultAuthCookies,
     DefaultUserAuth,
     DefaultUserStorage,
+    # DefaultForgotPasswordMsg,
+    CourierForgotPasswordMsg,
 )
 from ._utils import (
     _check_valid_name,
@@ -42,7 +43,7 @@ class Login:
         custom_forgot_password_msg: ForgotPasswordMessage = None,
         custom_auth_cookies: AuthCookies = None,
         auth_token: str = None,
-        company_name: str = None
+        company_name: str = None,
     ):
         """
         Arguments:
@@ -55,12 +56,14 @@ class Login:
         6. logout_button_name : The logout button name.
         7. hide_menu_bool : Pass True if the streamlit menu should be hidden.
         8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
-        9. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
+        9. lottie_url : The lottie animation you would like to use on the login page (https://lottiefiles.com/featured)
         10. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
         11. hide_forgot_password : Pass True if 'Forgot Password?' option should be hidden from Navigation.
         11. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
-        12. custom_authentication : Option to pass custom authentication class that inherits from StreamlitDefaultUserAuth (see information further below).
-        13. custom_user_storage : Option to pass custom user storage class that inherits from StreamLitDefaultUserStorage (see information further below).
+        12. custom_authentication : Option to pass custom authentication class that inherits from
+            StreamlitDefaultUserAuth (see information further below).
+        13. custom_user_storage : Option to pass custom user storage class that inherits from
+            StreamLitDefaultUserStorage (see information further below).
         """
         self.width = width
         self.height = height
@@ -74,14 +77,14 @@ class Login:
         self.login_label = custom_login_label or "Login"
         self.auth = custom_authentication or DefaultUserAuth()
         self.storage = custom_user_storage or DefaultUserStorage()
-        self.password_reset = custom_forgot_password_msg or CourierForgotPasswordMsg(auth_token, company_name)
+        self.password_reset = (custom_forgot_password_msg or CourierForgotPasswordMsg(),)
         self.auth_cookies = custom_auth_cookies or DefaultAuthCookies()
 
     def __login_widget(self) -> None:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
-        if st.session_state["LOGGED_IN"] == True:
+        if st.session_state["LOGGED_IN"] is True:
             return
 
         if self.auth_cookies.check(cookies):
@@ -96,8 +99,8 @@ class Login:
             st.markdown("###")
             login_submit_button = st.form_submit_button(label="Login")
 
-        if login_submit_button == True:
-            if self.auth.check_credentials(username, password) != True:
+        if login_submit_button is True:
+            if self.auth.check_credentials(username, password) is not True:
                 st.error("Invalid Username or Password!")
             else:
                 self.auth_cookies.set(username, cookies)
@@ -125,15 +128,15 @@ class Login:
             sign_up_submit_button = st.form_submit_button(label="Register")
 
         if sign_up_submit_button:
-            if _check_valid_name(name) == False:
+            if _check_valid_name(name) is False:
                 st.error("Please enter a valid name!")
-            elif _check_valid_email(email) == False:
+            elif _check_valid_email(email) is False:
                 st.error("Please enter a valid Email!")
-            elif _check_valid_username(username) == False:
+            elif _check_valid_username(username) is False:
                 st.error("Please enter a valid Username! (no space characters)")
             elif self.storage.get_username_from_email(email):
                 st.error("Email already exists!")
-            elif self.storage.check_username_exists(username) == True:
+            elif self.storage.check_username_exists(username) is True:
                 st.error("Sorry, username already exists!")
             else:
                 self.storage.register(name, email, username, password)
@@ -183,7 +186,7 @@ class Login:
             username = self.storage.get_username_from_email(email)
             if not username:
                 st.error("Email does not exist!")
-            elif self.auth.check_credentials(username, password) == False:
+            elif self.auth.check_credentials(username, password) is False:
                 st.error("Incorrect password!")
             elif new_password != new_password_check:
                 st.error("Passwords don't match!")
@@ -195,12 +198,12 @@ class Login:
         """
         Creates the logout widget in the sidebar only if the user is logged in.
         """
-        if st.session_state["LOGGED_IN"] == True:
+        if st.session_state["LOGGED_IN"] is True:
             del_logout = st.sidebar.empty()
             del_logout.markdown("#")
             logout_click_check = del_logout.button(self.logout_button_name)
 
-            if logout_click_check == True:
+            if logout_click_check is True:
                 st.session_state["LOGOUT_BUTTON_HIT"] = True
                 self.auth_cookies.expire(cookies)
                 st.session_state["LOGGED_IN"] = False
@@ -289,7 +292,7 @@ class Login:
             with c1:
                 self.__login_widget()
             with c2:
-                if st.session_state["LOGGED_IN"] == False:
+                if st.session_state["LOGGED_IN"] is False:
                     self.__animation()
 
         if not self.hide_registration or not self.hide_account_management:
@@ -306,13 +309,13 @@ class Login:
 
         self.__logout_widget()
 
-        if st.session_state["LOGGED_IN"] == True:
+        if st.session_state["LOGGED_IN"] is True:
             main_page_sidebar.empty()
 
-        if self.hide_menu_bool == True:
+        if self.hide_menu_bool is True:
             self.__hide_menu()
 
-        if self.hide_footer_bool == True:
+        if self.hide_footer_bool is True:
             self.__hide_footer()
 
         return st.session_state["LOGGED_IN"]

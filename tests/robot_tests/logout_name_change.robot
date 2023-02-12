@@ -50,4 +50,3 @@ Logout Name - Logout Button is Exit
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain     Login
     Close Browser
-

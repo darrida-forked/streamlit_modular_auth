@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 from typing import Optional
-import json
-from trycourier import Courier
+
+# from trycourier import Courier
 from argon2 import PasswordHasher
 import streamlit as st
 from streamlit_modular_auth.protocols import CookieManager
@@ -31,8 +31,8 @@ class DefaultUserAuth:
                 try:
                     if ph.verify(user["password"], password):
                         return True
-                except:
-                    pass
+                except Exception:
+                    print("created better exception for _handlers.py line 34")
         return False
 
 
@@ -51,10 +51,10 @@ class DefaultAuthCookies:
         """
         if (
             "__streamlit_login_signup_ui_username__" in cookies.keys()
-            and st.session_state["LOGOUT_BUTTON_HIT"] == False
+            and st.session_state["LOGOUT_BUTTON_HIT"] is False
         ):
-            if cookies.get("__streamlit_login_signup_ui_username__") != '1c9a923f-fb21-4a91-b3f3-5f18e3f01182':
-                    return True
+            if cookies.get("__streamlit_login_signup_ui_username__") != "1c9a923f-fb21-4a91-b3f3-5f18e3f01182":
+                return True
         return False
 
     def set(self, username, cookies: CookieManager):
@@ -84,11 +84,14 @@ class DefaultAuthCookies:
         Returns:
             None
         """
-        cookies.expire("__streamlit_login_signup_ui_username__", '1c9a923f-fb21-4a91-b3f3-5f18e3f01182')
+        cookies.expire(
+            "__streamlit_login_signup_ui_username__",
+            "1c9a923f-fb21-4a91-b3f3-5f18e3f01182",
+        )
 
     def get_username(self, cookies: CookieManager):
-        if st.session_state["LOGOUT_BUTTON_HIT"] == False:
-            if "__streamlit_login_signup_ui_username__" in cookies.keys():
+        if st.session_state["LOGOUT_BUTTON_HIT"] is False:
+            if "__streamlit_login_signis False:rname__" in cookies.keys():
                 return cookies.get("__streamlit_login_signup_ui_username__")
 
 
@@ -213,7 +216,7 @@ class CourierForgotPasswordMsg:
     def __init__(self, auth_token, company_name):
         self.company_name = company_name
         self.auth_token = auth_token
-    
+
     def send(self, username: str, email: str, reset_password: str) -> None:
         """
         Triggers an email to the user containing the randomly generated password.
@@ -228,29 +231,30 @@ class CourierForgotPasswordMsg:
         Returns:
             None
         """
-        client = Courier(auth_token=self.auth_token)
+        ...
+        # client = Courier(auth_token=self.auth_token)
 
-        resp = client.send_message(
-            message={
-                "to": {"email": email},
-                "content": {
-                    "title": self.company_name + ": Login Password!",
-                    "body": "Hi! "
-                    + username
-                    + ","
-                    + "\n"
-                    + "\n"
-                    + "Your temporary login password is: "
-                    + reset_password
-                    + "\n"
-                    + "\n"
-                    + "{{info}}",
-                },
-                "data": {"info": "Please reset your password at the earliest for security reasons."},
-            }
-        )
+        # resp = client.send_message(
+        #     message={
+        #         "to": {"email": email},
+        #         "content": {
+        #             "title": self.company_name + ": Login Password!",
+        #             "body": "Hi! "
+        #             + username
+        #             + ","
+        #             + "\n"
+        #             + "\n"
+        #             + "Your temporary login password is: "
+        #             + reset_password
+        #             + "\n"
+        #             + "\n"
+        #             + "{{info}}",
+        #         },
+        #         "data": {"info": "Please reset your password at the earliest for security reasons."},
+        #     }
+        # )
 
 
 class DefaultForgotPasswordMsg:
     def send(self, username: str, email: str, reset_password: str) -> None:
-        st.write(f"Talk to your system administrator.")
+        st.write("Talk to your system administrator.")

@@ -22,8 +22,8 @@ class UserAuthTest:
             try:
                 if ph.verify(user_l[0]["hashed_password"], password):
                     return True
-            except:
-                pass
+            except Exception:
+                print("create better exception for _test_user_storage.py line 26")
         return False
 
 

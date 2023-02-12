@@ -64,7 +64,7 @@ login_obj = Login(
 logged_in = login_obj.build_login_ui()
 
 
-if logged_in == True:
+if logged_in is True:
     st.markdown("Your Streamlit Application Begins here!")
 
     if st.button("Click here..."):
