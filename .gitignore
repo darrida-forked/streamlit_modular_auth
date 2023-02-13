@@ -1,3 +1,7 @@
 venv
 _secret_auth_.json
 .*
+*.pyc
+*.egg-info/
+*.db
+dist
