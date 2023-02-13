@@ -2,8 +2,8 @@ import time
 from typing import List
 import streamlit as st
 from streamlit.components.v1 import html
-from streamlit_modular_auth import cookies
 from .models import DefaultPageModel
+from .config import Config, config
 
 
 model = DefaultPageModel()
@@ -13,8 +13,8 @@ class DefaultPageView:
     title: str
     name: str
     groups: List[str]
-    state: st.session_state = st.session_state
-    cookies = cookies
+    cookies = config.cookies
+    state = config.state
 
     def check_permissions(self) -> bool:
         """Checks if user is (1) logged in, and (2) has permission for the page/section in question
@@ -77,3 +77,7 @@ class DefaultPageView:
             timeout_secs,
         )
         html(nav_script)
+
+    def setup(self, config: Config):
+        self.cookies = config.cookies
+        self.state = config.state

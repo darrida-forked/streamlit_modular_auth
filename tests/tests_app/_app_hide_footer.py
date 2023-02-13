@@ -2,11 +2,7 @@ import streamlit as st
 from streamlit_modular_auth import Login
 
 
-login_obj = Login(
-    auth_token="courier_auth_token", company_name="Sample Name", width=200, height=250, hide_footer_bool=True
-)
-
-
+login_obj = Login(hide_footer_bool=True)
 logged_in = login_obj.build_login_ui()
 
 

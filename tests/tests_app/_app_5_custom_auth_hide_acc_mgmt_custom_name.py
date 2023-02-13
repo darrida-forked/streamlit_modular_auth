@@ -1,18 +1,11 @@
 import streamlit as st
-from streamlit_modular_auth import Login
+from streamlit_modular_auth import Login, config
 from tests_handlers._test_auth import CustomAuthTest
 
 
-login_obj = Login(
-    auth_token="courier_auth_token",
-    company_name="Sample Name",
-    width=200,
-    height=250,
-    hide_account_management=True,
-    custom_login_label="Custom Login",
-    custom_authentication=CustomAuthTest(),
-)
-
+config.auth = CustomAuthTest()
+login_obj = Login(hide_account_management=True, login_label="Custom Login")
+login_obj.setup(config)
 
 logged_in = login_obj.build_login_ui()
 

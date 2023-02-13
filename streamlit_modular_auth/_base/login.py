@@ -1,24 +1,14 @@
 import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
-from .protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
-from ._handlers import (
-    DefaultAuthCookies,
-    DefaultUserAuth,
-    DefaultUserStorage,
-    DefaultForgotPasswordMsg,
-)
-from ._utils import (
+from streamlit_modular_auth._utils import (
     _check_valid_name,
     _check_valid_email,
     _check_valid_username,
     _generate_random_passwd,
     _load_lottieurl,
 )
-from ._cookie_manager import _initialize_cookie_manbager
-
-
-cookies = _initialize_cookie_manbager()
+from .config import config, Config
 
 
 class Login:
@@ -29,20 +19,15 @@ class Login:
         *,
         width: int = 200,
         height: int = 250,
-        logout_button_name: str = "Logout",
+        lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
         hide_menu_bool: bool = False,
         hide_footer_bool: bool = False,
-        lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
         hide_registration: bool = False,
         hide_account_management: bool = False,
         hide_forgot_password: bool = False,
-        custom_login_label: str = None,
-        custom_authentication: UserAuth = None,
-        custom_user_storage: UserStorage = None,
-        custom_forgot_password_msg: ForgotPasswordMessage = None,
-        custom_auth_cookies: AuthCookies = None,
-        auth_token: str = None,
-        company_name: str = None,
+        login_label: str = "Login",
+        logout_button_name: str = "Logout",
+        config: Config = config,
     ):
         """
         Arguments:
@@ -73,11 +58,21 @@ class Login:
         self.hide_registration = hide_registration
         self.hide_forgot_password = hide_forgot_password
         self.hide_account_management = hide_account_management
-        self.login_label = custom_login_label or "Login"
-        self.auth = custom_authentication or DefaultUserAuth()
-        self.storage = custom_user_storage or DefaultUserStorage()
-        self.password_reset = custom_forgot_password_msg or DefaultForgotPasswordMsg()
-        self.auth_cookies = custom_auth_cookies or DefaultAuthCookies()
+        self.login_label = login_label
+        self.auth = config.auth
+        self.storage = config.user_storage
+        self.password_reset = config.forgot_password_msg
+        self.auth_cookies = config.auth_cookies
+        self.cookies = config.cookies
+        self.state = config.state
+
+    def setup(self, config: Config):
+        self.auth = config.auth
+        self.storage = config.user_storage
+        self.password_reset = config.forgot_password_msg
+        self.auth_cookies = config.auth_cookies
+        self.cookies = config.cookies
+        self.state = config.state
 
     def __login_widget(self) -> None:
         """
@@ -86,7 +81,7 @@ class Login:
         if st.session_state["LOGGED_IN"] is True:
             return
 
-        if self.auth_cookies.check(cookies):
+        if self.auth_cookies.check(self.cookies):
             st.session_state["LOGGED_IN"] = True
             return
 
@@ -102,7 +97,7 @@ class Login:
             if self.auth.check_credentials(username, password) is not True:
                 st.error("Invalid Username or Password!")
             else:
-                self.auth_cookies.set(username, cookies)
+                self.auth_cookies.set(username, self.cookies)
                 st.session_state["LOGGED_IN"] = True
                 del_login.empty()
                 st.experimental_rerun()
@@ -204,7 +199,7 @@ class Login:
 
             if logout_click_check is True:
                 st.session_state["LOGOUT_BUTTON_HIT"] = True
-                self.auth_cookies.expire(cookies)
+                self.auth_cookies.expire(self.cookies)
                 st.session_state["LOGGED_IN"] = False
                 del_logout.empty()
                 st.experimental_rerun()

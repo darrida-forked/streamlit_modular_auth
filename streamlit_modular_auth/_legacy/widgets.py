@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_modular_auth._widgets import Login, cookies
+from streamlit_modular_auth import Login, cookies
 from streamlit_modular_auth._handlers import (
     # DefaultAuthCookies,
     CourierForgotPasswordMsg,
