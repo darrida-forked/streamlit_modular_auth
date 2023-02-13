@@ -1,10 +1,10 @@
 from streamlit import session_state as st_session_state
 from streamlit_modular_auth import cookies
-from streamlit_modular_auth.protocols import AuthCookies
+from streamlit_modular_auth._handlers import DefaultAuthCookies
 
 
-class PageModel:
-    """Helper Methods for Backup Auth Logic
+class DefaultPageModel:
+    """Helper Methods for Backend Auth Logic
 
     Attributes:
     - state: Used in methods below; can be used for other purposes in an application using this auth library as well
@@ -13,7 +13,7 @@ class PageModel:
 
     state = st_session_state
     cookies = cookies
-    _auth_cookies: AuthCookies
+    auth_cookies = DefaultAuthCookies()
 
     def check_existing_session(self) -> bool:
         """Checks whether or not user is logged in
@@ -23,7 +23,7 @@ class PageModel:
         """
         if self.state.get("LOGGED_IN") is True:
             return True
-        if self._auth_cookies.check(self.cookies) is True:
+        if self.auth_cookies.check(self.cookies) is True:
             self.state["LOGGED_IN"] = True
             return True
         return False

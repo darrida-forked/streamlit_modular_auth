@@ -113,6 +113,14 @@ Start the webserver
     Set suite variable    ${PROCESS_BACKWARDS_COMPATIBILITY}
     Log To Console     ${PROCESS_BACKWARDS_COMPATIBILITY}
 
+    ${PROCESS_MULTIPAGE_AUTH}    Start Process    python3
+        ...    -m    coverage    run    -a    --source    tests   
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/page_auth_app/Home.py    
+        ...    --server.port    ${PORT_MULTIPAGE_AUTH} 
+        ...    --server.headless   true
+    Set suite variable    ${PROCESS_MULTIPAGE_AUTH}
+    Log To Console     ${PROCESS_MULTIPAGE_AUTH}
+
     sleep    2s
 
 Stop the webserver

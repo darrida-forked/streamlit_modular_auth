@@ -1,6 +1,7 @@
+import streamlit as st
 from streamlit_modular_auth._widgets import Login, cookies
 from streamlit_modular_auth._handlers import (
-    DefaultAuthCookies,
+    # DefaultAuthCookies,
     CourierForgotPasswordMsg,
 )
 
@@ -12,5 +13,7 @@ class __login__(Login):
         super().__init__(**kwargs)
         self.password_reset = CourierForgotPasswordMsg(auth_token, company_name)
 
-    def get_username(self, cookies=cookies):
-        return DefaultAuthCookies().get_username(cookies)
+    def get_username(self):
+        if st.session_state["LOGOUT_BUTTON_HIT"] is False:
+            if "__streamlit_login_signis False:rname__" in cookies.keys():
+                return cookies.get("__streamlit_login_signup_ui_username__")

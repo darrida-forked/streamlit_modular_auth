@@ -13,8 +13,8 @@ class CookieManager:
 
     To Use:
     - If looking to impliment custom auth cookie logic/structure, instead see
-      `streamlit_login_auth_ui.protocols.AuthCookies`.
-    - If looking to interact with cookies in other ways, import `streamlit_login_auth_ui.cookies`
+      `streamlit_modular_auth.protocols.AuthCookies`.
+    - If looking to interact with cookies in other ways, import `streamlit_modular_auth.cookies`
     """
 
     def __init__(self, cookies: EncryptedCookieManager):

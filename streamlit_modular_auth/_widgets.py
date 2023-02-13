@@ -7,7 +7,6 @@ from ._handlers import (
     DefaultUserAuth,
     DefaultUserStorage,
     DefaultForgotPasswordMsg,
-    # CourierForgotPasswordMsg,
 )
 from ._utils import (
     _check_valid_name,
