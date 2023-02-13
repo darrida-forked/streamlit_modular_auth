@@ -1,10 +1,12 @@
-
 HOW TO INSTALL ALL LIBRARIES:
 python3.10 -m venv venv
 source venv/bin/activate
 python3.10 -m pip install -r requirement.txt
 
-# Streamlit Login/ Sign Up Library   [![Downloads](https://static.pepy.tech/personalized-badge/streamlit-login-auth-ui?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/streamlit-login-auth-ui)
+# Streamlit Login/ Sign Up Library
+[![Downloads](https://static.pepy.tech/personalized-badge/streamlit-login-auth-ui?period=month&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/streamlit-login-auth-ui)
+<img src="./tests/coverage.svg">
+<img src="./tests/testing.svg">
 
 The streamlit_login_auth_ui library is meant for streamlit application developers.
 It lets you connect your streamlit application to a pre-built and secure Login/ Sign-Up page.
@@ -25,7 +27,7 @@ https://pypi.org/project/streamlit-login-auth-ui/
 
 ## The UI:
 ![login_streamlit](https://user-images.githubusercontent.com/75731631/185765909-a70dd7af-240d-4a90-9140-45d6292e76f0.png)
- 
+
 ## Installation
 
 ```python
@@ -48,6 +50,11 @@ All you need to do is create an object for the ```__login__``` class and pass th
 6. hide_menu_bool : Pass True if the streamlit menu should be hidden.
 7. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
 8. lottie_url : The lottie animation you would like to use on the login page. Explore animations at - https://lottiefiles.com/featured
+9. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
+10. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
+11. custom_authentication : Option to pass custom authentication class that inherits from UserAuth (see information further below).
+12. custom_user_storage : Option to pass custom user storage class that inherits from UserStorage (see information further below).
+13. custom_forgot_password : Option to pass custom forgot password class that inherits from ForgotPasswordMessage (see information further below).
 
 #### Mandatory Arguments:
 * ```auth_token```
@@ -56,10 +63,15 @@ All you need to do is create an object for the ```__login__``` class and pass th
 * ```height```
 
 #### Non Mandatory Arguments:
-* ```logout_button_name```     [default = 'Logout']
-* ```hide_menu_bool```         [default = False]
-* ```hide_footer_bool```       [default = False]
-* ```lottie_url```             [default = https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json]
+* ```logout_button_name```      [default = 'Logout']
+* ```hide_menu_bool```          [default = False]
+* ```hide_footer_bool```        [default = False]
+* ```lottie_url```              [default = https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json]
+* ```hide_registration```       [default = False]
+* ```hide_account_management``` [default = False]
+* ```custom_authentication```   [default = None]
+* ```custom_user_storage```     [default = None]
+* ```custom_forgot_password```  [default = None]
 
 After doing that, just call the ```build_login_ui()``` function using the object you just created and store the return value in a variable.
 
@@ -68,29 +80,28 @@ After doing that, just call the ```build_login_ui()``` function using the object
 import streamlit as st
 from streamlit_login_auth_ui.widgets import __login__
 
-__login__obj = __login__(auth_token = "courier_auth_token", 
+__login__obj = __login__(auth_token = "courier_auth_token",
                     company_name = "Shims",
-                    width = 200, height = 250, 
-                    logout_button_name = 'Logout', hide_menu_bool = False, 
-                    hide_footer_bool = False, 
+                    width = 200, height = 250,
+                    logout_button_name = 'Logout', hide_menu_bool = False,
+                    hide_footer_bool = False,
                     lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json')
 
 LOGGED_IN = __login__obj.build_login_ui()
 
 if LOGGED_IN == True:
-
     st.markown("Your Streamlit Application Begins here!")
 ```
 
 That's it! The library handles the rest. \
-Just make sure you call/ build your application indented under ```if st.session_state['LOGGED_IN'] == True:```, this guarantees that your application runs only after the user is securely logged in. 
+Just make sure you call/ build your application indented under ```if st.session_state['LOGGED_IN'] == True:```, this guarantees that your application runs only after the user is securely logged in.
 
 ## Explanation
 ### Login page
-The login page, authenticates the user.
+The login page, by default, authenticates the user using the ```_secret_auth_.json``` file.
 
 ### Create Account page
-Stores the user info in a secure way in the ```_secret_auth_.json``` file. \
+By default, this stores the user info in a secure way using the  ```_secret_auth_.json``` file. \
 ![create_account_streamlit](https://user-images.githubusercontent.com/75731631/185765826-3bb5d2ca-c549-46ff-bf14-2cc42d295588.png)
 
 ### Forgot Password page
@@ -108,14 +119,14 @@ Generated in the sidebar only if the user is logged in, allows users to logout. 
 
 __Cookies are automatically created and destroyed depending on the user authentication status.__
 
+## Custom Functionality
+- See `custom_functionality.md`
+
+## Development
+- See `tests/DEVELOPMENT_README.md` for information
+
 ## Version
-v0.2.0
+v0.2.1
 
 ## License
 [MIT](https://github.com/GauriSP10/streamlit_login_auth_ui/blob/main/LICENSE)
-
-
-
-
-
-
