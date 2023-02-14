@@ -1,9 +1,9 @@
 import streamlit as st
 from apps.home.views import HomeView
-from pages.base.config import login_obj
+from pages.base.config import login
 
 
-logged_in = login_obj.build_login_ui()
+logged_in = login.build_login_ui()
 
 
 if logged_in is True:

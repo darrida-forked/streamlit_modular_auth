@@ -3,18 +3,24 @@ from typing import List
 import streamlit as st
 from streamlit.components.v1 import html
 from .models import DefaultPageModel
-from .config import Config, config
+
+# from .config import ModularAuth
+from .login import Login
 
 
 model = DefaultPageModel()
 
 
-class DefaultPageView:
+class DefaultPageView(Login):
     title: str
     name: str
-    groups: List[str]
-    cookies = config.cookies
-    state = config.state
+    groups: List[str] = ["stop"]
+
+    # def __init__(self, app: ModularAuth = None):
+    #     if not app:
+    #         app = ModularAuth()
+    #     self.cookies = app.cookies
+    #     self.state = app.state
 
     def check_permissions(self) -> bool:
         """Checks if user is (1) logged in, and (2) has permission for the page/section in question
@@ -27,7 +33,10 @@ class DefaultPageView:
             with st.spinner("Redirecting..."):
                 time.sleep(1)
                 self.change_page("")
-        return model.check_group_access(self.groups)
+        if hasattr(self, "groups"):
+            return model.check_group_access(self.groups)
+        else:
+            return True
 
     def check_state(self):
         """Helper method that resets "page" value if a different page is loaded"""
@@ -78,6 +87,6 @@ class DefaultPageView:
         )
         html(nav_script)
 
-    def setup(self, config: Config):
-        self.cookies = config.cookies
-        self.state = config.state
+    # def setup(self, config: Config):
+    #     self.cookies = config.cookies
+    #     self.state = config.state

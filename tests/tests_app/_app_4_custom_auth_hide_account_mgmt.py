@@ -1,14 +1,15 @@
 import streamlit as st
-from streamlit_modular_auth import Login, config
+from streamlit_modular_auth import Login, ModularAuth
 from tests_handlers._test_auth import CustomAuthTest
 
 
-config.auth = CustomAuthTest()
-login_obj = Login(hide_account_management=True)
-login_obj.setup(config)
+app = ModularAuth()
+app.plugin_user_auth = CustomAuthTest()
+app.login_hide_account_management = True
 
-logged_in = login_obj.build_login_ui()
+login = Login(app)
 
+logged_in = login.build_login_ui()
 
 if logged_in is True:
     st.markdown("Your Streamlit Application Begins here!")

@@ -2,8 +2,8 @@ import streamlit as st
 from streamlit_modular_auth import Login
 
 
-login_obj = Login()
-logged_in = login_obj.build_login_ui()
+login = Login()
+logged_in = login.build_login_ui()
 
 
 if logged_in is True:

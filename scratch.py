@@ -3,11 +3,12 @@ from streamlit_modular_auth._handlers import DefaultUserAuth, DefaultAuthCookies
 
 
 app = ModularAuth()
-app.config.custom_auth_cookies = DefaultAuthCookies()
-app.config.custom_user_auth = DefaultUserAuth()
-app.config.custom_user_storage = DefaultUserStorage()
-app.config.expire_delay = 7200
-app.config.hide_account_management = True
+app.plugin_auth_cookies = DefaultAuthCookies()
+app.plugin_user_auth = DefaultUserAuth()
+app.plugin_user_storage = DefaultUserStorage()
+app.login_expire = 7200
+app.login_hide_account_management = True
+
 
 login = Login(app)
 view = DefaultPageView(app)

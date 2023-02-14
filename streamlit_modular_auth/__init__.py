@@ -1,8 +1,9 @@
 from streamlit_modular_auth import protocols
-from streamlit_modular_auth._base.config import Config, cookies, config
-from streamlit_modular_auth._base.login import Login
-from streamlit_modular_auth._legacy.widgets import __login__  # noqa : F401
-from streamlit_modular_auth._base.models import DefaultPageModel
-from streamlit_modular_auth._base.views import DefaultPageView
+from streamlit_modular_auth._core.config import ModularAuth, cookies
 
-__all__ = ["Login", "cookies", "Config", "config", "protocols", "DefaultPageModel", "DefaultPageView"]
+# from streamlit_modular_auth._core.login import Login
+# from streamlit_modular_auth._legacy.widgets import __login__  # noqa : F401
+# from streamlit_modular_auth._core.models import DefaultPageModel
+# from streamlit_modular_auth._core.views import DefaultPageView
+
+__all__ = ["Login", "cookies", "ModularAuth", "config", "protocols", "DefaultPageModel", "DefaultPageView"]

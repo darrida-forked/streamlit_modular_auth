@@ -8,7 +8,7 @@ from streamlit_modular_auth._utils import (
     _generate_random_passwd,
     _load_lottieurl,
 )
-from .config import config, Config
+from .config import ModularAuth
 
 
 class Login:
@@ -16,70 +16,36 @@ class Login:
 
     def __init__(
         self,
-        *,
-        width: int = 200,
-        height: int = 250,
-        lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json",
-        hide_menu_bool: bool = False,
-        hide_footer_bool: bool = False,
-        hide_registration: bool = False,
-        hide_account_management: bool = False,
-        hide_forgot_password: bool = False,
-        login_label: str = "Login",
-        logout_button_name: str = "Logout",
-        expire_delay: int = 7200,
-        config: Config = config,
+        app: ModularAuth = None,
     ):
-        """
-        Arguments:
-        -----------
-        1. self
-        2. auth_token : The unique authorization token received from - https://www.courier.com/email-api/
-        3. company_name : This is the name of the person/ organization which will send the password reset email.
-        4. width : Width of the animation on the login page.
-        5. height : Height of the animation on the login page.
-        6. logout_button_name : The logout button name.
-        7. hide_menu_bool : Pass True if the streamlit menu should be hidden.
-        8. hide_footer_bool : Pass True if the 'made with streamlit' footer should be hidden.
-        9. lottie_url : The lottie animation you would like to use on the login page (https://lottiefiles.com/featured)
-        10. hide_registration : Pass True if 'Create Account' option should be hidden from Navigation.
-        11. hide_forgot_password : Pass True if 'Forgot Password?' option should be hidden from Navigation.
-        11. hide_account_management : Pass True if all options other than 'Login' should be hidden from Navigation.
-        12. custom_authentication : Option to pass custom authentication class that inherits from
-            StreamlitDefaultUserAuth (see information further below).
-        13. custom_user_storage : Option to pass custom user storage class that inherits from
-            StreamLitDefaultUserStorage (see information further below).
-        """
-        self.width = width
-        self.height = height
-        self.logout_button_name = logout_button_name
-        self.hide_menu_bool = hide_menu_bool
-        self.hide_footer_bool = hide_footer_bool
-        self.lottie_url = lottie_url
-        self.hide_registration = hide_registration
-        self.hide_forgot_password = hide_forgot_password
-        self.hide_account_management = hide_account_management
-        self.login_label = login_label
-        self.expire_delay = expire_delay
-        self.auth = config.auth
-        self.storage = config.user_storage
-        self.password_reset = config.forgot_password_msg
-        self.auth_cookies = config.auth_cookies
-        self.cookies = config.cookies
-        self.state = config.state
-
-    def setup(self, config: Config):
-        self.auth = config.auth
-        self.storage = config.user_storage
-        self.password_reset = config.forgot_password_msg
-        self.auth_cookies = config.auth_cookies
-        self.cookies = config.cookies
-        self.state = config.state
+        if not app:
+            app = ModularAuth()
+        self.width = app.login_width
+        self.height = app.login_height
+        self.logout_button_name = app.logout_button_name
+        self.hide_menu_bool = app.login_hide_menu
+        self.hide_footer_bool = app.login_hide_footer
+        self.lottie_url = app.login_lottie_url
+        self.hide_registration = app.login_hide_registration
+        self.hide_forgot_password = app.login_hide_forgot_password
+        self.hide_account_management = app.login_hide_account_management
+        self.login_label = app.login_label
+        self.expire_delay = app.login_expire
+        self.auth = app.plugin_user_auth
+        self.storage = app.plugin_user_storage
+        self.password_reset = app.plugin_forgot_password_msg
+        self.auth_cookies = app.plugin_auth_cookies
+        self.cookies = app.cookies
+        self.state = app.state
+        print("login", id(app))
 
     def __login_widget(self) -> None:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
+        import inspect
+
+        print("login", inspect.getmembers(self.auth_cookies, predicate=inspect.ismethod))
         if st.session_state["LOGGED_IN"] is True:
             return
 
