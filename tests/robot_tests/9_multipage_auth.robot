@@ -12,7 +12,7 @@ ${URL}             http://localhost:${PORT_MULTIPAGE_AUTH}/
 
 
 *** Test Cases ***
-Custom Auth Cookies - Create Account
+Multipage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -34,8 +34,8 @@ Custom Auth Cookies - Create Account
     Close Browser
 
 
-Custom Auth Cookies - Login, then Logout
-    Depends on test     Custom Auth Cookies - Create Account
+Multipage - Login, then Logout
+    Depends on test     Multipage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -52,8 +52,8 @@ Custom Auth Cookies - Login, then Logout
     Close Browser
 
 
-Custom Auth Cookies - Login, Refresh, Logout, Refresh
-    Depends on test     Custom Auth Cookies - Create Account
+Multipage - Login, Refresh, Logout, Refresh
+    Depends on test     Multipage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -77,8 +77,8 @@ Custom Auth Cookies - Login, Refresh, Logout, Refresh
     Close Browser
 
 
-Custom Auth Cookies - Login, Close Browser, Open
-    Depends on test     Custom Auth Cookies - Create Account
+Multipage - Login, Close Browser, Open
+    Depends on test     Multipage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -100,8 +100,8 @@ Custom Auth Cookies - Login, Close Browser, Open
     Close Browser
 
 
-Custom Auth Cookies - Session Expire (15s)
-    Depends on test     Custom Auth Cookies - Create Account
+Multipage - Session Expire (15s)
+    Depends on test     Multipage - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -120,4 +120,154 @@ Custom Auth Cookies - Session Expire (15s)
     Reload Page
     Wait Until Element Is Visible   //*[contains(text(),'Login')]
     Page Should Contain    Login
+    Close Browser
+
+
+Multipage - Login, Change Page, Refresh, Logout
+    Depends on test     Multipage - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
+    Input Text      //*[@placeholder="Your unique username"]    user_cookies1
+    Wait Until Element Is Visible   //*[@placeholder="Your password"]
+    Input Text      //*[@placeholder="Your password"]    password_cookies1
+    Click Element   //*[contains(text(),'Login')]
+    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
+    Page Should Contain     Your Streamlit Application Begins here!
+
+    Page Should Contain    Pictures
+    Click Element    //*[contains(text(), 'Pictures')]
+
+    Wait Until Element Is Visible    //*[contains(text(), '[pictures here]')]
+    Page Should Contain    [pictures here]
+    Reload Page
+    Wait Until Element Is Visible    //*[contains(text(), '[pictures here]')]
+    Page Should Contain    [pictures here]
+
+    Wait Until Element Is Visible   //*[contains(text(),'Home')]
+    Click Element    //*[contains(text(),'Home')]
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Reload Page
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Close Browser
+
+
+Multipage - Confirm Page State Cleared on Change Page
+    Depends on test     Multipage - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
+    Input Text      //*[@placeholder="Your unique username"]    user_cookies1
+    Wait Until Element Is Visible   //*[@placeholder="Your password"]
+    Input Text      //*[@placeholder="Your password"]    password_cookies1
+    Click Element   //*[contains(text(),'Login')]
+    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
+    Page Should Contain     Your Streamlit Application Begins here!
+
+    # Check State Is Pages "home"
+    Wait Until Element Is Visible    //*[contains(text(), 'Home page state set')]
+    Page Should Contain    Home page state set
+    
+    # Change Pictures, Check State
+    Page Should Contain    Pictures
+    Click Element    //*[contains(text(), 'Pictures')]
+    Wait Until Element Is Visible    //*[contains(text(), 'Picture page state set')]
+    Page Should Contain    Picture page state set
+    
+    # Change Pictures, Check State
+    Page Should Contain    Home
+    Click Element    //*[contains(text(), 'Home')]
+    Wait Until Element Is Visible    //*[contains(text(), 'Home page state set')]
+    Page Should Contain    Home page state set
+
+    # Logout
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Reload Page
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Close Browser
+
+
+Multipage - Test Auth Failed and Succeed
+    Depends on test     Multipage - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    
+    # LOGIN
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
+    Input Text      //*[@placeholder="Your unique username"]    user_cookies1
+    Wait Until Element Is Visible   //*[@placeholder="Your password"]
+    Input Text      //*[@placeholder="Your password"]    password_cookies1
+    Click Element   //*[contains(text(),'Login')]
+    Wait Until Element Is Visible   //*[contains(text(),"Your Streamlit Application Begins here!")]
+    Page Should Contain     Your Streamlit Application Begins here!
+
+    # OPEN "POEMS" PAGE WITHOUT GROUP AUTHORIZATION
+    # - Should result in "Insufficient permissions" message
+    Page Should Contain    Poems
+    Click Element    //*[contains(text(), 'Poems')]
+    Wait Until Element Is Visible    //*[contains(text(), 'Insufficient permissions')]
+    Page Should Contain    Insufficient permissions
+    Reload Page
+    Wait Until Element Is Visible    //*[contains(text(), 'Insufficient permissions')]
+    Page Should Contain    Insufficient permissions
+
+    # NAVIGATE BACK HOME AND CLICK TEST BUTTON TO ADD "poems" GROUP
+    Wait Until Element Is Visible   //*[contains(text(),'Home')]
+    Click Element    //*[contains(text(), 'Home')]
+    Wait Until Element Is Visible   //*[contains(text(),'Add Poems')]
+    Click Element    //*[contains(text(),'Add Poems')]
+    Wait Until Element Is Visible   //*[contains(text(),'Permissions for poems group added')]
+    
+    # OPEN "POEMS" PAGE AGAIN **WITH** GROUP AUTH
+    # - Should show page content ("[poems here]")
+    Page Should Contain    Poems
+    Click Element    //*[contains(text(), 'Poems')]
+    Wait Until Element Is Visible    //*[contains(text(), '[poems here]')]
+    Page Should Contain    [poems here]
+    Reload Page
+    Wait Until Element Is Visible    //*[contains(text(), '[poems here]')]
+    Page Should Contain    [poems here]
+    
+    # LOGOUT
+    Wait Until Element Is Visible   //*[contains(text(),'Home')]
+    Click Element    //*[contains(text(), 'Home')]
+    Wait Until Element Is Visible   //*[contains(text(),'Logout')]
+    Click Element    //*[contains(text(),'Logout')]
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Reload Page
+    Wait Until Element Is Visible   //*[contains(text(),'Login')]
+    Page Should Contain    Login
+    Close Browser
+
+
+Multipage - Redirect When Not Logged In
+    Depends on test     Multipage - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    
+    # LAUNCH
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+
+    # OPEN "POEMS" PAGE WITHOUT GROUP AUTHORIZATION
+    # - Should result in "Insufficient permissions" message
+    Page Should Contain    Poems
+    Click Element    //*[contains(text(), 'Poems')]
+    Wait Until Element Is Visible    //*[contains(text(), 'Not logged in...')]
+    Wait Until Element Is Visible    //*[contains(text(), 'Redirecting...')]
+    Wait Until Element Is Visible    //*[contains(text(), 'Login')]
+    Page Should Contain    Login
+
+    # REFRESH TO ENSURE
+    Reload Page
+    Wait Until Element Is Visible    //*[contains(text(), 'Login')]
+    Page Should Contain    Login
+
     Close Browser

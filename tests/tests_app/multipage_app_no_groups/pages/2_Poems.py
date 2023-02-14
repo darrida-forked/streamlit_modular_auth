@@ -10,9 +10,8 @@ st.title(view.title)
 
 if not view.check_permissions():
     st.warning("Insufficient permissions")
+    st.stop()
 else:
     view.check_state()
-
     st.write("[poems here]")
-
     st.write(view.state)

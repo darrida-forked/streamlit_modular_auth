@@ -1,5 +1,6 @@
 from typing import Optional, List
 from argon2 import PasswordHasher
+import streamlit as st
 from streamlit_modular_auth import cookies
 
 
@@ -30,6 +31,7 @@ class UserAuthTest:
         if user_l:
             try:
                 if ph.verify(user_l[0]["hashed_password"], password):
+                    st.session_state["groups"] = user_l[0]["groups"]
                     cookies.set("groups", ",".join(user_l[0]["groups"]))
                     return True
             except Exception:
@@ -38,7 +40,7 @@ class UserAuthTest:
 
 
 class UserStorageTest:
-    def register(self, name: str, email: str, username: str, password: str, groups: List[str]) -> None:
+    def register(self, name: str, email: str, username: str, password: str, groups: List[str] = ["user"]) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
 

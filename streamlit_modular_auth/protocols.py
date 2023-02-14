@@ -102,7 +102,7 @@ class AuthCookies(Protocol):
         """
         ...
 
-    def set(self, username, cookies: CookieManager) -> None:
+    def set(self, username, cookies: CookieManager, expire_delay: int) -> None:
         """
         Sets auth cookie using initialized EncryptedCookieManager.
         - Exact internal setup isn't important, so long as it takes the specified parameters,

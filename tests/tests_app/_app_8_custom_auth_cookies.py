@@ -6,7 +6,7 @@ from tests_handlers._test_cookies import UserAuthCookiesTest
 
 config.auth_cookies = UserAuthCookiesTest()
 
-login_obj = Login(login_label="Test Login")
+login_obj = Login(login_label="Test Login", expire_delay=15)
 login_obj.setup(config)
 
 

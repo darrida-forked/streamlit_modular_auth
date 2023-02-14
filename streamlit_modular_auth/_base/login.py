@@ -27,6 +27,7 @@ class Login:
         hide_forgot_password: bool = False,
         login_label: str = "Login",
         logout_button_name: str = "Logout",
+        expire_delay: int = 7200,
         config: Config = config,
     ):
         """
@@ -59,6 +60,7 @@ class Login:
         self.hide_forgot_password = hide_forgot_password
         self.hide_account_management = hide_account_management
         self.login_label = login_label
+        self.expire_delay = expire_delay
         self.auth = config.auth
         self.storage = config.user_storage
         self.password_reset = config.forgot_password_msg
@@ -97,7 +99,7 @@ class Login:
             if self.auth.check_credentials(username, password) is not True:
                 st.error("Invalid Username or Password!")
             else:
-                self.auth_cookies.set(username, self.cookies)
+                self.auth_cookies.set(username, self.cookies, self.expire_delay)
                 st.session_state["LOGGED_IN"] = True
                 del_login.empty()
                 st.experimental_rerun()

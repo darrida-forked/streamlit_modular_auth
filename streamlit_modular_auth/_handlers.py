@@ -125,7 +125,7 @@ class DefaultAuthCookies:
                 st.error("Session expired...")
         return False
 
-    def set(self, username, cookies: CookieManager):
+    def set(self, username, cookies: CookieManager, expire_delay: int = 3600):
         """
         Sets auth cookie using initialized EncryptedCookieManager.
         - Exact internal setup isn't important, so long as it takes the specified parameters,
@@ -137,7 +137,7 @@ class DefaultAuthCookies:
             None
         """
         auth_token = secrets.token_urlsafe(48)
-        expires = datetime.now() + timedelta(seconds=200)
+        expires = datetime.now() + timedelta(seconds=expire_delay)
         user_session_cache = {"auth_token": auth_token, "expires": expires.isoformat()}
         dc.set(username, user_session_cache)
         cookies.set("auth_token", auth_token)

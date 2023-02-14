@@ -35,6 +35,8 @@ class DefaultPageModel:
         Returns:
             bool: page/section authorization status
         """
+        if not groups:
+            return True
         if "groups" not in self.state.keys():
             user_groups = self.cookies.get("groups")
             if user_groups:
