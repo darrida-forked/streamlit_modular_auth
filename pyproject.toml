@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "streamlit_modular_auth"
-version = "2023.01.01"
+version = "2023.02.15"
 description = ""
 authors = ["darrida <darrida.py@gmail.com>"]
 readme = "README.md"
