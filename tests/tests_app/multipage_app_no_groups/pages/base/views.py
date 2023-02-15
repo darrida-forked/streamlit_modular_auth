@@ -1,7 +1,6 @@
 # from pages.base.config import view as base_view
-from streamlit_modular_auth import DefaultPageView
+from streamlit_modular_auth import DefauleBaseView
 
 
-class PageView(DefaultPageView):
-    # base = base_view
+class BaseView(DefauleBaseView):
     ...

@@ -42,7 +42,7 @@ class UserAuthCookiesTest:
                     st.error("Session expired...")
         return False
 
-    def set(self, username, cookies: CookieManager):
+    def set(self, username, cookies: CookieManager, expire_delay: int):
         """
         Sets auth cookie using initialized EncryptedCookieManager.
         - Exact internal setup isn't important, so long as it takes the specified parameters,
@@ -60,7 +60,7 @@ class UserAuthCookiesTest:
             json_user_storage = json.load(auth_json)
 
         auth_token = secrets.token_urlsafe(48)
-        expires = datetime.now() + timedelta(seconds=15)
+        expires = datetime.now() + timedelta(seconds=expire_delay)
         for user in json_user_storage:
             if user.get("username") == username:
                 user["auth_session"] = {

@@ -9,7 +9,6 @@ app.plugin_user_storage = UserStorageTest()
 app.login_label = "Test Login"
 
 login = Login(app)
-
 logged_in = login.build_login_ui()
 
 if logged_in is True:

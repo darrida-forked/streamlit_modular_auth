@@ -8,7 +8,6 @@ app.plugin_user_auth = CustomAuthTest()
 app.login_hide_account_management = True
 
 login = Login(app)
-
 logged_in = login.build_login_ui()
 
 if logged_in is True:

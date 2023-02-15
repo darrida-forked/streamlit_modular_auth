@@ -1,7 +1,7 @@
-from pages.base.views import PageView
+from pages.base.views import BaseView
 
 
-class PicturesView(PageView):
+class PicturesView(BaseView):
     title = "Pictures"
     name = "pictures"
     groups = []

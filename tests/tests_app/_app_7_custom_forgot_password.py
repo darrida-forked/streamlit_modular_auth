@@ -6,8 +6,8 @@ forgot_msg = ForgotPasswordCustomMsgTest(message="Password via an insecure metho
 
 app = ModularAuth()
 app.plugin_forgot_password_msg = forgot_msg
-login = Login(app)
 
+login = Login(app)
 logged_in = login.build_login_ui()
 
 if logged_in is True:

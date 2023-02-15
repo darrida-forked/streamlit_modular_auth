@@ -1,7 +1,7 @@
-from pages.base.views import PageView
+from pages.base.views import BaseView
 
 
-class HomeView(PageView):
+class HomeView(BaseView):
     title = "Home"
     name = "home"
     groups = []

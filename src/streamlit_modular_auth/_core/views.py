@@ -2,25 +2,21 @@ import time
 from typing import List
 import streamlit as st
 from streamlit.components.v1 import html
-from .models import DefaultPageModel
-
-# from .config import ModularAuth
-from .login import Login
+from streamlit_cookies_manager import CookieManager
+from .config import ModularAuth
 
 
-model = DefaultPageModel()
-
-
-class DefaultPageView(Login):
+class DefauleBaseView:
     title: str
     name: str
     groups: List[str] = ["stop"]
 
-    # def __init__(self, app: ModularAuth = None):
-    #     if not app:
-    #         app = ModularAuth()
-    #     self.cookies = app.cookies
-    #     self.state = app.state
+    def __init__(self, app: ModularAuth = None):
+        if not app:
+            app = ModularAuth()
+        self.cookies: CookieManager = app.cookies
+        self.state = app.state
+        self.auth_cookies = app.plugin_auth_cookies
 
     def check_permissions(self) -> bool:
         """Checks if user is (1) logged in, and (2) has permission for the page/section in question
@@ -28,13 +24,13 @@ class DefaultPageView(Login):
         Returns:
             bool: authorization status
         """
-        if not model.check_existing_session():
+        if not self.check_existing_session():
             st.warning("Not logged in...")
             with st.spinner("Redirecting..."):
                 time.sleep(1)
                 self.change_page("")
         if hasattr(self, "groups"):
-            return model.check_group_access(self.groups)
+            return self.check_group_access(self.groups)
         else:
             return True
 
@@ -86,6 +82,44 @@ class DefaultPageView(Login):
             timeout_secs,
         )
         html(nav_script)
+
+    def check_existing_session(self) -> bool:
+        """Checks whether or not user is logged in
+
+        Returns:
+            bool: logged in status
+        """
+        import inspect
+
+        print("model", inspect.getmembers(self.auth_cookies, predicate=inspect.ismethod))
+        if self.state.get("LOGGED_IN") is True:
+            return True
+        if self.auth_cookies.check(self.cookies) is True:
+            self.state["LOGGED_IN"] = True
+            return True
+        return False
+
+    def check_group_access(self, groups: list) -> bool:
+        """Checks if user has access to required groups
+
+        Args:
+            groups (list): Permissions groups required for section/page (set in the class that inherits PageView)
+
+        Returns:
+            bool: page/section authorization status
+        """
+        if not groups:
+            return True
+        if "groups" not in self.state.keys():
+            user_groups = self.cookies.get("groups")
+            if user_groups:
+                self.state["groups"] = user_groups.split(",")
+        else:
+            user_groups = self.state["groups"]
+        if not user_groups:
+            return False
+        groups.append("admin")
+        return any(True for x in groups if x in user_groups)
 
     # def setup(self, config: Config):
     #     self.cookies = config.cookies

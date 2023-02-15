@@ -40,65 +40,6 @@ class DefaultUserAuth:
         return False
 
 
-# class DefaultAuthCookies:
-#     def check(self, cookies: CookieManager):
-#         """
-#         Checks that auth cookies exist and are valid.
-#         - Exact internal setup isn't important, so long as it takes the specified parameter below, and
-#           validates existing cookies (if they exist)
-
-#         Args:
-#             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
-#         Returns:
-#             bool: If cookie(s) are valid -> True; if not valid -> False
-#         """
-#         if (
-#             "__streamlit_login_signup_ui_username__" in cookies.keys()
-#             and st.session_state.get("LOGOUT_BUTTON_HIT") == False
-#         ):
-#             if cookies.get("__streamlit_login_signup_ui_username__") != "1c9a923f-fb21-4a91-b3f3-5f18e3f01182":
-#                 return True
-#         return False
-
-#     def set(self, username, cookies: CookieManager):
-#         """
-#         Sets auth cookie using initialized EncryptedCookieManager.
-#         - Exact internal setup isn't important, so long as it takes the specified parameters,
-#           and sets cookies that indicate an authorized session, and can be interacted with by this class.
-
-#         Args:
-#             username (str): Authorized user
-#             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
-#         Returns:
-#             None
-#         """
-#         cookies.set("__streamlit_login_signup_ui_username__", username)
-
-#     def expire(self, cookies: CookieManager):
-#         """
-#         Expires auth cookie using initialized EncryptedCookieManager.
-#         - Exact internal setup isn't important, so long as it takes the specified parameters,
-#           and changes the existing cookies status to indicate an invalid session.
-
-#         Args:
-#             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
-#         Returns:
-#             None
-#         """
-#         cookies.expire(
-#             "__streamlit_login_signup_ui_username__",
-#             "1c9a923f-fb21-4a91-b3f3-5f18e3f01182",
-#         )
-
-#     def get_username(self, cookies: CookieManager):
-#         if st.session_state["LOGOUT_BUTTON_HIT"] is False:
-#             if "__streamlit_login_signis False:rname__" in cookies.keys():
-#                 return cookies.get("__streamlit_login_signup_ui_username__")
-
-
 class DefaultAuthCookies:
     def check(self, cookies: CookieManager):
         """

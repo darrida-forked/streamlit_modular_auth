@@ -6,7 +6,6 @@ app = ModularAuth()
 app.logout_button_name = "Exit"
 
 login = Login(app)
-
 logged_in = login.build_login_ui()
 
 if logged_in is True:

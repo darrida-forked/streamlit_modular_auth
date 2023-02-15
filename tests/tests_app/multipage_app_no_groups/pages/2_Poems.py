@@ -1,8 +1,9 @@
 import streamlit as st
 from apps.poems.views import PoemsView
+from pages.base.config import app
 
 
-view = PoemsView()
+view = PoemsView(app)
 
 
 st.title(view.title)

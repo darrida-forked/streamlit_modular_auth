@@ -8,10 +8,6 @@ from streamlit_modular_auth._handlers import (
     DefaultUserAuth,
     DefaultUserStorage,
 )
-
-# from login import Login
-# from models import DefaultPageModel
-# from views import DefaultPageView
 from streamlit_modular_auth._cookie_manager import _initialize_cookie_manbager
 
 

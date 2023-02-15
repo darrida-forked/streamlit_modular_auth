@@ -1,13 +1,15 @@
 import streamlit as st
+from streamlit_modular_auth import Login
 from apps.home.views import HomeView
-from pages.base.config import login
+from pages.base.config import app
 
 
+login = Login(app)
 logged_in = login.build_login_ui()
 
 
 if logged_in is True:
-    view = HomeView()
+    view = HomeView(app)
     view.check_state()
 
     st.markdown("Your Streamlit Application Begins here!")
