@@ -39,6 +39,12 @@ black = "^23.1.0"
 bandit = "^1.7.4"
 isort = "^5.12.0"
 
+[tool.poetry.group.examples]
+optional = true
+
+[tool.poetry.group.examples.dependencies]
+sqlmodel = "^0.0.8"
+
 [tool.isort]
 line_length = 120
 
