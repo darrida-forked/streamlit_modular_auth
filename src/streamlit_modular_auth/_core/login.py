@@ -1,13 +1,15 @@
 import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
+
 from streamlit_modular_auth._utils import (
-    _check_valid_name,
     _check_valid_email,
+    _check_valid_name,
     _check_valid_username,
     _generate_random_passwd,
     _load_lottieurl,
 )
+
 from .config import ModularAuth
 
 

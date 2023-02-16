@@ -1,4 +1,5 @@
-from typing import Protocol, Optional
+from typing import Optional, Protocol
+
 from streamlit_modular_auth._cookie_manager import CookieManager
 
 

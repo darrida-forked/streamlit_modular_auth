@@ -1,13 +1,13 @@
-from typing import Optional
 from datetime import datetime
-from sqlmodel import Field, SQLModel, create_engine, Session, select
-from argon2 import PasswordHasher
+from typing import Optional
+
 import streamlit as st
+from argon2 import PasswordHasher
 from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 # from streamlit_modular_auth.protocols import UserStorage, UserAuth
 from streamlit_modular_auth import Login
-
 
 ph = PasswordHasher()
 

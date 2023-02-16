@@ -1,6 +1,6 @@
 from typing import Optional
-from argon2 import PasswordHasher
 
+from argon2 import PasswordHasher
 
 ph = PasswordHasher()
 

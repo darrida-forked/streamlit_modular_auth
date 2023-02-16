@@ -1,6 +1,5 @@
 import os
 
-
 # BROWSER OPTIONS: firefox, headlessfirefox, chrome, headlesschrome
 BROWSER = os.environ.get("BROWSER").lower() if os.environ.get("BROWSER") else "headlessfirefox"
 DRIVER_LOGS = ".logs/geckodriver.log" if BROWSER in ["firefox", "headlessfirefox"] else None

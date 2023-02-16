@@ -1,5 +1,5 @@
 # import streamlit as st
-# from streamlit_modular_auth import Login
+# from streamlit_modular_auth import Login, cookies
 # from streamlit_modular_auth._handlers import (
 #     # DefaultAuthCookies,
 #     CourierForgotPasswordMsg,
@@ -11,7 +11,7 @@
 
 #     def __init__(self, auth_token, company_name, **kwargs):
 #         super().__init__(**kwargs)
-#         self.password_reset = CourierForgotPasswordMsg(auth_token, company_name)
+#         self.plugin_forgot_password_msg = CourierForgotPasswordMsg(auth_token, company_name)
 
 #     def get_username(self):
 #         if st.session_state["LOGOUT_BUTTON_HIT"] is False:

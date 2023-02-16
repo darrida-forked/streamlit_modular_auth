@@ -4,12 +4,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
-from trycourier import Courier
-from argon2 import PasswordHasher
-import streamlit as st
-from streamlit_modular_auth.protocols import CookieManager
 import diskcache
+import streamlit as st
+from argon2 import PasswordHasher
+from trycourier import Courier
 
+from streamlit_modular_auth.protocols import CookieManager
 
 dc = diskcache.Cache("cache.db")
 ph = PasswordHasher()

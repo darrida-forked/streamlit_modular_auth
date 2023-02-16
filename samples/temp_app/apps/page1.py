@@ -1,5 +1,5 @@
-from pages.base.views import PageView
 from pages.base.models import PageModel
+from pages.base.views import PageView
 
 
 class Page1View(PageView):

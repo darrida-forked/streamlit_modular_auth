@@ -1,8 +1,8 @@
 import re
 import secrets
-from argon2 import PasswordHasher
-import requests
 
+import requests
+from argon2 import PasswordHasher
 
 ph = PasswordHasher()
 

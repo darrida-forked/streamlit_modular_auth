@@ -1,6 +1,5 @@
 from streamlit_modular_auth import protocols
 from streamlit_modular_auth._core.config import ModularAuth, cookies
-
 from streamlit_modular_auth._core.login import Login
 
 # from streamlit_modular_auth._legacy.widgets import __login__  # noqa : F401

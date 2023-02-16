@@ -1,7 +1,6 @@
 import streamlit as st
 from apps.page1.views import Page1View
 
-
 view = Page1View()
 st.write(vars(view))
 

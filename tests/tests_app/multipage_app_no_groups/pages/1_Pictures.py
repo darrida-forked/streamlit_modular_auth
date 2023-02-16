@@ -1,7 +1,6 @@
 import streamlit as st
-from pages.base.config import app
 from apps.pictures.views import PicturesView
-
+from pages.base.config import app
 
 view = PicturesView(app)
 

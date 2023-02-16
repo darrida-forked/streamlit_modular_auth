@@ -1,15 +1,17 @@
 import time
 from typing import List
+
 import streamlit as st
 from streamlit.components.v1 import html
 from streamlit_cookies_manager import CookieManager
+
 from .config import ModularAuth
 
 
 class DefauleBaseView:
     title: str
     name: str
-    groups: List[str] = ["stop"]
+    groups: List[str] = None  # []
 
     def __init__(self, app: ModularAuth = None):
         if not app:

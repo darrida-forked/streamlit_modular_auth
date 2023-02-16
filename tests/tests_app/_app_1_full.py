@@ -1,6 +1,6 @@
 import streamlit as st
-from streamlit_modular_auth import Login
 
+from streamlit_modular_auth import Login
 
 login = Login()
 logged_in = login.build_login_ui()

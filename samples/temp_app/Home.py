@@ -1,7 +1,7 @@
 import streamlit as st
-from streamlit_modular_auth import Login
 from apps.home import HomeView
 
+from streamlit_modular_auth import Login
 
 login = Login()
 

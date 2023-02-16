@@ -1,11 +1,8 @@
 import streamlit as st
-
-from streamlit_modular_auth import Login
-
-# from streamlit_modular_auth import ModularAuth, DefauleBaseView
-from streamlit_modular_auth import ModularAuth
 from tests_handlers._test_cookies import UserAuthCookiesTest
 
+# from streamlit_modular_auth import ModularAuth, DefauleBaseView
+from streamlit_modular_auth import Login, ModularAuth
 
 app = ModularAuth()
 app.plugin_auth_cookies = UserAuthCookiesTest()

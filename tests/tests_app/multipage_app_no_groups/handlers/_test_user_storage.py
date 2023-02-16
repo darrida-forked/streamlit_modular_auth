@@ -1,8 +1,9 @@
-from typing import Optional, List
-from argon2 import PasswordHasher
-import streamlit as st
-from streamlit_modular_auth import cookies
+from typing import List, Optional
 
+import streamlit as st
+from argon2 import PasswordHasher
+
+from streamlit_modular_auth import cookies
 
 ph = PasswordHasher()
 

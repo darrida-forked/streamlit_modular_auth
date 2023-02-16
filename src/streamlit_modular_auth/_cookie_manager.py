@@ -1,6 +1,7 @@
 import os
-from typing import Any
 import secrets
+from typing import Any
+
 import streamlit as st
 from streamlit_cookies_manager import EncryptedCookieManager
 
