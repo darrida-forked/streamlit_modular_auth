@@ -91,9 +91,6 @@ class DefauleBaseView:
         Returns:
             bool: logged in status
         """
-        import inspect
-
-        print("model", inspect.getmembers(self.auth_cookies, predicate=inspect.ismethod))
         if self.state.get("LOGGED_IN") is True:
             return True
         if self.auth_cookies.check(self.cookies) is True:

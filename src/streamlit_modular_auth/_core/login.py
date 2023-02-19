@@ -39,15 +39,11 @@ class Login:
         self.auth_cookies = app.plugin_auth_cookies
         self.cookies = app.cookies
         self.state = app.state
-        print("login", id(app))
 
     def __login_widget(self) -> None:
         """
         Creates the login widget, checks and sets cookies, authenticates the users.
         """
-        import inspect
-
-        print("login", inspect.getmembers(self.auth_cookies, predicate=inspect.ismethod))
         if st.session_state["LOGGED_IN"] is True:
             return
 

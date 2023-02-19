@@ -94,6 +94,10 @@ class AuthCookies(Protocol):
         - Any logic here MUST include `cookies.get("<name>") to acquire the values to validate against
           - "<name>" must match the cookie name used in `self.cookie.set`
           - validate against the same data structure used in `self.cookie.set`
+        - Examples of additional logic:
+          - Loading in other information from cookies (such as "groups")
+          - Using information found in cookies to load in other information from database/storage
+            (again, such as "groups")
 
         Args:
             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
