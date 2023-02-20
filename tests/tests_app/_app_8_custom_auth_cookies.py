@@ -5,9 +5,10 @@ from tests_handlers._test_cookies import UserAuthCookiesTest
 from streamlit_modular_auth import Login, ModularAuth
 
 app = ModularAuth()
-app.plugin_auth_cookies = UserAuthCookiesTest()
 app.login_expire = 15
 app.login_label = "Test Login"
+app.set_json_storage()
+app.plugin_auth_cookies = UserAuthCookiesTest()
 
 login = Login(app)
 

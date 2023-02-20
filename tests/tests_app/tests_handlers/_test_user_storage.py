@@ -8,7 +8,8 @@ ph = PasswordHasher()
 test_storage = [
     {
         "username": "user11",
-        "name": "name11",
+        "first_name": "name11",
+        "last_name": "name22",
         "email": "email11@email.com",
         "hashed_password": ph.hash("password11"),
     }
@@ -28,7 +29,7 @@ class UserAuthTest:
 
 
 class UserStorageTest:
-    def register(self, name: str, email: str, username: str, password: str) -> None:
+    def register(self, first_name: str, last_name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
 
@@ -44,7 +45,8 @@ class UserStorageTest:
         test_storage.append(
             {
                 "username": username,
-                "name": name,
+                "first_name": first_name,
+                "last_name": last_name,
                 "email": email,
                 "hashed_password": ph.hash(password),
             }

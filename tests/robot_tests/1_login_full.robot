@@ -31,9 +31,9 @@ Default - Login Screen
     Close Browser
 
 
-Default - Check For Password File
-    Depends on test     Default - Login Screen
-    File Should Exist   _secret_auth_.json
+# Default - Check For Password File
+#     Depends on test     Default - Login Screen
+#     File Should Exist   _secret_auth_.json
 
 
 Default - Reset Password Screen
@@ -84,8 +84,10 @@ Default - Create Account
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
@@ -309,8 +311,10 @@ Default - Create Account - No Username
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname111@email.com
     # Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
@@ -331,8 +335,10 @@ Default - Create Account - Invalid Username
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname111@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
@@ -353,8 +359,10 @@ Default - Create Account - Invalid Email
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname@email
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
@@ -367,7 +375,7 @@ Default - Create Account - Invalid Email
     Close Browser
 
 
-Default - Create Account - Invalid Name
+Default - Create Account - Invalid First Name
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -375,8 +383,8 @@ Default - Create Account - Invalid Name
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    .starts with period
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    .starts with period
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname@email
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
@@ -384,8 +392,30 @@ Default - Create Account - Invalid Name
     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
     Input Text      //*[@placeholder="Create a strong password"]    password1
     Click Element   //*[contains(text(),'Register')]
-    Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid name!")]
-    Page Should Contain     Please enter a valid name!
+    Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid first name!")]
+    Page Should Contain     Please enter a valid first name!
+    Close Browser
+
+
+Default - Create Account - Invalid Last Name
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   tag:iframe
+    Select Frame    tag:iframe
+    Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
+    Click Element                   //a[contains(text(),'Create Account')]
+    Unselect Frame
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    .starts with period
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
+    Input Text      //*[@placeholder="Please enter your email"]    flname@email
+    Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
+    Input Text      //*[@placeholder="Enter a unique username"]    user2
+    Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
+    Input Text      //*[@placeholder="Create a strong password"]    password1
+    Click Element   //*[contains(text(),'Register')]
+    Wait Until Element Is Visible   //*[contains(text(),"Please enter a valid last name!")]
+    Page Should Contain     Please enter a valid last name!
     Close Browser
 
 
@@ -397,8 +427,10 @@ Default - Create Account - Username Exists
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname5@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
@@ -419,8 +451,10 @@ Default - Create Account - Email Exists
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]

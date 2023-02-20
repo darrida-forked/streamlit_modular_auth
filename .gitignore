@@ -22,3 +22,4 @@ dist/
 !.coveragerc
 !coverage.xml
 !.pre-commit-config.yaml
+*sqlite

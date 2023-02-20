@@ -16,12 +16,13 @@ class UserAuth(Protocol):
 
 
 class UserStorage(Protocol):
-    def register(self, name: str, email: str, username: str, password: str) -> None:
+    def register(self, first_name: str, last_name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in user storage.
 
         Args:
-            name (str): name for new account
+            first_name (str): first name for new account
+            last_name (str): last name for new account
             email (str): email for new account
             username (str): username for new account
             password (str): password for new account
@@ -64,6 +65,19 @@ class UserStorage(Protocol):
 
         Return:
             None
+        """
+        ...
+
+    def init_storage(self):
+        """Optional method that can initialize storage
+        - If storage/tables have been setup separate from the app, this likely isn't needed
+        - If using `json_storage` or `database_storage` via built-in SQLite, this will generate the json or SQLite file
+        - If creating custom storage that needs to be generated when all is deploy, the code for that can be executed
+          using this.
+        - USAGE:
+          ```shell
+          streamlit run <APP>.py init_storage
+          ```
         """
         ...
 

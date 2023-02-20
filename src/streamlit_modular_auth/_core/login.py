@@ -14,6 +14,8 @@ from streamlit_modular_auth.protocol_validation.auth import validate_user_auth
 from streamlit_modular_auth.protocol_validation.auth_cookies import validate_auth_cookies
 from streamlit_modular_auth.protocol_validation.storage import validate_user_storage
 
+# from streamlit_modular_auth._apps.admin.models import init_database
+
 from .config import ModularAuth
 
 
@@ -44,6 +46,8 @@ class Login:
         self.cookies = app.cookies
         self.state = app.state
 
+        if "init_storage" in argv:
+            self.storage.init_storage()
         if "check_user_storage" in argv:
             validate_user_storage(self.storage, self.auth)
         if "check_user_auth" in argv:
@@ -75,6 +79,9 @@ class Login:
                 st.error("Invalid Username or Password!")
             else:
                 self.auth_cookies.set(username, self.cookies, self.expire_delay)
+                if st.session_state.get("groups"):
+                    groups = st.session_state["groups"]
+                    self.cookies.set("groups", ",".join(groups))
                 st.session_state["LOGGED_IN"] = True
                 del_login.empty()
                 st.experimental_rerun()
@@ -91,7 +98,9 @@ class Login:
         Creates the sign-up widget and stores the user info in a secure way in user storage.
         """
         with st.form("Sign Up Form"):
-            name = st.text_input("Name *", placeholder="Please enter your name")
+            first_name = st.text_input("First Name *", placeholder="Please enter your first name")
+            last_name = st.text_input("Last Name *", placeholder="Please enter your last name")
+            # name = st.text_input("Name *", placeholder="Please enter your name")
             email = st.text_input("Email *", placeholder="Please enter your email")
             username = st.text_input("Username *", placeholder="Enter a unique username")
             password = st.text_input("Password *", placeholder="Create a strong password", type="password")
@@ -99,8 +108,10 @@ class Login:
             sign_up_submit_button = st.form_submit_button(label="Register")
 
         if sign_up_submit_button:
-            if _check_valid_name(name) is False:
-                st.error("Please enter a valid name!")
+            if _check_valid_name(first_name) is False:
+                st.error("Please enter a valid first name!")
+            if _check_valid_name(last_name) is False:
+                st.error("Please enter a valid last name!")
             elif _check_valid_email(email) is False:
                 st.error("Please enter a valid Email!")
             elif _check_valid_username(username) is False:
@@ -110,7 +121,9 @@ class Login:
             elif self.storage.check_username_exists(username) is True:
                 st.error("Sorry, username already exists!")
             else:
-                self.storage.register(name, email, username, password)
+                self.storage.register(
+                    first_name=first_name, last_name=last_name, email=email, username=username, password=password
+                )
                 st.success("Registration Successful!")
 
     def __forgot_password(self) -> None:

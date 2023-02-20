@@ -1,9 +1,20 @@
+import random
+import string
 from rich import print
 from ..protocols import UserAuth, UserStorage
 
 
 def validate_user_auth(auth: UserAuth, storage: UserStorage):
-    test_account = {"name": "test_name", "email": "test2@email.com", "username": "user2", "password": "password1"}
+    random_email = "".join(random.choices(string.ascii_lowercase, k=10)) + "@email.com"
+    random_username = "".join(random.choices(string.ascii_lowercase, k=10))
+
+    test_account = {
+        "first_name": "fname",
+        "last_name": "lname",
+        "email": random_email,
+        "username": random_username,
+        "password": "password1",
+    }
 
     print("\n[bold white]VALIDATE `UserAuth` PROTOCOL[/bold white]")
 

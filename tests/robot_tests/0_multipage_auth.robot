@@ -12,26 +12,28 @@ ${URL}             http://localhost:${PORT_MULTIPAGE_AUTH}/
 
 
 *** Test Cases ***
-# Multipage - Create Account
-#     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
-#     Wait Until Page Contains    Username    timeout=${TIMEOUT}
-#     Wait Until Element Is Visible   tag:iframe
-#     Select Frame    tag:iframe
-#     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
-#     Click Element                   //a[contains(text(),'Create Account')]
-#     Unselect Frame
-#     Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-#     Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
-#     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
-#     Input Text      //*[@placeholder="Please enter your email"]    user11@email.com
-#     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
-#     Input Text      //*[@placeholder="Enter a unique username"]    user11
-#     Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
-#     Input Text      //*[@placeholder="Create a strong password"]    password11
-#     Click Element   //*[contains(text(),'Register')]
-#     Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
-#     Page Should Contain     Registration Successful!
-#     Close Browser
+Multipage - Create Account
+    Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
+    Wait Until Page Contains    Username    timeout=${TIMEOUT}
+    Wait Until Element Is Visible   tag:iframe
+    Select Frame    tag:iframe
+    Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
+    Click Element                   //a[contains(text(),'Create Account')]
+    Unselect Frame
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
+    Input Text      //*[@placeholder="Please enter your email"]    user93@email.com
+    Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]
+    Input Text      //*[@placeholder="Enter a unique username"]    user93
+    Wait Until Element Is Visible   //*[@placeholder="Create a strong password"]
+    Input Text      //*[@placeholder="Create a strong password"]    password11
+    Click Element   //*[contains(text(),'Register')]
+    Wait Until Element Is Visible   //*[contains(text(),"Registration Successful!")]
+    Page Should Contain     Registration Successful!
+    Close Browser
 
 
 Multipage - Login, then Logout
@@ -39,7 +41,7 @@ Multipage - Login, then Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]
@@ -57,7 +59,7 @@ Multipage - Login, Refresh, Logout, Refresh
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]
@@ -82,7 +84,7 @@ Multipage - Login, Close Browser, Open
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]
@@ -105,7 +107,7 @@ Multipage - Session Expire (15s)
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]
@@ -128,7 +130,7 @@ Multipage - Login, Change Page, Refresh, Logout
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]
@@ -161,7 +163,7 @@ Multipage - Confirm Page State Cleared on Change Page
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]
@@ -202,7 +204,7 @@ Multipage - Test Auth Failed and Succeed
     # LOGIN
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
-    Input Text      //*[@placeholder="Your unique username"]    user11
+    Input Text      //*[@placeholder="Your unique username"]    user93
     Wait Until Element Is Visible   //*[@placeholder="Your password"]
     Input Text      //*[@placeholder="Your password"]    password11
     Click Element   //*[contains(text(),'Login')]

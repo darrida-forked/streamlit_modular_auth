@@ -20,8 +20,10 @@ Logout Name - Create Account
     Wait Until Element Is Visible      //a[contains(text(),'Create Account')]
     Click Element                   //a[contains(text(),'Create Account')]
     Unselect Frame
-    Wait Until Element Is Visible   //*[@placeholder="Please enter your name"]
-    Input Text      //*[@placeholder="Please enter your name"]    Fname Lname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your first name"]
+    Input Text      //*[@placeholder="Please enter your first name"]    Fname
+    Wait Until Element Is Visible   //*[@placeholder="Please enter your last name"]
+    Input Text      //*[@placeholder="Please enter your last name"]    Lname
     Wait Until Element Is Visible   //*[@placeholder="Please enter your email"]
     Input Text      //*[@placeholder="Please enter your email"]    flname1@email.com
     Wait Until Element Is Visible   //*[@placeholder="Enter a unique username"]

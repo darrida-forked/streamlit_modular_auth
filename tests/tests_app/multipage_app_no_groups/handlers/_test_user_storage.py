@@ -41,7 +41,9 @@ class UserAuthTest:
 
 
 class UserStorageTest:
-    def register(self, name: str, email: str, username: str, password: str, groups: List[str] = ["user"]) -> None:
+    def register(
+        self, first_name: str, last_name: str, email: str, username: str, password: str, groups: List[str] = ["user"]
+    ) -> None:
         """
         Saves the information of the new user in the _secret_auth.json file.
 
@@ -55,7 +57,14 @@ class UserStorageTest:
             None
         """
         test_storage.append(
-            {"username": username, "name": name, "email": email, "hashed_password": ph.hash(password), "groups": groups}
+            {
+                "username": username,
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+                "hashed_password": ph.hash(password),
+                "groups": groups,
+            }
         )
 
     def check_username_exists(self, username: str) -> bool:
