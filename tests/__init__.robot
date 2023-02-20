@@ -33,6 +33,14 @@ Start the webserver
     Set suite variable    ${PROCESS_DEFAULT}
     Log To Console     ${PROCESS_DEFAULT}
 
+    ${PROCESS_DEFAULT_JSON}    Start Process   python3    
+        ...    -m    coverage    run    -a    --source    tests   
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full_json_storage.py    
+        ...    --server.port    ${PORT_DEFAULT_JSON}    
+        ...    --server.headless   true
+    Set suite variable    ${PROCESS_DEFAULT_JSON}
+    Log To Console     ${PROCESS_DEFAULT_JSON}
+
     ${PROCESS_HIDE_FOOTER}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
         ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_hide_footer.py    
