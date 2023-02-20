@@ -15,6 +15,7 @@ argon2-cffi = "^21.3.0"
 streamlit-lottie = "^0.0.3"
 streamlit-option-menu = "^0.3.2"
 diskcache = "^5.4.0"
+rich = "12.6.0"
 
 [tool.poetry.group.test]
 optional = true

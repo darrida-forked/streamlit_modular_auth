@@ -1,3 +1,4 @@
+from sys import argv
 import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
@@ -9,6 +10,9 @@ from streamlit_modular_auth._utils import (
     _generate_random_passwd,
     _load_lottieurl,
 )
+from streamlit_modular_auth.protocol_validation.auth import validate_user_auth
+from streamlit_modular_auth.protocol_validation.auth_cookies import validate_auth_cookies
+from streamlit_modular_auth.protocol_validation.storage import validate_user_storage
 
 from .config import ModularAuth
 
@@ -39,6 +43,13 @@ class Login:
         self.auth_cookies = app.plugin_auth_cookies
         self.cookies = app.cookies
         self.state = app.state
+
+        if "check_user_storage" in argv:
+            validate_user_storage(self.storage, self.auth)
+        if "check_user_auth" in argv:
+            validate_user_auth(self.auth, self.storage)
+        if "check_auth_cookies" in argv:
+            validate_auth_cookies(self.auth_cookies, self.cookies)
 
     def __login_widget(self) -> None:
         """
