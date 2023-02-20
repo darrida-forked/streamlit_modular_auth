@@ -16,6 +16,14 @@ Start the webserver
     Log To Console  start
 
     Remove File     _secret_auth_.json
+    Remove File    sqlmodel_storage.sqlite
+
+    ${PROCESS_INIT_DB_STORAGE}    Start Process   python3    
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full.py
+        ...    --server.port    ${PORT_INIT_DATABASE_STORAGE}
+        ...    init_storage
+    Set suite variable    ${PROCESS_INIT_DB_STORAGE}
+    Log To Console     ${PROCESS_INIT_DB_STORAGE}
 
     ${PROCESS_DEFAULT}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
