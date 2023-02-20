@@ -4,11 +4,8 @@ import streamlit as st
 from streamlit_cookies_manager import CookieManager
 
 from streamlit_modular_auth._cookie_manager import _initialize_cookie_manbager
-from streamlit_modular_auth.handlers.database_storage import (
-    DefaultDBUserAuth,
-    DefaultDBUserStorage,
-)
 from streamlit_modular_auth.handlers.auth_cookies import DefaultAuthCookies
+from streamlit_modular_auth.handlers.database_storage import DefaultDBUserAuth, DefaultDBUserStorage
 from streamlit_modular_auth.handlers.forgot_password_msg import DefaultForgotPasswordMsg
 from streamlit_modular_auth.protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
 
@@ -57,10 +54,7 @@ class ModularAuth:
     confg = {}
 
     def set_json_storage(self):
-        from streamlit_modular_auth.handlers.json_storage import (
-            DefaultJSONUserAuth,
-            DefaultJSONUserStorage,
-        )
+        from streamlit_modular_auth.handlers.json_storage import DefaultJSONUserAuth, DefaultJSONUserStorage
 
         self.plugin_user_auth = DefaultJSONUserAuth()
         self.plugin_user_storage: UserStorage = DefaultJSONUserStorage()

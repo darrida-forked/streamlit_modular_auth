@@ -1,8 +1,8 @@
-from typing import Optional, List
 from datetime import datetime
-from sqlmodel import Field, SQLModel, Relationship, Session
+from typing import List, Optional
 
 from sqlalchemy.exc import IntegrityError
+from sqlmodel import Field, Relationship, Session, SQLModel
 
 from .db import engine
 

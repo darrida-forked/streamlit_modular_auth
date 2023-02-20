@@ -1,12 +1,14 @@
 import random
 import string
+
 from rich import print
+
 from ..protocols import UserAuth, UserStorage
 
 
 def validate_user_auth(auth: UserAuth, storage: UserStorage):
-    random_email = "".join(random.choices(string.ascii_lowercase, k=10)) + "@email.com"
-    random_username = "".join(random.choices(string.ascii_lowercase, k=10))
+    random_email = "".join(random.choices(string.ascii_lowercase, k=10)) + "@email.com"  # nosec
+    random_username = "".join(random.choices(string.ascii_lowercase, k=10))  # nosec
 
     test_account = {
         "first_name": "fname",

@@ -1,12 +1,14 @@
 import random
 import string
+
 from rich import print
+
 from ..protocols import UserAuth, UserStorage
 
 
 def validate_user_storage(storage: UserStorage, auth: UserAuth):
-    random_email = "".join(random.choices(string.ascii_lowercase, k=10)) + "@email.com"
-    random_username = "".join(random.choices(string.ascii_lowercase, k=10))
+    random_email = "".join(random.choices(string.ascii_lowercase, k=10)) + "@email.com"  # nosec
+    random_username = "".join(random.choices(string.ascii_lowercase, k=10))  # nosec
 
     test_account = {
         "first_name": "fname",
@@ -82,7 +84,7 @@ def validate_user_storage(storage: UserStorage, auth: UserAuth):
 
     # Change password
     # - Then confirm auth still works with UserAuth method
-    test_account["password"] = "password2"
+    test_account["password"] = "password2"  # nosec
     storage.change_password(test_account["email"], test_account["password"])
     if auth.check_credentials(test_account["username"], test_account["password"]):
         print("[bold magenta]change_password()[/bold magenta]: [bold green]PASS[/bold green]")

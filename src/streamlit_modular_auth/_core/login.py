@@ -1,4 +1,5 @@
 from sys import argv
+
 import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
@@ -14,9 +15,9 @@ from streamlit_modular_auth.protocol_validation.auth import validate_user_auth
 from streamlit_modular_auth.protocol_validation.auth_cookies import validate_auth_cookies
 from streamlit_modular_auth.protocol_validation.storage import validate_user_storage
 
-# from streamlit_modular_auth._apps.admin.models import init_database
-
 from .config import ModularAuth
+
+# from streamlit_modular_auth._apps.admin.models import init_database
 
 
 class Login:

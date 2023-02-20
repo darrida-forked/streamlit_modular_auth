@@ -1,6 +1,8 @@
 import time
+
 from rich import print
 from streamlit_cookies_manager import CookieManager
+
 from ..protocols import AuthCookies
 
 

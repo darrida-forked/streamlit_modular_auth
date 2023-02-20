@@ -1,6 +1,6 @@
 import streamlit as st
-from .views import AdminView
 
+from .views import AdminView
 
 view = AdminView()
 
