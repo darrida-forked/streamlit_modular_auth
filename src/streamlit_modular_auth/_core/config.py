@@ -58,3 +58,8 @@ class ModularAuth:
 
         self.plugin_user_auth = DefaultJSONUserAuth()
         self.plugin_user_storage: UserStorage = DefaultJSONUserStorage()
+
+    def enable_admin_page(self):
+        from streamlit_modular_auth._apps.admin.page import admin_page
+
+        self.admin_page = admin_page

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import Field, Relationship, Session, SQLModel
+from sqlmodel import Field, Relationship, Session, SQLModel, select
 
 from .db import engine
 
@@ -33,7 +33,7 @@ class Group(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True)
     active: bool = True
-    create_date: Optional[datetime]
+    create_date: datetime = datetime.now()
     created_by: str = "ADMIN"
     update_date: datetime = datetime.now()
     updated_by: str = "ADMIN"
@@ -68,6 +68,16 @@ class User(SQLModel, table=True):
 def create_user(engine):
     from argon2 import PasswordHasher
 
+    try:
+        group = Group(name="admin")
+        with Session(engine) as session:
+            session.add(group)
+            session.commit()
+    except IntegrityError as e:
+        if "UNIQUE" not in str(e):
+            raise IntegrityError(e) from e
+        print(f"Group named '{group.name}' already exists.")
+
     ph = PasswordHasher()
     try:
         user = User(
@@ -80,6 +90,10 @@ def create_user(engine):
             admin=True,
         )
         with Session(engine) as session:
+            if user.admin is True:
+                statement = select(Group).where(Group.name == "admin")
+                if admin_group := session.exec(statement).one():
+                    user.groups.append(admin_group)
             session.add(user)
             session.commit()
     except IntegrityError as e:

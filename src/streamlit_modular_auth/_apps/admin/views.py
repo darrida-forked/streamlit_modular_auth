@@ -1,5 +1,3 @@
-# src.apps.admin.admin.py
-
 import secrets
 from typing import List
 
@@ -8,14 +6,14 @@ from argon2 import PasswordHasher
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Session, select
 
-from streamlit_modular_auth._core.views import DefauleBaseView
-from streamlit_modular_auth._handlers import SQLModelUserStorage
+from streamlit_modular_auth._core.views import DefaultBaseView
+from streamlit_modular_auth.handlers.database_storage import DefaultDBUserStorage
 
 from .db import engine
 from .models import Group, User
 
 
-class AdminView(DefauleBaseView):
+class AdminView(DefaultBaseView):
     title = "Admin Tools"
     name = "admin"
     groups = ["admin"]
@@ -61,11 +59,11 @@ class AdminView(DefauleBaseView):
             user.first_name = st.text_input("First Name", value=user.first_name or None)
             user.last_name = st.text_input("Last Name", value=user.last_name or None)
             user.email = st.text_input("Email", value=user.email or None)
-            auth_option = st.selectbox("Authentication", ("LDAP", "Password", "LDAP and Password"))
-            if auth_option in ("Password", "LDAP and Password"):
-                password = st.text_input("Password", type="password", placeholder="*************")
+            # auth_option = st.selectbox("Authentication", ("LDAP", "Password", "LDAP and Password"))
+            # if auth_option in ("Password", "LDAP and Password"):
+            password = st.text_input("Password", type="password", placeholder="*************")
 
-            user.ldap = auth_option in ("LDAP", "LDAP and Password")
+            # user.ldap = auth_option in ("LDAP", "LDAP and Password")
 
         # USER PERMISSION GROUPS
         all_groups = self.group_get_all()
@@ -114,16 +112,16 @@ class AdminView(DefauleBaseView):
             first_name = st.text_input("First Name", placeholder="User's first name")
             last_name = st.text_input("Last Name", placeholder="User's last name")
             email = st.text_input("Email", placeholder="Unique email")
-            ldap = st.checkbox("Authenticate using LDAP", value=True)
+            # ldap = st.checkbox("Authenticate using LDAP", value=True)
             password = st.text_input("Password", type="password", value=secrets.token_urlsafe(45))
             st.markdown("###")
             create_user = st.form_submit_button(label="Create")
 
         if create_user is True:
-            storage = SQLModelUserStorage()
+            storage = DefaultDBUserStorage()
             try:
                 storage.register(
-                    "", email, username, password=password, first_name=first_name, last_name=last_name, ldap=ldap
+                    first_name=first_name, last_name=last_name, email=email, username=username, password=password
                 )
                 with Session(self.db) as session:
                     statement = select(User).where(User.username == username)
@@ -245,7 +243,7 @@ class AdminView(DefauleBaseView):
                 saved_user.last_name = user.last_name
                 saved_user.hashed_password = user.hashed_password
                 saved_user.active = user.active
-                saved_user.ldap = user.ldap
+                # saved_user.ldap = user.ldap
                 saved_user.admin = user.admin
             session.add(saved_user)
             session.commit()

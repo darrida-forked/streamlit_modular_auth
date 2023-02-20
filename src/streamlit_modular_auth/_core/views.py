@@ -8,7 +8,7 @@ from streamlit_cookies_manager import CookieManager
 from .config import ModularAuth
 
 
-class DefauleBaseView:
+class DefaultBaseView:
     title: str
     name: str
     groups: List[str] = None  # []

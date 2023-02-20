@@ -131,7 +131,7 @@ Start the webserver
 
     ${PROCESS_MULTIPAGE_AUTH}    Start Process    python3
         ...    -m    coverage    run    -a    --source    tests   
-        ...    -m    streamlit    run    ${CURDIR}/tests_app/multipage_app_no_groups/Home.py    
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/multipage_app/Home.py    
         ...    --server.port    ${PORT_MULTIPAGE_AUTH} 
         ...    --server.headless   true
     Set suite variable    ${PROCESS_MULTIPAGE_AUTH}
