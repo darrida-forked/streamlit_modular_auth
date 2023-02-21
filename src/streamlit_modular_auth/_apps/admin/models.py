@@ -1,10 +1,13 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy.exc import IntegrityError
+from argon2 import PasswordHasher
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Field, Relationship, Session, SQLModel, select
 
-from .db import engine
+from .db import db_pool
+
+ph = PasswordHasher()
 
 
 class UserGroupsLink(SQLModel, table=True):
@@ -40,6 +43,41 @@ class Group(SQLModel, table=True):
 
     users: List["User"] = Relationship(back_populates="groups", link_model=UserGroupsLink)
 
+    @staticmethod
+    def get_all() -> List["Group"]:
+        with Session(db_pool.connect()) as session:
+            statement = select(Group)
+            groups = session.exec(statement)
+            return list(groups)
+
+    @staticmethod
+    def create(name):
+        try:
+            group = Group(name=name)
+            with Session(db_pool.connect()) as session:
+                session.add(group)
+                session.commit()
+        except IntegrityError as e:
+            if "UNIQUE" not in str(e):
+                raise IntegrityError(e) from e
+            print(f"Group with name {group.name} already exists.")
+            return False
+        return True
+
+    @staticmethod
+    def set_status(status: bool, name: str):
+        with Session(db_pool.connect()) as session:
+            statement = select(Group).where(Group.name == name)
+            if group := session.exec(statement).one():
+                group.active = status
+                session.add(group)
+                session.commit()
+                return True
+            else:
+                return False
+                # import streamlit as st
+                # st.error("Found no record for group.")
+
 
 class User(SQLModel, table=True):
     __table_args__ = {
@@ -64,13 +102,135 @@ class User(SQLModel, table=True):
 
     groups: List[Group] = Relationship(back_populates="users", link_model=UserGroupsLink)
 
+    @staticmethod
+    def get(username: str = None) -> "User":
+        try:
+            with Session(db_pool.connect()) as session:
+                if username:
+                    if user := _get_user(username, session):
+                        return user
+        except NoResultFound:
+            pass
+        return None
 
-def create_user(engine):
+    @staticmethod
+    def get_all() -> List["User"]:
+        with Session(db_pool.connect()) as session:
+            statement = select(User)
+            if users := session.exec(statement):
+                return list(users)
+        return None
+        # import streamlit as st
+        # st.error("Found no users.")
+
+    @staticmethod
+    def create(first_name: str, last_name: str, email: str, username: str, password: str):
+        """
+        Saves the information of the new user in SQLModel database (SQLite)
+        Args:
+            name (str): name for new account
+            email (str): email for new account
+            username (str): username for new account
+            password (str): password for new account
+        Return:
+            None
+        """
+        ph = PasswordHasher()
+        user = User(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            hashed_password=ph.hash(password),
+            active=True,
+        )
+        with Session(db_pool.connect()) as session:
+            session.add(user)
+            session.commit()
+
+    @staticmethod
+    def update(user: "User") -> None:
+        with Session(db_pool.connect()) as session:
+            if saved_user := _get_user(user.username, session):
+                saved_user.active = user.active
+                saved_user.email = user.email
+                saved_user.last_name = user.last_name
+                saved_user.hashed_password = user.hashed_password
+                saved_user.active = user.active
+                # saved_user.ldap = user.ldap
+                saved_user.admin = user.admin
+            session.add(saved_user)
+            session.commit()
+
+    @staticmethod
+    def get_groups(username: str):
+        with Session(db_pool.connect()) as session:
+            if user := _get_user(username, session):
+                return [x.name for x in user.groups] if user.groups else []
+            else:
+                return None
+                # st.error("Found no record for user.")
+
+    @staticmethod
+    def add_group(username: str, groups: str) -> None:
+        with Session(db_pool.connect()) as session:
+            group_statement = select(Group).where(Group.name == groups)
+            group = session.exec(group_statement).one()
+            if user := _get_user(username, session):
+                user.groups.append(group)
+                session.add(user)
+                session.commit()
+                return True
+            else:
+                return False
+                # import streamlit as st
+                # st.error("Found no record for user.")
+
+    @staticmethod
+    def delete_group(username: str, group: str):
+        with Session(db_pool.connect()) as session:
+            group_statement = select(Group).where(Group.name == group)
+            group = session.exec(group_statement).one()
+            if user := _get_user(username, session):
+                if user.groups:
+                    user.groups.remove(group)
+                    session.add(user)
+                    session.commit()
+                    return True
+            else:
+                return False
+                # import streamlit as st
+                # st.error("Found no record for user.")
+
+    @staticmethod
+    def set_status(status: bool, username: str):
+        with Session(db_pool.connect()) as session:
+            if user := _get_user(username, session):
+                user.active = status
+                session.add(user)
+                session.commit()
+                return True
+            else:
+                return False
+                # import streamlit as st
+                # st.error("Found no record for user.")
+
+
+def _get_user(username: str, session: Session) -> "User":
+    user_statement = select(User).where(User.username == username)
+    if user := session.exec(user_statement).one():
+        return user
+    return None
+
+    # def _get_groups(self, username) -> Groups
+
+
+def create_user():
     from argon2 import PasswordHasher
 
     try:
         group = Group(name="admin")
-        with Session(engine) as session:
+        with Session(db_pool.connect()) as session:
             session.add(group)
             session.commit()
     except IntegrityError as e:
@@ -89,7 +249,7 @@ def create_user(engine):
             active=True,
             admin=True,
         )
-        with Session(engine) as session:
+        with Session(db_pool.connect()) as session:
             if user.admin is True:
                 statement = select(Group).where(Group.name == "admin")
                 if admin_group := session.exec(statement).one():
@@ -107,5 +267,5 @@ def create_db_and_tables(engine):
 
 
 def init_storage():
-    create_db_and_tables(engine)
-    create_user(engine)
+    create_db_and_tables(db_pool)
+    create_user()

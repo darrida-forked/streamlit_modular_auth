@@ -4,12 +4,10 @@ from typing import List
 import streamlit as st
 from argon2 import PasswordHasher
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlmodel import Session, select
 
 from streamlit_modular_auth._core.views import DefaultBaseView
-from streamlit_modular_auth.handlers.database_storage import DefaultDBUserStorage
 
-from .db import engine
+from .db import db_pool  # engine
 from .models import Group, User
 
 
@@ -17,7 +15,7 @@ class AdminView(DefaultBaseView):
     title = "Admin Tools"
     name = "admin"
     groups = ["admin"]
-    db = engine
+    db = db_pool
 
     # CALLABLES FOR INPUT WIDGETS
     def change_user_status(self, username, active):
@@ -37,19 +35,29 @@ class AdminView(DefaultBaseView):
 
     def change_user_group_status(self, username: str, group: str, granted):
         if not granted:
-            self.user_add_groups(username, group)
+            if not User.add_group(username, group):
+                st.error("Found no record for user.")
+            # self.user_add_groups(username, group)
         else:
-            self.user_delete_group(username, group)
+            if not User.delete_group(username, group):
+                st.error("Found no record for user.")
+            # self.user_delete_group(username, group)
 
     def open_user_info(self, username):
-        with Session(self.db) as session:
-            statement = select(User).where(User.username == username)
-            if user := session.exec(statement).one():
-                st.session_state["page"]["open_user"] = user
+        # with Session(self.db) as session:
+        #     statement = select(User).where(User.username == username)
+        #     if user := session.exec(statement).one():
+        #         st.session_state["page"]["open_user"] = user
+        user = User.get(username)
+        st.session_state["page"]["open_user"] = user
 
     # FUNCTIONALITY
     def user_info(self, user: User = None):
         st.markdown("### User Info")
+
+        if self.state["page"].get("user_info_updated"):
+            st.info("User info updated.")
+            self.state["page"].pop("user_info_updated")
 
         password = None
         # USER INFORMATION
@@ -66,8 +74,10 @@ class AdminView(DefaultBaseView):
             # user.ldap = auth_option in ("LDAP", "LDAP and Password")
 
         # USER PERMISSION GROUPS
+        # all_groups = Group.get_all()
         all_groups = self.group_get_all()
-        permissions = self.user_get_groups(user.username)
+        permissions = User.get_groups(user.username)
+        # permissions = self.user_get_groups(user.username)
         for i, group in enumerate(all_groups, start=1):
             group_checkbox = col2.empty()
             col3.write(group)
@@ -82,7 +92,7 @@ class AdminView(DefaultBaseView):
             )
 
         # RECORD DATES
-        created_col, updated_col, dates_spacer = st.columns(3)
+        created_col, updated_col, _ = st.columns(3)
         with created_col:
             st.markdown(f"**Create Date:** {str(user.create_date)[:16] or ''}")
             st.markdown(f"**Create User:** {user.created_by or ''}")
@@ -91,13 +101,15 @@ class AdminView(DefaultBaseView):
             st.markdown(f"**Update User:** {user.updated_by or ''}")
 
         # BUTTONS
-        save_col, close_col, button_spacer = st.columns((0.25, 0.25, 2))
+        save_col, close_col, _ = st.columns((0.25, 0.25, 2))
         with save_col:
             if st.button("Save"):
                 if password:
                     ph = PasswordHasher()
                     user.hashed_password = ph.hash(password)
-                self.user_update(user)
+                # self.user_update(user)
+                User.update(user)
+                self.state["page"]["user_info_updated"] = True
                 st.experimental_rerun()
         with close_col:
             if st.button("Close"):
@@ -118,15 +130,18 @@ class AdminView(DefaultBaseView):
             create_user = st.form_submit_button(label="Create")
 
         if create_user is True:
-            storage = DefaultDBUserStorage()
+            # storage = DefaultDBUserStorage()
             try:
-                storage.register(
+                # storage.register(
+                User.create(
                     first_name=first_name, last_name=last_name, email=email, username=username, password=password
                 )
-                with Session(self.db) as session:
-                    statement = select(User).where(User.username == username)
-                    if session.exec(statement).one():
-                        st.success("User created.")
+                # with Session(self.db) as session:
+                #     statement = select(User).where(User.username == username)
+                #     if session.exec(statement).one():
+                #         st.success("User created.")
+                if User.get(username):
+                    st.success("User created.")
             except NoResultFound:
                 st.error("An error occurred while attempting to create user.")
             except IntegrityError:
@@ -164,7 +179,7 @@ class AdminView(DefaultBaseView):
                 page_state.pop("show_all_groups")
                 st.experimental_rerun()
         for i, group in enumerate(groups, start=1):
-            col1, col2, col3, col4, col5 = st.columns((0.5, 1, 1, 1, 1))
+            col1, col2, _, _, _ = st.columns((0.5, 1, 1, 1, 1))
             active_checkbox = col1.empty()
             col2.write(group.name)
 
@@ -176,152 +191,166 @@ class AdminView(DefaultBaseView):
                 args=[group.name, group.active],
             )
 
-    def user_add_groups(self, username: str, groups: str) -> None:
-        with Session(self.db) as session:
-            group_statement = select(Group).where(Group.name == groups)
-            group = session.exec(group_statement).one()
-            user_statement = select(User).where(User.username == username)
-            if user := session.exec(user_statement).one():
-                user.groups.append(group)
-                session.add(user)
-                session.commit()
-                return True
-            else:
-                import streamlit as st
+    # def user_add_groups(self, username: str, groups: str) -> None:
+    #     with Session(self.db) as session:
+    #         group_statement = select(Group).where(Group.name == groups)
+    #         group = session.exec(group_statement).one()
+    #         user_statement = select(User).where(User.username == username)
+    #         if user := session.exec(user_statement).one():
+    #             user.groups.append(group)
+    #             session.add(user)
+    #             session.commit()
+    #             return True
+    #         else:
+    #             import streamlit as st
 
-                st.error("Found no record for user.")
+    #             st.error("Found no record for user.")
 
-    def user_delete_group(self, username: str, group: str):
-        with Session(self.db) as session:
-            group_statement = select(Group).where(Group.name == group)
-            group = session.exec(group_statement).one()
-            user_statement = select(User).where(User.username == username)
-            if user := session.exec(user_statement).one():
-                if user.groups:
-                    user.groups.remove(group)
-                    session.add(user)
-                    session.commit()
-                    return True
-            else:
-                import streamlit as st
+    # def user_delete_group(self, username: str, group: str):
+    #     with Session(self.db) as session:
+    #         group_statement = select(Group).where(Group.name == group)
+    #         group = session.exec(group_statement).one()
+    #         user_statement = select(User).where(User.username == username)
+    #         if user := session.exec(user_statement).one():
+    #             if user.groups:
+    #                 user.groups.remove(group)
+    #                 session.add(user)
+    #                 session.commit()
+    #                 return True
+    #         else:
+    #             import streamlit as st
 
-                st.error("Found no record for user.")
+    #             st.error("Found no record for user.")
 
-    def user_get_groups(self, username: str):
-        with Session(self.db) as session:
-            statement = select(User).where(User.username == username)
-            if user := session.exec(statement).one():
-                return [x.name for x in user.groups] if user.groups else []
-            else:
-                st.error("Found no record for user.")
+    # def user_get_groups(self, username: str):
+    #     with Session(self.db) as session:
+    #         statement = select(User).where(User.username == username)
+    #         if user := session.exec(statement).one():
+    #             return [x.name for x in user.groups] if user.groups else []
+    #         else:
+    #             st.error("Found no record for user.")
 
     def user_get_all(self):
-        with Session(self.db) as session:
-            statement = select(User)
-            if users := session.exec(statement):
-                return list(users)
-            import streamlit as st
+        if users := User.get_all():
+            return users
+        st.error("Found no users.")
 
-            st.error("Found no users.")
+        # with Session(self.db) as session:
+        #     statement = select(User)
+        #     if users := session.exec(statement):
+        #         return list(users)
+        #     import streamlit as st
 
-    def user_update(self, user: User) -> None:
-        """
-        Saves the information of the new user in SQLModel database (SQLite)
-        Args:
-            name (str): name for new account
-            email (str): email for new account
-            username (str): username for new account
-            password (str): password for new account
-        Return:
-            None
-        """
-        with Session(self.db) as session:
-            statement = select(User).where(User.username == user.username)
-            if saved_user := session.exec(statement).one():
-                saved_user.active = user.active
-                saved_user.email = user.email
-                saved_user.last_name = user.last_name
-                saved_user.hashed_password = user.hashed_password
-                saved_user.active = user.active
-                # saved_user.ldap = user.ldap
-                saved_user.admin = user.admin
-            session.add(saved_user)
-            session.commit()
+    # def user_update(self, user: User) -> None:
+    #     """
+    #     Saves the information of the new user in SQLModel database (SQLite)
+    #     Args:
+    #         name (str): name for new account
+    #         email (str): email for new account
+    #         username (str): username for new account
+    #         password (str): password for new account
+    #     Return:
+    #         None
+    #     """
+    #     with Session(self.db) as session:
+    #         statement = select(User).where(User.username == user.username)
+    #         if saved_user := session.exec(statement).one():
+    #             saved_user.active = user.active
+    #             saved_user.email = user.email
+    #             saved_user.last_name = user.last_name
+    #             saved_user.hashed_password = user.hashed_password
+    #             saved_user.active = user.active
+    #             # saved_user.ldap = user.ldap
+    #             saved_user.admin = user.admin
+    #         session.add(saved_user)
+    #         session.commit()
 
     def user_disable(self, username: str):
-        self._user_change_status(False, username)
+        User.set_status(False, username)
+        # self._user_change_status(False, username)
 
     def user_enable(self, username: str):
-        self._user_change_status(True, username)
+        User.set_status(True, username)
+        # self._user_change_status(True, username)
 
     @staticmethod
     def user_refresh_groups(self, username: str) -> None:
-        with Session(self.db) as session:
-            statement = select(User).where(User.username == username)
-            if user := session.exec(statement).one():
-                if user.groups:
-                    self.cookies.set("groups", user.groups)
-                    st.session_state["groups"] = user.groups.split(",")
+        if user := User.get(username):
+            # with Session(self.db) as session:
+            #     statement = select(User).where(User.username == username)
+            #     if user := session.exec(statement).one():
+            if user.groups:
+                self.cookies.set("groups", user.groups)
+                st.session_state["groups"] = user.groups.split(",")
 
-    def _user_change_status(self, change_to: bool, username: str):
-        with Session(self.db) as session:
-            statement = select(User).where(User.username == username)
-            if user := session.exec(statement).one():
-                user.active = change_to
-                session.add(user)
-                session.commit()
-                return True
-            else:
-                import streamlit as st
+    # def _user_change_status(self, change_to: bool, username: str):
+    #     with Session(self.db) as session:
+    #         statement = select(User).where(User.username == username)
+    #         if user := session.exec(statement).one():
+    #             user.active = change_to
+    #             session.add(user)
+    #             session.commit()
+    #             return True
+    #         else:
+    #             import streamlit as st
 
-                st.error("Found no record for user.")
+    #             st.error("Found no record for user.")
 
     ##################################################################
     # GROUPS
     ##################################################################
     def create_group(self, name):
-        try:
-            group = Group(name=name)
-            with Session(self.db) as session:
-                session.add(group)
-                session.commit()
-        except IntegrityError as e:
-            if "UNIQUE" not in str(e):
-                raise IntegrityError(e) from e
-            print(f"Group with name {group.name} already exists.")
-            return False
-        return True
+        return Group.create(name)
+        # try:
+        #     group = Group(name=name)
+        #     with Session(self.db) as session:
+        #         session.add(group)
+        #         session.commit()
+        # except IntegrityError as e:
+        #     if "UNIQUE" not in str(e):
+        #         raise IntegrityError(e) from e
+        #     print(f"Group with name {group.name} already exists.")
+        #     return False
+        # return True
 
     def group_get_all(self, return_str=True) -> List["Group"]:
-        groups_l = []
-        with Session(self.db) as session:
-            statement = select(Group)
-            groups = session.exec(statement)
-            if return_str and groups:
-                groups_l = [x.name for x in groups]
-            elif groups:
-                groups_l = list(groups)
-            else:
-                import streamlit as st
+        groups = Group.get_all()
+        if return_str and groups:
+            return [x.name for x in groups]
+        elif groups:
+            return groups
+        return None
+        # groups_l = []
+        # with Session(self.db) as session:
+        #     statement = select(Group)
+        #     groups = session.exec(statement)
+        #     if return_str and groups:
+        #         groups_l = [x.name for x in groups]
+        #     elif groups:
+        #         groups_l = list(groups)
+        #     else:
+        #         import streamlit as st
 
-                st.error("Found no groups.")
-        return groups_l
+        #         st.error("Found no groups.")
+        # return groups_l
 
     def group_disable(self, name: str):
-        self._change_group_status(False, name)
+        Group.set_status(False, name)
+        # self._change_group_status(False, name)
 
     def group_enable(self, name: str):
-        self._change_group_status(True, name)
+        Group.set_status(True, name)
+        # self._change_group_status(True, name)
 
-    def _change_group_status(self, change_to: bool, name: str):
-        with Session(self.db) as session:
-            statement = select(Group).where(Group.name == name)
-            if group := session.exec(statement).one():
-                group.active = change_to
-                session.add(group)
-                session.commit()
-                return True
-            else:
-                import streamlit as st
+    # def _change_group_status(self, change_to: bool, name: str):
+    #     with Session(self.db) as session:
+    #         statement = select(Group).where(Group.name == name)
+    #         if group := session.exec(statement).one():
+    #             group.active = change_to
+    #             session.add(group)
+    #             session.commit()
+    #             return True
+    #         else:
+    #             import streamlit as st
 
-                st.error("Found no record for group.")
+    #             st.error("Found no record for group.")

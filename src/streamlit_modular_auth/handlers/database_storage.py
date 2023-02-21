@@ -7,7 +7,7 @@ from argon2.exceptions import VerifyMismatchError
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
 
-from streamlit_modular_auth._apps.admin.db import engine
+from streamlit_modular_auth._apps.admin.db import db_pool  # engine
 from streamlit_modular_auth._apps.admin.models import User, init_storage
 
 dc = diskcache.Cache("cache.db")
@@ -24,7 +24,8 @@ class DefaultDBUserAuth:
         Return:
             bool: If password is correct -> "True"; if not -> "False"
         """
-        with Session(engine) as session:
+        # MOVE AND GENERIALZE INTO PROTOCOL
+        with Session(db_pool.connect()) as session:
             st.write(username)
             statement = select(User).where(User.username == username)
             try:
@@ -59,18 +60,7 @@ class DefaultDBUserStorage:
         Return:
             None
         """
-        ph = PasswordHasher()
-        user = User(
-            username=username,
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            hashed_password=ph.hash(password),
-            active=True,
-        )
-        with Session(engine) as session:
-            session.add(user)
-            session.commit()
+        User.create(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
 
     def check_username_exists(self, username: str) -> bool:
         """
@@ -81,7 +71,7 @@ class DefaultDBUserStorage:
             bool: If username exists -> "True"; if not -> "False"
         """
         try:
-            with Session(engine) as session:
+            with Session(db_pool.connect()) as session:
                 statement = select(User).where(User.username == username)
                 if user := session.exec(statement).one():
                     print(user)
@@ -99,7 +89,7 @@ class DefaultDBUserStorage:
             Optional[str]: If exists -> <username>; If not -> None
         """
         try:
-            with Session(engine) as session:
+            with Session(db_pool.connect()) as session:
                 statement = select(User).where(User.email == email)
                 if user := session.exec(statement).one():
                     return user.username
@@ -117,7 +107,7 @@ class DefaultDBUserStorage:
             None
         """
         ph = PasswordHasher()
-        with Session(engine) as session:
+        with Session(db_pool.connect()) as session:
             statement = select(User).where(User.email == email)
             if user := session.exec(statement).one():
                 user.hashed_password = ph.hash(password)
