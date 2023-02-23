@@ -12,7 +12,7 @@ def _load_lottieurl(url: str) -> str:
     Fetches the lottie animation using the URL.
     """
     try:
-        r = requests.get(url)
+        r = requests.get(url, timeout=5)
         if r.status_code != 200:
             return None
         return r.json()
