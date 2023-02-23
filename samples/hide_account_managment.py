@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_modular_auth import Login, ModularAuth
 
-
 app = ModularAuth()
 app.login_hide_account_management = True
 login = Login(app)

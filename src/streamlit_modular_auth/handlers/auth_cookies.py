@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 import diskcache
 import streamlit as st
-
 from streamlit_modular_auth.protocols import CookieManager
 
 dc = diskcache.Cache("cache.db")

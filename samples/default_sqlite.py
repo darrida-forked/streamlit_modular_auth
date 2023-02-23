@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_modular_auth import Login, ModularAuth
 
-
 app = ModularAuth()
 app.set_sqlite_storage()
 login = Login(app)

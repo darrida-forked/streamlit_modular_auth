@@ -2,7 +2,6 @@ from typing import List, Optional
 
 import streamlit as st
 from argon2 import PasswordHasher
-
 from streamlit_modular_auth import cookies
 
 ph = PasswordHasher()

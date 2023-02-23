@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import streamlit as st
-
 from streamlit_modular_auth.protocols import CookieManager
 
 

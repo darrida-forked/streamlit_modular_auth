@@ -1,7 +1,6 @@
 import streamlit as st
-from tests_handlers._test_forgot_password import ForgotPasswordCustomMsgTest
-
 from streamlit_modular_auth import Login, ModularAuth
+from tests_handlers._test_forgot_password import ForgotPasswordCustomMsgTest
 
 forgot_msg = ForgotPasswordCustomMsgTest(message="Password via an insecure method")
 

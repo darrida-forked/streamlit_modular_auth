@@ -1,12 +1,11 @@
 from dataclasses import dataclass, field
 
 import streamlit as st
-from streamlit_cookies_manager import CookieManager
 
-from streamlit_modular_auth._cookie_manager import _initialize_cookie_manbager
+from streamlit_modular_auth._cookie_manager import CookieManager, _initialize_cookie_manbager
 from streamlit_modular_auth.handlers.auth_cookies import DefaultAuthCookies
-from streamlit_modular_auth.handlers.storage.json_storage import DefaultJSONUserAuth, DefaultJSONUserStorage
 from streamlit_modular_auth.handlers.forgot_password_msg import DefaultForgotPasswordMsg
+from streamlit_modular_auth.handlers.storage.json_storage import DefaultJSONUserAuth, DefaultJSONUserStorage
 from streamlit_modular_auth.protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
 
 cookies = _initialize_cookie_manbager()

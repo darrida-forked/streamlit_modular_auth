@@ -84,7 +84,7 @@ def validate_user_storage(storage: UserStorage, auth: UserAuth):
 
     # Change password
     # - Then confirm auth still works with UserAuth method
-    test_account["password"] = "password2"  # nosec
+    test_account["password"] = "password2"  # ruff : nosec
     storage.change_password(test_account["email"], test_account["password"])
     if auth.check_credentials(test_account["username"], test_account["password"]):
         print("[bold magenta]change_password()[/bold magenta]: [bold green]PASS[/bold green]")

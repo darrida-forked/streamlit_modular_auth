@@ -1,7 +1,6 @@
 import streamlit as st
-from tests_handlers._test_user_storage import UserAuthTest, UserStorageTest
-
 from streamlit_modular_auth import Login, ModularAuth
+from tests_handlers._test_user_storage import UserAuthTest, UserStorageTest
 
 app = ModularAuth()
 app.plugin_user_auth = UserAuthTest()

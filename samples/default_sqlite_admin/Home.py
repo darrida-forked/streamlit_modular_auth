@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_modular_auth import Login
-from config import app
 
+from config import app
 
 login = Login(app)
 
@@ -13,7 +13,6 @@ st.warning(
     "\n\n(2) stop the app"
     "\n\n(3) start it again without `init_storage`"
 )
-
 
 if login.build_login_ui():
     st.success("You're logged in!")

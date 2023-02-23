@@ -1,5 +1,4 @@
 import streamlit as st
-
 from streamlit_modular_auth import Login
 
 login = Login()

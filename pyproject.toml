@@ -4,7 +4,6 @@ version = "2023.02.15"
 description = ""
 authors = ["darrida <darrida.py@gmail.com>"]
 readme = "README.md"
-# packages = [{include = "climate_data_dashboard"}]
 
 [tool.poetry.dependencies]
 python = "^3.9.6"
@@ -38,8 +37,7 @@ optional = true
 pre-commit = "^3.0.4"
 watchdog = "^2.2.1"
 black = "^23.1.0"
-bandit = "^1.7.4"
-isort = "^5.12.0"
+ruff = "^0.0.252"
 
 [tool.poetry.group.examples]
 optional = true
@@ -47,12 +45,22 @@ optional = true
 [tool.poetry.group.examples.dependencies]
 sqlmodel = "^0.0.8"
 
-[tool.isort]
-line_length = 120
-
 [tool.black]
 line_length = 120
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+# https://beta.ruff.rs/docs/
+[tool.ruff]
+line-length = 120
+extend-exclude = [".venv", "*.robot"]
+extend-select = ["S", "I"]  # bandit (S), isort (I)
+
+[tool.ruff.isort]
+extra-standard-library = []
+known-first-party = ["config"]
+known-third-party = []
+# relative-imports-order = "closest-to-furthest"
+# required-imports = ["from __future__ import annotations"]

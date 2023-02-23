@@ -4,7 +4,6 @@ from typing import List
 import streamlit as st
 from argon2 import PasswordHasher
 from sqlalchemy.exc import IntegrityError, NoResultFound
-
 from streamlit_modular_auth._core.views import DefaultBaseView
 
 from .db import db_pool  # engine
