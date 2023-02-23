@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import streamlit as st
 from streamlit_cookies_manager import CookieManager
 
 from streamlit_modular_auth._cookie_manager import _initialize_cookie_manbager
 from streamlit_modular_auth.handlers.auth_cookies import DefaultAuthCookies
-from streamlit_modular_auth.handlers.database_storage import DefaultDBUserAuth, DefaultDBUserStorage
+from streamlit_modular_auth.handlers.storage.json_storage import DefaultJSONUserAuth, DefaultJSONUserStorage
 from streamlit_modular_auth.handlers.forgot_password_msg import DefaultForgotPasswordMsg
 from streamlit_modular_auth.protocols import AuthCookies, ForgotPasswordMessage, UserAuth, UserStorage
 
@@ -47,19 +47,21 @@ class ModularAuth:
     login_hide_account_management: bool = False
     login_label: str = "Login"
     logout_button_name: str = "Logout"
-    plugin_user_auth: UserAuth = DefaultDBUserAuth()
-    plugin_user_storage: UserStorage = DefaultDBUserStorage()
+    plugin_user_auth: UserAuth = DefaultJSONUserAuth()
+    plugin_user_storage: UserStorage = DefaultJSONUserStorage()
     plugin_forgot_password_msg: ForgotPasswordMessage = DefaultForgotPasswordMsg()
     plugin_auth_cookies: AuthCookies = DefaultAuthCookies()
-    confg = {}
+    config: dict = field(default_factory=lambda: {})
 
-    def set_json_storage(self):
-        from streamlit_modular_auth.handlers.json_storage import DefaultJSONUserAuth, DefaultJSONUserStorage
+    def set_sqlite_storage(self):
+        from streamlit_modular_auth.handlers.storage.sqlmodel_storage import DefaultDBUserAuth, DefaultDBUserStorage
 
-        self.plugin_user_auth = DefaultJSONUserAuth()
-        self.plugin_user_storage: UserStorage = DefaultJSONUserStorage()
+        self.plugin_user_auth = DefaultDBUserAuth()
+        self.plugin_user_storage = DefaultDBUserStorage()
+        self.config["set_sqlite_storage"] = True
 
     def enable_admin_page(self):
         from streamlit_modular_auth._apps.admin.page import admin_page
 
         self.admin_page = admin_page
+        self.config["enable_default_admin_page"] = True

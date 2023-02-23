@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import diskcache
 import streamlit as st
@@ -10,11 +10,16 @@ from sqlmodel import Session, select
 from streamlit_modular_auth._apps.admin.db import db_pool  # engine
 from streamlit_modular_auth._apps.admin.models import User, init_storage
 
+if TYPE_CHECKING:
+    from sqlalchemy.engine import Engine
+
 dc = diskcache.Cache("cache.db")
 ph = PasswordHasher()
 
 
 class DefaultDBUserAuth:
+    db: "Engine" = db_pool
+
     def check_credentials(self, username, password):
         """
         Authenticates using username and password class attributes.
@@ -25,7 +30,7 @@ class DefaultDBUserAuth:
             bool: If password is correct -> "True"; if not -> "False"
         """
         # MOVE AND GENERIALZE INTO PROTOCOL
-        with Session(db_pool.connect()) as session:
+        with Session(self.db.connect()) as session:
             st.write(username)
             statement = select(User).where(User.username == username)
             try:
@@ -49,6 +54,8 @@ class DefaultDBUserAuth:
 
 
 class DefaultDBUserStorage:
+    db: "Engine" = db_pool
+
     def register(self, first_name: str, last_name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in SQLModel database (SQLite)
@@ -71,7 +78,7 @@ class DefaultDBUserStorage:
             bool: If username exists -> "True"; if not -> "False"
         """
         try:
-            with Session(db_pool.connect()) as session:
+            with Session(self.db.connect()) as session:
                 statement = select(User).where(User.username == username)
                 if user := session.exec(statement).one():
                     print(user)
@@ -89,7 +96,7 @@ class DefaultDBUserStorage:
             Optional[str]: If exists -> <username>; If not -> None
         """
         try:
-            with Session(db_pool.connect()) as session:
+            with Session(self.db.connect()) as session:
                 statement = select(User).where(User.email == email)
                 if user := session.exec(statement).one():
                     return user.username
@@ -107,7 +114,7 @@ class DefaultDBUserStorage:
             None
         """
         ph = PasswordHasher()
-        with Session(db_pool.connect()) as session:
+        with Session(self.db.connect()) as session:
             statement = select(User).where(User.email == email)
             if user := session.exec(statement).one():
                 user.hashed_password = ph.hash(password)

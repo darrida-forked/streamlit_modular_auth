@@ -3,7 +3,9 @@ from typing import List
 
 import streamlit as st
 from streamlit.components.v1 import html
-from streamlit_cookies_manager import CookieManager
+
+# from streamlit_cookies_manager import CookieManager
+from streamlit_modular_auth._cookie_manager import CookieManager
 
 from .config import ModularAuth
 

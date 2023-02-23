@@ -16,6 +16,8 @@ class AdminView(DefaultBaseView):
     name = "admin"
     groups = ["admin"]
     db = db_pool
+    __user = User
+    __group = Group
 
     # CALLABLES FOR INPUT WIDGETS
     def change_user_status(self, username, active):
@@ -35,20 +37,14 @@ class AdminView(DefaultBaseView):
 
     def change_user_group_status(self, username: str, group: str, granted):
         if not granted:
-            if not User.add_group(username, group):
+            if not self.__user.add_group(username, group):
                 st.error("Found no record for user.")
-            # self.user_add_groups(username, group)
         else:
-            if not User.delete_group(username, group):
+            if not self.__user.delete_group(username, group):
                 st.error("Found no record for user.")
-            # self.user_delete_group(username, group)
 
     def open_user_info(self, username):
-        # with Session(self.db) as session:
-        #     statement = select(User).where(User.username == username)
-        #     if user := session.exec(statement).one():
-        #         st.session_state["page"]["open_user"] = user
-        user = User.get(username)
+        user = self.__user.get(username)
         st.session_state["page"]["open_user"] = user
 
     # FUNCTIONALITY
@@ -67,17 +63,11 @@ class AdminView(DefaultBaseView):
             user.first_name = st.text_input("First Name", value=user.first_name or None)
             user.last_name = st.text_input("Last Name", value=user.last_name or None)
             user.email = st.text_input("Email", value=user.email or None)
-            # auth_option = st.selectbox("Authentication", ("LDAP", "Password", "LDAP and Password"))
-            # if auth_option in ("Password", "LDAP and Password"):
             password = st.text_input("Password", type="password", placeholder="*************")
 
-            # user.ldap = auth_option in ("LDAP", "LDAP and Password")
-
         # USER PERMISSION GROUPS
-        # all_groups = Group.get_all()
         all_groups = self.group_get_all()
-        permissions = User.get_groups(user.username)
-        # permissions = self.user_get_groups(user.username)
+        permissions = self.__user.get_groups(user.username)
         for i, group in enumerate(all_groups, start=1):
             group_checkbox = col2.empty()
             col3.write(group)
@@ -107,8 +97,7 @@ class AdminView(DefaultBaseView):
                 if password:
                     ph = PasswordHasher()
                     user.hashed_password = ph.hash(password)
-                # self.user_update(user)
-                User.update(user)
+                self.__user.update(user)
                 self.state["page"]["user_info_updated"] = True
                 st.experimental_rerun()
         with close_col:
@@ -124,23 +113,16 @@ class AdminView(DefaultBaseView):
             first_name = st.text_input("First Name", placeholder="User's first name")
             last_name = st.text_input("Last Name", placeholder="User's last name")
             email = st.text_input("Email", placeholder="Unique email")
-            # ldap = st.checkbox("Authenticate using LDAP", value=True)
             password = st.text_input("Password", type="password", value=secrets.token_urlsafe(45))
             st.markdown("###")
             create_user = st.form_submit_button(label="Create")
 
         if create_user is True:
-            # storage = DefaultDBUserStorage()
             try:
-                # storage.register(
-                User.create(
+                self.__user.create(
                     first_name=first_name, last_name=last_name, email=email, username=username, password=password
                 )
-                # with Session(self.db) as session:
-                #     statement = select(User).where(User.username == username)
-                #     if session.exec(statement).one():
-                #         st.success("User created.")
-                if User.get(username):
+                if self.__user.get(username):
                     st.success("User created.")
             except NoResultFound:
                 st.error("An error occurred while attempting to create user.")
@@ -191,166 +173,36 @@ class AdminView(DefaultBaseView):
                 args=[group.name, group.active],
             )
 
-    # def user_add_groups(self, username: str, groups: str) -> None:
-    #     with Session(self.db) as session:
-    #         group_statement = select(Group).where(Group.name == groups)
-    #         group = session.exec(group_statement).one()
-    #         user_statement = select(User).where(User.username == username)
-    #         if user := session.exec(user_statement).one():
-    #             user.groups.append(group)
-    #             session.add(user)
-    #             session.commit()
-    #             return True
-    #         else:
-    #             import streamlit as st
-
-    #             st.error("Found no record for user.")
-
-    # def user_delete_group(self, username: str, group: str):
-    #     with Session(self.db) as session:
-    #         group_statement = select(Group).where(Group.name == group)
-    #         group = session.exec(group_statement).one()
-    #         user_statement = select(User).where(User.username == username)
-    #         if user := session.exec(user_statement).one():
-    #             if user.groups:
-    #                 user.groups.remove(group)
-    #                 session.add(user)
-    #                 session.commit()
-    #                 return True
-    #         else:
-    #             import streamlit as st
-
-    #             st.error("Found no record for user.")
-
-    # def user_get_groups(self, username: str):
-    #     with Session(self.db) as session:
-    #         statement = select(User).where(User.username == username)
-    #         if user := session.exec(statement).one():
-    #             return [x.name for x in user.groups] if user.groups else []
-    #         else:
-    #             st.error("Found no record for user.")
-
     def user_get_all(self):
-        if users := User.get_all():
+        if users := self.__user.get_all():
             return users
         st.error("Found no users.")
 
-        # with Session(self.db) as session:
-        #     statement = select(User)
-        #     if users := session.exec(statement):
-        #         return list(users)
-        #     import streamlit as st
-
-    # def user_update(self, user: User) -> None:
-    #     """
-    #     Saves the information of the new user in SQLModel database (SQLite)
-    #     Args:
-    #         name (str): name for new account
-    #         email (str): email for new account
-    #         username (str): username for new account
-    #         password (str): password for new account
-    #     Return:
-    #         None
-    #     """
-    #     with Session(self.db) as session:
-    #         statement = select(User).where(User.username == user.username)
-    #         if saved_user := session.exec(statement).one():
-    #             saved_user.active = user.active
-    #             saved_user.email = user.email
-    #             saved_user.last_name = user.last_name
-    #             saved_user.hashed_password = user.hashed_password
-    #             saved_user.active = user.active
-    #             # saved_user.ldap = user.ldap
-    #             saved_user.admin = user.admin
-    #         session.add(saved_user)
-    #         session.commit()
-
     def user_disable(self, username: str):
-        User.set_status(False, username)
-        # self._user_change_status(False, username)
+        self.__user.set_status(False, username)
 
     def user_enable(self, username: str):
-        User.set_status(True, username)
-        # self._user_change_status(True, username)
+        self.__user.set_status(True, username)
 
-    @staticmethod
     def user_refresh_groups(self, username: str) -> None:
-        if user := User.get(username):
-            # with Session(self.db) as session:
-            #     statement = select(User).where(User.username == username)
-            #     if user := session.exec(statement).one():
+        if user := self.__user.get(username):
             if user.groups:
                 self.cookies.set("groups", user.groups)
                 st.session_state["groups"] = user.groups.split(",")
 
-    # def _user_change_status(self, change_to: bool, username: str):
-    #     with Session(self.db) as session:
-    #         statement = select(User).where(User.username == username)
-    #         if user := session.exec(statement).one():
-    #             user.active = change_to
-    #             session.add(user)
-    #             session.commit()
-    #             return True
-    #         else:
-    #             import streamlit as st
-
-    #             st.error("Found no record for user.")
-
-    ##################################################################
-    # GROUPS
-    ##################################################################
     def create_group(self, name):
-        return Group.create(name)
-        # try:
-        #     group = Group(name=name)
-        #     with Session(self.db) as session:
-        #         session.add(group)
-        #         session.commit()
-        # except IntegrityError as e:
-        #     if "UNIQUE" not in str(e):
-        #         raise IntegrityError(e) from e
-        #     print(f"Group with name {group.name} already exists.")
-        #     return False
-        # return True
+        return self.__group.create(name)
 
     def group_get_all(self, return_str=True) -> List["Group"]:
-        groups = Group.get_all()
+        groups = self.__group.get_all()
         if return_str and groups:
             return [x.name for x in groups]
         elif groups:
             return groups
         return None
-        # groups_l = []
-        # with Session(self.db) as session:
-        #     statement = select(Group)
-        #     groups = session.exec(statement)
-        #     if return_str and groups:
-        #         groups_l = [x.name for x in groups]
-        #     elif groups:
-        #         groups_l = list(groups)
-        #     else:
-        #         import streamlit as st
-
-        #         st.error("Found no groups.")
-        # return groups_l
 
     def group_disable(self, name: str):
-        Group.set_status(False, name)
-        # self._change_group_status(False, name)
+        self.__group.set_status(False, name)
 
     def group_enable(self, name: str):
-        Group.set_status(True, name)
-        # self._change_group_status(True, name)
-
-    # def _change_group_status(self, change_to: bool, name: str):
-    #     with Session(self.db) as session:
-    #         statement = select(Group).where(Group.name == name)
-    #         if group := session.exec(statement).one():
-    #             group.active = change_to
-    #             session.add(group)
-    #             session.commit()
-    #             return True
-    #         else:
-    #             import streamlit as st
-
-    #             st.error("Found no record for group.")
+        self.__group.set_status(True, name)

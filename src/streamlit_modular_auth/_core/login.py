@@ -23,10 +23,7 @@ from .config import ModularAuth
 class Login:
     """Builds the UI for the Login/Sign Up page and manages all authentication logic."""
 
-    def __init__(
-        self,
-        app: ModularAuth = None,
-    ):
+    def __init__(self, app: ModularAuth = None):
         if not app:
             app = ModularAuth()
         self.width = app.login_width
@@ -46,6 +43,7 @@ class Login:
         self.auth_cookies = app.plugin_auth_cookies
         self.cookies = app.cookies
         self.state = app.state
+        self.config = app.config
 
         if "init_storage" in argv:
             self.storage.init_storage()
@@ -55,6 +53,9 @@ class Login:
             validate_user_auth(self.auth, self.storage)
         if "check_auth_cookies" in argv:
             validate_auth_cookies(self.auth_cookies, self.cookies)
+        if self.config.get("enable_default_admin_page") is True and not self.config.get("set_sqlite_storage"):
+            st.error("`enable_admin_page()` requires `set_sqlite_storage`")
+            st.stop()
 
     def __login_widget(self) -> None:
         """
