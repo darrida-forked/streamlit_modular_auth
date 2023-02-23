@@ -1,6 +1,7 @@
 import streamlit as st
 from apps.home.views import HomeView
 from pages.base.config import app
+
 from streamlit_modular_auth import Login
 
 login = Login(app)

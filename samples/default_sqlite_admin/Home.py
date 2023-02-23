@@ -1,7 +1,7 @@
 import streamlit as st
-from streamlit_modular_auth import Login
 
 from config import app
+from streamlit_modular_auth import Login
 
 login = Login(app)
 

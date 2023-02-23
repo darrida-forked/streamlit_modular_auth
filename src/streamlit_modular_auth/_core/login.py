@@ -17,8 +17,6 @@ from streamlit_modular_auth.protocol_validation.storage import validate_user_sto
 
 from .config import ModularAuth
 
-# from streamlit_modular_auth._apps.admin.models import init_database
-
 
 class Login:
     """Builds the UI for the Login/Sign Up page and manages all authentication logic."""

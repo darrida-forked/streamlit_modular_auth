@@ -6,6 +6,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
+
 from streamlit_modular_auth._apps.admin.db import db_pool  # engine
 from streamlit_modular_auth._apps.admin.models import User, init_storage
 
