@@ -5,10 +5,9 @@ import streamlit as st
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from sqlalchemy.exc import NoResultFound
-from sqlmodel import Session, select
+from sqlmodel import Session, create_engine, select
 
-from streamlit_modular_auth._apps.admin.db import db_pool  # engine
-from streamlit_modular_auth._apps.admin.models import User, init_storage
+from streamlit_modular_auth._apps.admin.models import User, create_db_and_tables, create_user
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
@@ -17,44 +16,15 @@ dc = diskcache.Cache("cache.db")
 ph = PasswordHasher()
 
 
-class DefaultDBUserAuth:
-    db: "Engine" = db_pool
+SQLITE_DEFAULT_URL = "sqlite:///sqlmodel_storage.sqlite"
 
-    def check_credentials(self, username, password):
-        """
-        Authenticates using username and password class attributes.
-        - Uses password and username from initialized object
-        - Queries user in SQLModel database (SQLite)
-        - Checks password provided by streamlit_login_auth_ui against hashed password from database.
-        Return:
-            bool: If password is correct -> "True"; if not -> "False"
-        """
-        # MOVE AND GENERIALZE INTO PROTOCOL
-        with Session(self.db.connect()) as session:
-            st.write(username)
-            statement = select(User).where(User.username == username)
-            try:
-                user = session.exec(statement).one()
-                if user and user.active is True:
-                    ph = PasswordHasher()
-                    try:
-                        if ph.verify(user.hashed_password, password):
-                            if user.groups:
-                                groups = [x.name for x in user.groups]
-                                st.session_state["groups"] = groups
-                            st.session_state["username"] = username
-                            return True
-                    except VerifyMismatchError as e:
-                        if str(e) != "The password does not match the supplied hash":
-                            raise VerifyMismatchError(e) from e
-            except NoResultFound as e:
-                if "No row was found" not in str(e):
-                    raise NoResultFound(e) from e
-        return False
+
+engine = create_engine(SQLITE_DEFAULT_URL, pool_pre_ping=True)
 
 
 class DefaultDBUserStorage:
-    db: "Engine" = db_pool
+    db: "Engine" = engine
+    user: User
 
     def register(self, first_name: str, last_name: str, email: str, username: str, password: str) -> None:
         """
@@ -67,7 +37,14 @@ class DefaultDBUserStorage:
         Return:
             None
         """
-        User.create(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
+        User.create(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+            engine=self.db,
+        )
 
     def check_username_exists(self, username: str) -> bool:
         """
@@ -122,4 +99,42 @@ class DefaultDBUserStorage:
                 session.commit()
 
     def init_storage(self):
-        return init_storage()
+        create_db_and_tables(self.db)
+        create_user(self.db)
+
+
+class DefaultDBUserAuth(DefaultDBUserStorage):
+    db: "Engine" = engine
+    user: User
+
+    def check_credentials(self, username, password):
+        """
+        Authenticates using username and password class attributes.
+        - Uses password and username from initialized object
+        - Queries user in SQLModel database (SQLite)
+        - Checks password provided by streamlit_login_auth_ui against hashed password from database.
+        Return:
+            bool: If password is correct -> "True"; if not -> "False"
+        """
+        # MOVE AND GENERIALZE INTO PROTOCOL
+        with Session(self.db.connect()) as session:
+            st.write(username)
+            statement = select(User).where(User.username == username)
+            try:
+                user = session.exec(statement).one()
+                if user and user.active is True:
+                    ph = PasswordHasher()
+                    try:
+                        if ph.verify(user.hashed_password, password):
+                            if user.groups:
+                                groups = [x.name for x in user.groups]
+                                st.session_state["groups"] = groups
+                            st.session_state["username"] = username
+                            return True
+                    except VerifyMismatchError as e:
+                        if str(e) != "The password does not match the supplied hash":
+                            raise VerifyMismatchError(e) from e
+            except NoResultFound as e:
+                if "No row was found" not in str(e):
+                    raise NoResultFound(e) from e
+        return False

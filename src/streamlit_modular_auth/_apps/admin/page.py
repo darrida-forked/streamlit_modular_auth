@@ -1,11 +1,12 @@
 import streamlit as st
 
+# from sqlalchemy.engine import Engine
 from .views import AdminView
 
 view = AdminView()
 
 
-def admin_page():
+def admin_page(view):
     st.markdown("## Admin Tools")
 
     st.markdown("---")

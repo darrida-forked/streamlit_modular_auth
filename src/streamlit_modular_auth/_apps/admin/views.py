@@ -7,7 +7,6 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from streamlit_modular_auth._core.views import DefaultBaseView
 
-from .db import db_pool  # engine
 from .models import Group, User
 
 
@@ -15,7 +14,6 @@ class AdminView(DefaultBaseView):
     title = "Admin Tools"
     name = "admin"
     groups = ["admin"]
-    db = db_pool
     __user = User
     __group = Group
 
@@ -37,14 +35,14 @@ class AdminView(DefaultBaseView):
 
     def change_user_group_status(self, username: str, group: str, granted):
         if not granted:
-            if not self.__user.add_group(username, group):
+            if not self.__user.add_group(username, group, self.db):
                 st.error("Found no record for user.")
         else:
-            if not self.__user.delete_group(username, group):
+            if not self.__user.delete_group(username, group, self.db):
                 st.error("Found no record for user.")
 
     def open_user_info(self, username):
-        user = self.__user.get(username)
+        user = self.__user.get(username, self.db)
         st.session_state["page"]["open_user"] = user
 
     # FUNCTIONALITY
@@ -59,7 +57,7 @@ class AdminView(DefaultBaseView):
         # USER INFORMATION
         col1, _, col2, col3, _ = st.columns((0.4, 0.1, 0.05, 0.2, 0.25), gap="small")  # ["Information", "Groups"])
         with col1:
-            user.username = st.text_input("Username", value=user.username or None)
+            st.text_input("Username", value=user.username, disabled=True)
             user.first_name = st.text_input("First Name", value=user.first_name or None)
             user.last_name = st.text_input("Last Name", value=user.last_name or None)
             user.email = st.text_input("Email", value=user.email or None)
@@ -67,7 +65,7 @@ class AdminView(DefaultBaseView):
 
         # USER PERMISSION GROUPS
         all_groups = self.group_get_all()
-        permissions = self.__user.get_groups(user.username)
+        permissions = self.__user.get_groups(user.username, self.db)
         for i, group in enumerate(all_groups, start=1):
             group_checkbox = col2.empty()
             col3.write(group)
@@ -97,7 +95,7 @@ class AdminView(DefaultBaseView):
                 if password:
                     ph = PasswordHasher()
                     user.hashed_password = ph.hash(password)
-                self.__user.update(user)
+                self.__user.update(user, self.db)
                 self.state["page"]["user_info_updated"] = True
                 st.experimental_rerun()
         with close_col:
@@ -120,9 +118,14 @@ class AdminView(DefaultBaseView):
         if create_user is True:
             try:
                 self.__user.create(
-                    first_name=first_name, last_name=last_name, email=email, username=username, password=password
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    username=username,
+                    password=password,
+                    engine=self.db,
                 )
-                if self.__user.get(username):
+                if self.__user.get(username, self.db):
                     st.success("User created.")
             except NoResultFound:
                 st.error("An error occurred while attempting to create user.")
@@ -174,27 +177,27 @@ class AdminView(DefaultBaseView):
             )
 
     def user_get_all(self):
-        if users := self.__user.get_all():
+        if users := self.__user.get_all(self.db):
             return users
         st.error("Found no users.")
 
     def user_disable(self, username: str):
-        self.__user.set_status(False, username)
+        self.__user.set_status(False, username, self.db)
 
     def user_enable(self, username: str):
-        self.__user.set_status(True, username)
+        self.__user.set_status(True, username, self.db)
 
     def user_refresh_groups(self, username: str) -> None:
-        if user := self.__user.get(username):
+        if user := self.__user.get(username, self.db):
             if user.groups:
                 self.cookies.set("groups", user.groups)
                 st.session_state["groups"] = user.groups.split(",")
 
     def create_group(self, name):
-        return self.__group.create(name)
+        return self.__group.create(name, self.db)
 
     def group_get_all(self, return_str=True) -> List["Group"]:
-        groups = self.__group.get_all()
+        groups = self.__group.get_all(self.db)
         if return_str and groups:
             return [x.name for x in groups]
         elif groups:
@@ -202,7 +205,7 @@ class AdminView(DefaultBaseView):
         return None
 
     def group_disable(self, name: str):
-        self.__group.set_status(False, name)
+        self.__group.set_status(False, name, self.db)
 
     def group_enable(self, name: str):
-        self.__group.set_status(True, name)
+        self.__group.set_status(True, name, self.db)

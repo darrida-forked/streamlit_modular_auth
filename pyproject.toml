@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "streamlit_modular_auth"
-version = "2023.02.15"
+version = "2023.02.23"
 description = ""
 authors = ["darrida <darrida.py@gmail.com>"]
 readme = "README.md"
+
+[tool.poetry.extras]
+sqlmodel = ["sqlmodel"]  # allows optional install mode to use database option
 
 [tool.poetry.dependencies]
 python = "^3.9.6"
@@ -15,7 +18,7 @@ streamlit-lottie = "^0.0.3"
 streamlit-option-menu = "^0.3.2"
 diskcache = "^5.4.0"
 rich = "12.6.0"
-sqlmodel = "^0.0.8"
+sqlmodel = { version = "^0.0.8", optional = true }
 
 [tool.poetry.group.test]
 optional = true
@@ -38,12 +41,6 @@ pre-commit = "^3.0.4"
 watchdog = "^2.2.1"
 black = "^23.1.0"
 ruff = "^0.0.252"
-
-[tool.poetry.group.examples]
-optional = true
-
-[tool.poetry.group.examples.dependencies]
-sqlmodel = "^0.0.8"
 
 [tool.black]
 line_length = 120

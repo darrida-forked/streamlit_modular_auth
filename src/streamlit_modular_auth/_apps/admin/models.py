@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List, Optional
 
 from argon2 import PasswordHasher
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Field, Relationship, Session, SQLModel, select
 
-from .db import db_pool
+# from .storage import engine
 
 ph = PasswordHasher()
 
@@ -44,17 +45,17 @@ class Group(SQLModel, table=True):
     users: List["User"] = Relationship(back_populates="groups", link_model=UserGroupsLink)
 
     @staticmethod
-    def get_all() -> List["Group"]:
-        with Session(db_pool.connect()) as session:
+    def get_all(engine: Engine) -> List["Group"]:
+        with Session(engine.connect()) as session:
             statement = select(Group)
             groups = session.exec(statement)
             return list(groups)
 
     @staticmethod
-    def create(name):
+    def create(name: str, engine: Engine):
         try:
             group = Group(name=name)
-            with Session(db_pool.connect()) as session:
+            with Session(engine.connect()) as session:
                 session.add(group)
                 session.commit()
         except IntegrityError as e:
@@ -65,8 +66,8 @@ class Group(SQLModel, table=True):
         return True
 
     @staticmethod
-    def set_status(status: bool, name: str):
-        with Session(db_pool.connect()) as session:
+    def set_status(status: bool, name: str, engine: Engine):
+        with Session(engine.connect()) as session:
             statement = select(Group).where(Group.name == name)
             if group := session.exec(statement).one():
                 group.active = status
@@ -103,9 +104,9 @@ class User(SQLModel, table=True):
     groups: List[Group] = Relationship(back_populates="users", link_model=UserGroupsLink)
 
     @staticmethod
-    def get(username: str = None) -> "User":
+    def get(username: str = None, engine: Engine = None) -> "User":
         try:
-            with Session(db_pool.connect()) as session:
+            with Session(engine.connect()) as session:
                 if username:
                     if user := _get_user(username, session):
                         return user
@@ -114,8 +115,8 @@ class User(SQLModel, table=True):
         return None
 
     @staticmethod
-    def get_all() -> List["User"]:
-        with Session(db_pool.connect()) as session:
+    def get_all(engine: Engine) -> List["User"]:
+        with Session(engine.connect()) as session:
             statement = select(User)
             if users := session.exec(statement):
                 return list(users)
@@ -124,7 +125,7 @@ class User(SQLModel, table=True):
         # st.error("Found no users.")
 
     @staticmethod
-    def create(first_name: str, last_name: str, email: str, username: str, password: str):
+    def create(first_name: str, last_name: str, email: str, username: str, password: str, engine: Engine):
         """
         Saves the information of the new user in SQLModel database (SQLite)
         Args:
@@ -144,13 +145,13 @@ class User(SQLModel, table=True):
             hashed_password=ph.hash(password),
             active=True,
         )
-        with Session(db_pool.connect()) as session:
+        with Session(engine.connect()) as session:
             session.add(user)
             session.commit()
 
     @staticmethod
-    def update(user: "User") -> None:
-        with Session(db_pool.connect()) as session:
+    def update(user: "User", engine: Engine) -> None:
+        with Session(engine.connect()) as session:
             if saved_user := _get_user(user.username, session):
                 saved_user.active = user.active
                 saved_user.email = user.email
@@ -163,8 +164,8 @@ class User(SQLModel, table=True):
             session.commit()
 
     @staticmethod
-    def get_groups(username: str):
-        with Session(db_pool.connect()) as session:
+    def get_groups(username: str, engine: Engine):
+        with Session(engine.connect()) as session:
             if user := _get_user(username, session):
                 return [x.name for x in user.groups] if user.groups else []
             else:
@@ -172,8 +173,8 @@ class User(SQLModel, table=True):
                 # st.error("Found no record for user.")
 
     @staticmethod
-    def add_group(username: str, groups: str) -> None:
-        with Session(db_pool.connect()) as session:
+    def add_group(username: str, groups: str, engine: Engine) -> None:
+        with Session(engine.connect()) as session:
             group_statement = select(Group).where(Group.name == groups)
             group = session.exec(group_statement).one()
             if user := _get_user(username, session):
@@ -187,8 +188,8 @@ class User(SQLModel, table=True):
                 # st.error("Found no record for user.")
 
     @staticmethod
-    def delete_group(username: str, group: str):
-        with Session(db_pool.connect()) as session:
+    def delete_group(username: str, group: str, engine: Engine):
+        with Session(engine.connect()) as session:
             group_statement = select(Group).where(Group.name == group)
             group = session.exec(group_statement).one()
             if user := _get_user(username, session):
@@ -203,8 +204,8 @@ class User(SQLModel, table=True):
                 # st.error("Found no record for user.")
 
     @staticmethod
-    def set_status(status: bool, username: str):
-        with Session(db_pool.connect()) as session:
+    def set_status(status: bool, username: str, engine: Engine):
+        with Session(engine.connect()) as session:
             if user := _get_user(username, session):
                 user.active = status
                 session.add(user)
@@ -225,12 +226,12 @@ def _get_user(username: str, session: Session) -> "User":
     # def _get_groups(self, username) -> Groups
 
 
-def create_user():
+def create_user(engine: Engine):
     from argon2 import PasswordHasher
 
     try:
         group = Group(name="admin")
-        with Session(db_pool.connect()) as session:
+        with Session(engine.connect()) as session:
             session.add(group)
             session.commit()
     except IntegrityError as e:
@@ -249,7 +250,7 @@ def create_user():
             active=True,
             admin=True,
         )
-        with Session(db_pool.connect()) as session:
+        with Session(engine.connect()) as session:
             if user.admin is True:
                 statement = select(Group).where(Group.name == "admin")
                 if admin_group := session.exec(statement).one():
@@ -264,8 +265,3 @@ def create_user():
 
 def create_db_and_tables(engine):
     SQLModel.metadata.create_all(engine)
-
-
-def init_storage():
-    create_db_and_tables(db_pool)
-    create_user()

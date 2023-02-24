@@ -1,3 +1,6 @@
 from config import app
+from streamlit_modular_auth import AdminView, admin_page
 
-app.admin_page()
+view = AdminView(app)
+
+admin_page(view)

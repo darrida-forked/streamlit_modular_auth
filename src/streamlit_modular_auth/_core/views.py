@@ -12,7 +12,7 @@ from .config import ModularAuth
 class DefaultBaseView:
     title: str
     name: str
-    groups: List[str] = None  # []
+    groups: List[str] = None
 
     def __init__(self, app: ModularAuth = None):
         if not app:
@@ -20,6 +20,7 @@ class DefaultBaseView:
         self.cookies: CookieManager = app.cookies
         self.state = app.state
         self.auth_cookies = app.plugin_auth_cookies
+        self.db = app.db_engine
 
     def check_permissions(self) -> bool:
         """Checks if user is (1) logged in, and (2) has permission for the page/section in question
