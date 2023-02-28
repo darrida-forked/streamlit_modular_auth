@@ -54,12 +54,22 @@ class ModularAuth:
     db_engine: Engine = None
     config: dict = field(default_factory=lambda: {})
 
-    def set_sqlite_storage(self, hide_admin=False):
+    def set_database_storage(self, use_admin=False):
         from streamlit_modular_auth._apps.admin.page import admin_page
-        from streamlit_modular_auth._apps.admin.storage import DefaultDBUserAuth, DefaultDBUserStorage, engine
+        from streamlit_modular_auth._apps.admin.storage import DefaultDBUserAuth, DefaultDBUserStorage
 
-        self.db_engine = engine
+        if not self.db_engine:
+            from sqlalchemy import create_engine
+
+            SQLITE_DEFAULT_URL = "sqlite:///sqlmodel_storage.sqlite"
+            self.db_engine = create_engine(SQLITE_DEFAULT_URL, pool_pre_ping=True)
+
+        print(f"SQLALCHEMY ENGINE: {self.db_engine}")
+
         self.plugin_user_storage = DefaultDBUserStorage()
+        self.plugin_user_storage.db = self.db_engine
         self.plugin_user_auth = DefaultDBUserAuth()
-        if not hide_admin:
+        self.plugin_user_auth.db = self.db_engine
+
+        if use_admin:
             self.admin_page = admin_page

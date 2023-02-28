@@ -51,8 +51,8 @@ class Login:
             validate_user_auth(self.auth, self.storage)
         if "check_auth_cookies" in argv:
             validate_auth_cookies(self.auth_cookies, self.cookies)
-        if self.config.get("enable_default_admin_page") is True and not self.config.get("set_sqlite_storage"):
-            st.error("`enable_admin_page()` requires `set_sqlite_storage`")
+        if self.config.get("enable_default_admin_page") is True and not self.config.get("set_database_storage"):
+            st.error("`enable_admin_page()` requires `set_database_storage`")
             st.stop()
 
     def __login_widget(self) -> None:

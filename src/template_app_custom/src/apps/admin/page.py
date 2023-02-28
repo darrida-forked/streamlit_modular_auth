@@ -55,14 +55,13 @@ def admin_page(view: AdminView):
 
         with group_tab:
             groups = view.group_get_all(return_str=False)
-            # groups = [x.name for x in groups]
             view.groups_list(groups)
             if st.button("Add Group") or view.state["page"].get("add_group"):
                 view.state["page"]["add_group"] = True
                 name = st.text_input("Group Name")
                 col1, col2, spacer = st.columns((0.5, 0.5, 2))
                 with col1:
-                    if st.button("Create"):
+                    if st.button("Create", key="groups_create"):
                         if not name:
                             st.warning("Name required")
                         else:
@@ -71,6 +70,6 @@ def admin_page(view: AdminView):
                             view.state["page"].pop("add_group")
                             st.experimental_rerun()
                 with col2:
-                    if st.button("Close"):
+                    if st.button("Close", key="groups_close"):
                         view.state["page"].pop("add_group")
                         st.experimental_rerun()

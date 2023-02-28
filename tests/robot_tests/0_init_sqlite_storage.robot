@@ -8,11 +8,11 @@ Variables    ../_test_variables.py
 
 
 *** Variables ***
-${URL}            http://localhost:${PORT_INIT_DATABASE_STORAGE}/
+${URL}            http://localhost:${PORT_INIT_SQLITE_STORAGE}/
 
 
 *** Test Cases ***
-Setup - Init Database Storage
+Setup - Init SQLITE Database Storage
     Open Browser  ${URL}  browser=${BROWSER}
         ...    service_log_path=${DRIVER_LOGS}
     Close Browser

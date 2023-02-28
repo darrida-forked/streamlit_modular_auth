@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "streamlit_modular_auth"
-version = "2023.02.23"
+version = "2023.02.27"
 description = ""
 authors = ["darrida <darrida.py@gmail.com>"]
 readme = "README.md"
+
+[tool.poetry.scripts]
+modular_auth_config = "cli:main"
 
 [tool.poetry.extras]
 sqlmodel = ["sqlmodel"]  # allows optional install mode to use database option
@@ -12,7 +15,6 @@ sqlmodel = ["sqlmodel"]  # allows optional install mode to use database option
 python = "^3.9.6"
 streamlit = "^1.0.0"
 streamlit-cookies-manager = "^0.2.0"
-# trycourier = "^4.4.0"
 argon2-cffi = "^21.3.0"
 streamlit-lottie = "^0.0.3"
 streamlit-option-menu = "^0.3.2"
@@ -32,6 +34,9 @@ robotframework-stacktrace = "0.4.1"
 selenium = "4.7.2"
 seleniumbase = "4.9.10"
 coverage = "7.0.0"
+psycopg2-binary = "^2.9.5"
+cx-oracle = "^8.3.0"
+oracledb = "^1.2.2"
 
 [tool.poetry.group.dev]
 optional = true
@@ -57,7 +62,7 @@ extend-select = ["S", "I"]  # bandit (S), isort (I)
 
 [tool.ruff.isort]
 extra-standard-library = []
-known-first-party = ["config", "streamlit_modular_auth"]
+known-first-party = ["config", "streamlit_modular_auth", "src"]
 known-third-party = []
 # relative-imports-order = "closest-to-furthest"
 # required-imports = ["from __future__ import annotations"]

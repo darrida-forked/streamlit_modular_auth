@@ -5,7 +5,7 @@ import streamlit as st
 from argon2 import PasswordHasher
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
-from streamlit_modular_auth._core.views import DefaultBaseView
+from streamlit_modular_auth import DefaultBaseView
 
 from .models import Group, User
 

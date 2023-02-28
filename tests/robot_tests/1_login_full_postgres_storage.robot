@@ -8,11 +8,11 @@ Variables    ../_test_variables.py
 
 
 *** Variables ***
-${URL}            http://localhost:${PORT_DEFAULT}/
+${URL}            http://localhost:${PORT_DEFAULT_POSTGRES}/
 
 
 *** Test Cases ***
-Default - Login Screen
+Default Postgres - Login Screen
     Open Browser  ${URL}  browser=${BROWSER}
         ...    service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
@@ -31,12 +31,12 @@ Default - Login Screen
     Close Browser
 
 
-# Default - Check For Password File
-#     Depends on test     Default - Login Screen
+# Default Postgres - Check For Password File
+#     Depends on test     Default Postgres - Login Screen
 #     File Should Exist   _secret_auth_.json
 
 
-Default - Reset Password Screen
+Default Postgres - Reset Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -48,7 +48,7 @@ Default - Reset Password Screen
     Close Browser
 
 
-Default - Create Account Screen
+Default Postgres - Create Account Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -64,7 +64,7 @@ Default - Create Account Screen
     Close Browser
 
 
-Default - Forgot Password Screen
+Default Postgres - Forgot Password Screen
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -76,7 +76,7 @@ Default - Forgot Password Screen
     Close Browser
 
 
-Default - Create Account
+Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -101,8 +101,8 @@ Default - Create Account
     Close Browser
 
 
-Default - Login, then Logout
-    Depends on test     Default - Create Account
+Default Postgres - Login, then Logout
+    Depends on test     Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -119,8 +119,8 @@ Default - Login, then Logout
     Close Browser
 
 
-Default - Login, Refresh, Logout, Refresh (check auth cookies)
-    Depends on test     Default - Create Account
+Default Postgres - Login, Refresh, Logout, Refresh (check auth cookies)
+    Depends on test     Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -144,8 +144,8 @@ Default - Login, Refresh, Logout, Refresh (check auth cookies)
     Close Browser
 
 
-Default - Login, Close Browser, Open (check auth cookies)
-    Depends on test     Default - Create Account
+Default Postgres - Login, Close Browser, Open (check auth cookies)
+    Depends on test     Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -167,8 +167,8 @@ Default - Login, Close Browser, Open (check auth cookies)
     Close Browser
 
 
-Default - Invalid Password
-    Depends on test     Default - Create Account
+Default Postgres - Invalid Password
+    Depends on test     Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -182,8 +182,8 @@ Default - Invalid Password
     Close Browser
 
 
-Default - Invalid Username - Special First
-    Depends on test     Default - Create Account
+Default Postgres - Invalid Username - Special First
+    Depends on test     Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -197,7 +197,7 @@ Default - Invalid Username - Special First
     Close Browser
 
 
-Default - Reset Password
+Default Postgres - Reset Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -219,8 +219,8 @@ Default - Reset Password
     Close Browser
 
 
-Default - Reset Password Re-Login Successful
-    Depends on test     Default - Create Account
+Default Postgres - Reset Password Re-Login Successful
+    Depends on test     Default Postgres - Create Account
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   //*[@placeholder="Your unique username"]
@@ -237,7 +237,7 @@ Default - Reset Password Re-Login Successful
     Close Browser
 
 
-Default - Reset Password - Wrong Password
+Default Postgres - Reset Password - Wrong Password
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -259,7 +259,7 @@ Default - Reset Password - Wrong Password
     Close Browser
 
 
-Default - Reset Password - Don't Match
+Default Postgres - Reset Password - Don't Match
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -281,7 +281,7 @@ Default - Reset Password - Don't Match
     Close Browser
 
 
-Default - Reset Password - Email Doesn't Exist
+Default Postgres - Reset Password - Email Doesn't Exist
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -303,7 +303,7 @@ Default - Reset Password - Email Doesn't Exist
     Close Browser
 
 
-Default - Create Account - No Username
+Default Postgres - Create Account - No Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -327,7 +327,7 @@ Default - Create Account - No Username
     Close Browser
 
 
-Default - Create Account - Invalid Username
+Default Postgres - Create Account - Invalid Username
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -351,7 +351,7 @@ Default - Create Account - Invalid Username
     Close Browser
 
 
-Default - Create Account - Invalid Email
+Default Postgres - Create Account - Invalid Email
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -375,7 +375,7 @@ Default - Create Account - Invalid Email
     Close Browser
 
 
-Default - Create Account - Invalid First Name
+Default Postgres - Create Account - Invalid First Name
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -397,7 +397,7 @@ Default - Create Account - Invalid First Name
     Close Browser
 
 
-Default - Create Account - Invalid Last Name
+Default Postgres - Create Account - Invalid Last Name
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -419,7 +419,7 @@ Default - Create Account - Invalid Last Name
     Close Browser
 
 
-Default - Create Account - Username Exists
+Default Postgres - Create Account - Username Exists
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe
@@ -443,7 +443,7 @@ Default - Create Account - Username Exists
     Close Browser
 
 
-Default - Create Account - Email Exists
+Default Postgres - Create Account - Email Exists
     Open Browser    ${URL}  browser=${BROWSER}  service_log_path=${DRIVER_LOGS}
     Wait Until Page Contains    Username    timeout=${TIMEOUT}
     Wait Until Element Is Visible   tag:iframe

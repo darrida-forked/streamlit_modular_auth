@@ -3,10 +3,10 @@ import streamlit as st
 from streamlit_modular_auth import Login, ModularAuth
 
 app = ModularAuth()
-app.set_json_storage()
+app.login_label = "Custom Login"
+
 login = Login(app)
 logged_in = login.build_login_ui()
-
 
 if logged_in is True:
     st.markdown("Your Streamlit Application Begins here!")

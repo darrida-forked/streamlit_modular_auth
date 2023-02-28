@@ -9,8 +9,3 @@ app = ModularAuth(
     plugin_auth_cookies=UserAuthCookiesTest(),
     login_expire=15,
 )
-
-# app.plugin_user_auth = UserAuthTest()
-# app.plugin_user_storage = UserStorageTest()
-# app.plugin_auth_cookies = UserAuthCookiesTest()
-# app.login_expire = 15

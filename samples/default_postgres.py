@@ -1,14 +1,21 @@
 import streamlit as st
+from sqlalchemy import create_engine
 
 from streamlit_modular_auth import Login, ModularAuth
 
+# requires psycopg2 or psycopg2-binary
+db_url = "postgresql+psycopg2://postgres:easypass@localhost:5432/postgres"
+pg_engine = create_engine(db_url)
+
+
 app = ModularAuth()
-app.set_database_storage(hide_admin=True)
+app.db_engine = pg_engine
+app.set_database_storage(use_admin=True)
 login = Login(app)
 
 
 st.markdown("## Streamlit Modular Auth")
-st.markdown("### Default SQLite Configuration")
+st.markdown("### Default Postgres Configuration")
 
 st.warning(
     "To initialize sqlite database: "

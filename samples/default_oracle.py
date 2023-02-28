@@ -1,14 +1,27 @@
+import sys
+
+import oracledb
 import streamlit as st
+from sqlalchemy import create_engine
 
 from streamlit_modular_auth import Login, ModularAuth
 
+oracledb.version = "8.3.0"
+sys.modules["cx_Oracle"] = oracledb
+
+# requires psycopg2 or psycopg2-binary
+db_url = "oracle+cx_oracle://system:easypass@localhost:1521/XE"
+pg_engine = create_engine(db_url)
+
+
 app = ModularAuth()
-app.set_database_storage(hide_admin=True)
+app.db_engine = pg_engine
+app.set_database_storage(use_admin=True)
 login = Login(app)
 
 
 st.markdown("## Streamlit Modular Auth")
-st.markdown("### Default SQLite Configuration")
+st.markdown("### Default Oracle Configuration")
 
 st.warning(
     "To initialize sqlite database: "

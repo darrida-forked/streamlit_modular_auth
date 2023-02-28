@@ -7,7 +7,7 @@ from argon2.exceptions import VerifyMismatchError
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
 
-from streamlit_modular_auth._apps.admin.models import User, create_db_and_tables, create_user
+from .models import User, create_db_and_tables, create_user
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
@@ -17,8 +17,9 @@ dc = diskcache.Cache("cache.db")
 ph = PasswordHasher()
 
 
-class DefaultDBUserStorage:
+class SQLModelUserStorage:
     db: "Engine"
+    User: "User" = User
 
     def register(self, first_name: str, last_name: str, email: str, username: str, password: str) -> None:
         """
@@ -31,7 +32,7 @@ class DefaultDBUserStorage:
         Return:
             None
         """
-        User.create(
+        self.User.create(
             username=username,
             email=email,
             first_name=first_name,
@@ -50,7 +51,7 @@ class DefaultDBUserStorage:
         """
         try:
             with Session(self.db.connect()) as session:
-                statement = select(User).where(User.username == username)
+                statement = select(self.User).where(self.User.username == username)
                 if user := session.exec(statement).one():
                     print(user)
                     return True
@@ -68,7 +69,7 @@ class DefaultDBUserStorage:
         """
         try:
             with Session(self.db.connect()) as session:
-                statement = select(User).where(User.email == email)
+                statement = select(self.User).where(self.User.email == email)
                 if user := session.exec(statement).one():
                     return user.username
         except NoResultFound:
@@ -86,7 +87,7 @@ class DefaultDBUserStorage:
         """
         ph = PasswordHasher()
         with Session(self.db.connect()) as session:
-            statement = select(User).where(User.email == email)
+            statement = select(self.User).where(self.User.email == email)
             if user := session.exec(statement).one():
                 user.hashed_password = ph.hash(password)
                 session.add(user)
@@ -97,9 +98,9 @@ class DefaultDBUserStorage:
         create_user(self.db)
 
 
-class DefaultDBUserAuth(DefaultDBUserStorage):
+class SQLModelUserAuth(SQLModelUserStorage):
     db: "Engine"
-    USser: User
+    User: "User" = User
 
     def check_credentials(self, username, password):
         """
@@ -113,15 +114,15 @@ class DefaultDBUserAuth(DefaultDBUserStorage):
         # MOVE AND GENERIALZE INTO PROTOCOL
         with Session(self.db.connect()) as session:
             st.write(username)
-            statement = select(User).where(User.username == username)
+            statement = select(self.User).where(self.User.username == username)
             try:
-                user = session.exec(statement).one()
-                if user and user.active is True:
+                found_user = session.exec(statement).one()
+                if found_user and found_user.active is True:
                     ph = PasswordHasher()
                     try:
-                        if ph.verify(user.hashed_password, password):
-                            if user.groups:
-                                groups = [x.name for x in user.groups]
+                        if ph.verify(found_user.hashed_password, password):
+                            if found_user.groups:
+                                groups = [x.name for x in found_user.groups]
                                 st.session_state["groups"] = groups
                             st.session_state["username"] = username
                             return True

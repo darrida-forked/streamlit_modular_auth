@@ -18,28 +18,45 @@ Start the webserver
     Remove File     _secret_auth_.json
     Remove File    sqlmodel_storage.sqlite
 
-    ${PROCESS_INIT_DB_STORAGE}    Start Process   python3    
-        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full.py
-        ...    --server.port    ${PORT_INIT_DATABASE_STORAGE}
+    # REQUIRES postgres docker container running | password="easypass" | ports 5432:5432
+    # docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=easypass -d postgres
+    ${PROCESS_INIT_POSTGRES_STORAGE}    Start Process   python3    
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/multipage_app_admin_pg/Home.py
+        ...    --server.port    ${PORT_INIT_POSTGRES_STORAGE}
         ...    init_storage
-    Set suite variable    ${PROCESS_INIT_DB_STORAGE}
-    Log To Console     ${PROCESS_INIT_DB_STORAGE}
+    Set suite variable    ${PROCESS_INIT_POSTGRES_STORAGE}
+    Log To Console     ${PROCESS_INIT_POSTGRES_STORAGE}
+
+    ${PROCESS_DEFAULT_POSTGRES}    Start Process   python3    
+        ...    -m    coverage    run    -a    --source    tests   
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/multipage_app_admin_pg/Home.py
+        ...    --server.port    ${PORT_DEFAULT_POSTGRES}    
+        ...    --server.headless   true
+    Set suite variable    ${PROCESS_DEFAULT_POSTGRES}
+    Log To Console     ${PROCESS_DEFAULT_POSTGRES}
 
     ${PROCESS_DEFAULT}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
         ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full.py    
-        ...    --server.port    ${PORT_DEFAULT}    
+        ...    --server.port    ${PORT_DEFAULT_JSON}    
         ...    --server.headless   true
     Set suite variable    ${PROCESS_DEFAULT}
     Log To Console     ${PROCESS_DEFAULT}
 
-    ${PROCESS_DEFAULT_JSON}    Start Process   python3    
+    ${PROCESS_INIT_SQLITE_STORAGE}    Start Process   python3    
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full_sqlite.py
+        ...    --server.port    ${PORT_INIT_SQLITE_STORAGE}
+        ...    init_storage
+    Set suite variable    ${PROCESS_INIT_SQLITE_STORAGE}
+    Log To Console     ${PROCESS_INIT_SQLITE_STORAGE}
+
+    ${PROCESS_DEFAULT_SQLITE}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
-        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full_json_storage.py    
-        ...    --server.port    ${PORT_DEFAULT_JSON}    
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_1_full_sqlite.py    
+        ...    --server.port    ${PORT_DEFAULT_SQLITE}    
         ...    --server.headless   true
-    Set suite variable    ${PROCESS_DEFAULT_JSON}
-    Log To Console     ${PROCESS_DEFAULT_JSON}
+    Set suite variable    ${PROCESS_DEFAULT_SQLITE}
+    Log To Console     ${PROCESS_DEFAULT_SQLITE}
 
     ${PROCESS_HIDE_FOOTER}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
@@ -89,13 +106,13 @@ Start the webserver
     Set suite variable    ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT}
     Log To Console     ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT}
 
-    ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}    Start Process   python3    
+    ${PROCESS_CUSTOM_LOGIN_NAME}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
-        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_5_custom_auth_hide_acc_mgmt_custom_name.py    
-        ...    --server.port    ${PORT_CUSTOM_AUTH_NO_ACCOUNT_MGMT_CUSTOM_NAME}    
+        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_custom_login_name.py   
+        ...    --server.port    ${PORT_CUSTOM_LOGIN_NAME}    
         ...    --server.headless   true
-    Set suite variable    ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}
-    Log To Console     ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}
+    Set suite variable    ${PROCESS_CUSTOM_LOGIN_NAME}
+    Log To Console     ${PROCESS_CUSTOM_LOGIN_NAME}
 
     ${PROCESS_CUSTOM_AUTH_HIDE_ACC_MGMT_LOGIN_NAME}    Start Process   python3    
         ...    -m    coverage    run    -a    --source    tests   
@@ -120,14 +137,6 @@ Start the webserver
         ...    --server.headless   true
     Set suite variable    ${PROCESS_CUSTOM_AUTH_COOKIES}
     Log To Console     ${PROCESS_CUSTOM_AUTH_COOKIES}
-
-    ${PROCESS_BACKWARDS_COMPATIBILITY}    Start Process    python3
-        ...    -m    coverage    run    -a    --source    tests   
-        ...    -m    streamlit    run    ${CURDIR}/tests_app/_app_backwards_comp.py    
-        ...    --server.port    ${PORT_BACKWARDS_COMPATIBILITY} 
-        ...    --server.headless   true
-    Set suite variable    ${PROCESS_BACKWARDS_COMPATIBILITY}
-    Log To Console     ${PROCESS_BACKWARDS_COMPATIBILITY}
 
     ${PROCESS_MULTIPAGE_AUTH}    Start Process    python3
         ...    -m    coverage    run    -a    --source    tests   

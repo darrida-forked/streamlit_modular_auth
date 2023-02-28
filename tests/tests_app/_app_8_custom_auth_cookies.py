@@ -7,7 +7,6 @@ from streamlit_modular_auth import Login, ModularAuth
 app = ModularAuth()
 app.login_expire = 15
 app.login_label = "Test Login"
-app.set_json_storage()
 app.plugin_auth_cookies = UserAuthCookiesTest()
 
 login = Login(app)
