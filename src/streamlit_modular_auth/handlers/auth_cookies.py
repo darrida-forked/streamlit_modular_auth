@@ -45,6 +45,7 @@ class DefaultAuthCookies:
         Args:
             username (str): Authorized user
             cookies (EncryptedCookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
+            expire_delay (int): Time limit on valid token
         Returns:
             None
         """

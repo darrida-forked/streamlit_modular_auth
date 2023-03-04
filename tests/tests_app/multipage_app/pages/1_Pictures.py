@@ -1,4 +1,5 @@
 import streamlit as st
+
 from apps.pictures.views import PicturesView
 from pages.base.config import app
 

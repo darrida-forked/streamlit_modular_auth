@@ -6,7 +6,6 @@ Library  DependencyLibrary
 
 Variables    ../_test_variables.py
 
-
 *** Variables ***
 ${URL}            http://localhost:${PORT_DEFAULT_SQLITE}/
 

@@ -1,23 +1,22 @@
 import re
 import secrets
 
-import requests
 from argon2 import PasswordHasher
 
 ph = PasswordHasher()
 
 
-def _load_lottieurl(url: str) -> str:
-    """
-    Fetches the lottie animation using the URL.
-    """
-    try:
-        r = requests.get(url, timeout=5)
-        if r.status_code != 200:
-            return None
-        return r.json()
-    except Exception:
-        print("create better exception for _utils.py line 20")
+# def _load_lottieurl(url: str) -> str:
+#     """
+#     Fetches the lottie animation using the URL.
+#     """
+#     try:
+#         r = requests.get(url, timeout=5)
+#         if r.status_code != 200:
+#             return None
+#         return r.json()
+#     except Exception:
+#         print("create better exception for _utils.py line 20")
 
 
 def _check_valid_name(name_sign_up: str) -> bool:

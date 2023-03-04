@@ -37,7 +37,7 @@ class CookieManager:
         return self.cookies.keys()
 
 
-def _initialize_cookie_manbager() -> CookieManager:
+def _initialize_cookie_manager() -> CookieManager:
     prefix = os.environ.get("ALT_AUTH_COOKIE_PREFIX") or "auth_cookies"  # Makes robot_tests easier
     cookies = EncryptedCookieManager(prefix=prefix, password=secrets.token_urlsafe(48))
     if not cookies.ready():

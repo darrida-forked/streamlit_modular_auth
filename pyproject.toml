@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "streamlit_modular_auth"
-version = "2023.02.27"
+version = "2023.03.03"
 description = ""
 authors = ["darrida <darrida.py@gmail.com>"]
 readme = "README.md"
@@ -12,11 +12,11 @@ modular_auth_config = "cli:main"
 sqlmodel = ["sqlmodel"]  # allows optional install mode to use database option
 
 [tool.poetry.dependencies]
-python = "^3.9.6"
+python = ">=3.9.6,<3.9.7 || >3.9.7,<4.0.0"
 streamlit = "^1.0.0"
 streamlit-cookies-manager = "^0.2.0"
 argon2-cffi = "^21.3.0"
-streamlit-lottie = "^0.0.3"
+#streamlit-lottie = "^0.0.3"
 streamlit-option-menu = "^0.3.2"
 diskcache = "^5.4.0"
 rich = "12.6.0"
