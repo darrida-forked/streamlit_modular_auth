@@ -3,6 +3,7 @@ import secrets
 from typing import Any
 
 import streamlit as st
+from loguru import logger
 from streamlit_cookies_manager import EncryptedCookieManager
 
 
@@ -22,9 +23,12 @@ class CookieManager:
         self.cookies = cookies
 
     def get(self, name) -> Any:
-        return self.cookies.get(name)
+        value = self.cookies.get(name)
+        logger.info(f"Getting cookie: {name}; value: {value}")
+        return value
 
     def set(self, name, val) -> None:
+        logger.info(f"Setting cookie: {name}; value: {val}")
         self.cookies[name] = val
         # self.cookies.save()
 

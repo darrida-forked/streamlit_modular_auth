@@ -21,6 +21,7 @@ streamlit-option-menu = "^0.3.2"
 diskcache = "^5.4.0"
 rich = "12.6.0"
 sqlmodel = { version = "^0.0.8", optional = true }
+streamlit-base-extras = "^0.2.13"
 
 [tool.poetry.group.test]
 optional = true

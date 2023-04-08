@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import diskcache
 import streamlit as st
+from loguru import logger
 
 from streamlit_modular_auth.protocols import CookieManager
 
@@ -20,12 +21,18 @@ class DefaultAuthCookies:
         Returns:
             bool: If cookie(s) are valid -> True; if not valid -> False
         """
+        logger.info(st.session_state)
         if "auth_username" not in cookies.keys() and "auth_token" in cookies.keys():
             return False
+        logger.info(cookies.keys())
         local_username = cookies.get("auth_username")
+        logger.info(f"local_username {local_username}")
         local_token = cookies.get("auth_token")
+        logger.info(st.session_state)
 
         if user_cache := dc.get(local_username):
+            logger.info(user_cache)
+            logger.info(f"Token from local cookie: {local_token}")
             if (
                 user_cache["auth_token"] == local_token
                 and datetime.fromisoformat(user_cache["expires"]) >= datetime.now()
@@ -35,6 +42,7 @@ class DefaultAuthCookies:
                 return True
             else:
                 st.error("Session expired...")
+        logger.info(st.session_state)
         return False
 
     def set(self, username, cookies: CookieManager, expire_delay: int = 3600):
@@ -67,6 +75,7 @@ class DefaultAuthCookies:
             None
         """
         cookies.expire("auth_token")
+        cookies.expire("auth_username")
         cookies.expire("groups")
         if "groups" in st.session_state.keys():
             st.session_state.pop("groups")
