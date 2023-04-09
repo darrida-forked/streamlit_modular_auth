@@ -17,8 +17,6 @@ def init(app: FastAPI) -> None:
 
 
 class WebappsLogin:
-    title = "Login"
-
     def routes(self):
         @ui.page("/login", dark=True)
         async def login(request: Request) -> None:

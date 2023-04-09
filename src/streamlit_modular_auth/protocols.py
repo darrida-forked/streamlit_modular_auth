@@ -1,16 +1,30 @@
 from typing import Optional, Protocol
 
-from streamlit_modular_auth._cookie_manager import CookieManager
+# from streamlit_modular_auth._cookie_manager import CookieManager
 
 
-class UserAuth(Protocol):
-    def check_credentials(self, username, password) -> bool:
+class AuthenticatedUser(Protocol):
+    username: str
+    scopes: list
+    expires: int
+
+    def logged_in(self) -> bool:
         """
-        Authenticates using username and password class attributes.
-        - Uses password and username from initialized object
+        Checks for valid cookies set by external login page app
+
+        It should:
+        (1) Check for valid cookies set by external app
+        (2a) If valid cookies are found:
+            - Update `st.session_state` with initialized `AuthenticatedUser` object
+            ```st.session_state["user"] = AuthenticatedUser(username=<username>, scopes=<scopes>, expires=<expires>)```
+        (2b) If valid cookies not not found, redirect to external login page
+            - Note: external login page should be configured to redirect back to this app after successful login
+
+        Args:
+            None
 
         Return:
-            bool: If password is correct -> "True"; if not -> "False"
+            bool: If logged in -> "True"; if not -> "False"
         """
         ...
 
@@ -19,6 +33,7 @@ class UserStorage(Protocol):
     def register(self, first_name: str, last_name: str, email: str, username: str, password: str) -> None:
         """
         Saves the information of the new user in user storage.
+        - This could be via any method (external api, internal database connections, etc)
 
         Args:
             first_name (str): first name for new account
@@ -35,6 +50,7 @@ class UserStorage(Protocol):
     def check_username_exists(self, username: str) -> bool:
         """
         Checks if the username exists in user storage.
+        - This could be via any method (external api, internal database connections, etc)
 
         Args:
             username (str): username to check
@@ -47,6 +63,7 @@ class UserStorage(Protocol):
     def get_username_from_email(self, email: str) -> Optional[str]:
         """
         Retrieve username, if it exists, from user storage from provided email.
+        - This could be via any method (external api, internal database connections, etc)
 
         Args:
             email (str): email connected to forgotten password
@@ -58,6 +75,7 @@ class UserStorage(Protocol):
 
     def change_password(self, email: str, password: str) -> None:
         """Replace password in user storage.
+        - This could be via any method (external api, internal database connections, etc)
 
         Args:
             email (str): email connected to account
@@ -68,96 +86,83 @@ class UserStorage(Protocol):
         """
         ...
 
-    def init_storage(self):
-        """Optional method that can initialize storage
-        - If storage/tables have been setup separate from the app, this likely isn't needed
-        - If using `json_storage` or `database_storage` via built-in SQLite, this will generate the json or SQLite file
-        - If creating custom storage that needs to be generated when all is deploy, the code for that can be executed
-          using this.
-        - USAGE:
-          ```shell
-          streamlit run <APP>.py init_storage
-          ```
-        """
-        ...
+
+# class ForgotPasswordMessage(Protocol):
+#     def send(self, username: str, email: str, reset_password: str) -> None:
+#         """Trigger an email to the user containing the randomly generated password.
+
+#         Args:
+#             username (str): User's username
+#             email (str): User's [TO:] email
+#             reset_password (str): New temporary password to send
+
+#         Returns:
+#             None
+#         """
+#         ...
 
 
-class ForgotPasswordMessage(Protocol):
-    def send(self, username: str, email: str, reset_password: str) -> None:
-        """Trigger an email to the user containing the randomly generated password.
+# class AuthCookies(Protocol):
+#     def check(self, cookies: CookieManager) -> bool:
+#         """
+#         Checks that auth cookies exist and are valid.
+#         - Exact internal setup isn't important, so long as it takes the specified parameter below, and
+#           validates existing cookies (if they exist)
 
-        Args:
-            username (str): User's username
-            email (str): User's [TO:] email
-            reset_password (str): New temporary password to send
+#         To Use:
+#         - Any logic here MUST include `cookies.get("<name>") to acquire the values to validate against
+#           - "<name>" must match the cookie name used in `self.cookie.set`
+#           - validate against the same data structure used in `self.cookie.set`
+#         - Examples of additional logic:
+#           - Loading in other information from cookies (such as "groups")
+#           - Using information found in cookies to load in other information from database/storage
+#             (again, such as "groups")
 
-        Returns:
-            None
-        """
-        ...
+#         Args:
+#             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
 
+#         Returns:
+#             bool: If cookie(s) are valid -> True; if not valid -> False
+#         """
+#         ...
 
-class AuthCookies(Protocol):
-    def check(self, cookies: CookieManager) -> bool:
-        """
-        Checks that auth cookies exist and are valid.
-        - Exact internal setup isn't important, so long as it takes the specified parameter below, and
-          validates existing cookies (if they exist)
+#     def set(self, username, cookies: CookieManager, expire_delay: int) -> None:
+#         """
+#         Sets auth cookie using initialized EncryptedCookieManager.
+#         - Exact internal setup isn't important, so long as it takes the specified parameters,
+#           and sets cookies that indicate an authorized session, and can be interacted with by this class.
 
-        To Use:
-        - Any logic here MUST include `cookies.get("<name>") to acquire the values to validate against
-          - "<name>" must match the cookie name used in `self.cookie.set`
-          - validate against the same data structure used in `self.cookie.set`
-        - Examples of additional logic:
-          - Loading in other information from cookies (such as "groups")
-          - Using information found in cookies to load in other information from database/storage
-            (again, such as "groups")
+#         To Use:
+#         - Any logic here MUST include `cookies.set("<name>", <value>)`
+#         - "<value>" can be of type STR or DICT
 
-        Args:
-            cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
+#         Args:
+#             username (str): Authorized user
+#             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
 
-        Returns:
-            bool: If cookie(s) are valid -> True; if not valid -> False
-        """
-        ...
+#         Returns:
+#             None
+#         """
+#         ...
 
-    def set(self, username, cookies: CookieManager, expire_delay: int) -> None:
-        """
-        Sets auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters,
-          and sets cookies that indicate an authorized session, and can be interacted with by this class.
+#     def expire(self, cookies: CookieManager) -> None:
+#         """
+#         Expires auth cookie using initialized EncryptedCookieManager.
+#         - Exact internal setup isn't important, so long as it takes the specified parameters,
+#           and changes the existing cookies status to indicate an invalid session.
 
-        To Use:
-        - Any logic here MUST include `cookies.set("<name>", <value>)`
-        - "<value>" can be of type STR or DICT
+#         To Use:
+#         - Any logic here MUST include `cookies.expire("<name>")`
+#         - "<name>" must match the cookie name used in `self.cookie.set`
+#         - Options:
+#           - When only a name is passed to `cookies.expire` the existing cookie is replaced with an empty string
+#           - A alternate value can also be passed using `cookies.expire("<name>", "<value")`, as long as it still
+#             results in an invalid check in `self.cookies.check`
 
-        Args:
-            username (str): Authorized user
-            cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
+#         Args:
+#             cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
 
-        Returns:
-            None
-        """
-        ...
-
-    def expire(self, cookies: CookieManager) -> None:
-        """
-        Expires auth cookie using initialized EncryptedCookieManager.
-        - Exact internal setup isn't important, so long as it takes the specified parameters,
-          and changes the existing cookies status to indicate an invalid session.
-
-        To Use:
-        - Any logic here MUST include `cookies.expire("<name>")`
-        - "<name>" must match the cookie name used in `self.cookie.set`
-        - Options:
-          - When only a name is passed to `cookies.expire` the existing cookie is replaced with an empty string
-          - A alternate value can also be passed using `cookies.expire("<name>", "<value")`, as long as it still
-            results in an invalid check in `self.cookies.check`
-
-        Args:
-            cookies (CookieManager): Initialized cookies manager provided by streamlit_login_auth_ui
-
-        Returns:
-            None
-        """
-        ...
+#         Returns:
+#             None
+#         """
+#         ...

@@ -4,9 +4,11 @@ from typing import List
 import streamlit as st
 from streamlit.components.v1 import html
 
-from streamlit_modular_auth._cookie_manager import CookieManager
+from streamlit_modular_auth.handlers.authentication import FastapiAuthUser
 
 from .config import ModularAuth
+
+auth = FastapiAuthUser()
 
 
 class DefaultBaseView:
@@ -17,10 +19,10 @@ class DefaultBaseView:
     def __init__(self, app: ModularAuth = None):
         if not app:
             app = ModularAuth()
-        self.cookies: CookieManager = app.cookies
+        # self.cookies: CookieManager = app.cookies
         self.state = app.state
-        self.auth_cookies = app.plugin_auth_cookies
-        self.db = app.db_engine
+        # self.auth_cookies = app.plugin_auth_cookies
+        # self.db = app.db_engine
 
     def check_permissions(self) -> bool:
         """Checks if user is (1) logged in, and (2) has permission for the page/section in question
@@ -32,7 +34,7 @@ class DefaultBaseView:
             st.warning("Not logged in...")
             with st.spinner("Redirecting..."):
                 time.sleep(1)
-                self.change_page("")
+                auth.logged_in()
         if hasattr(self, "groups"):
             return self.check_group_access(self.groups)
         else:
@@ -87,6 +89,14 @@ class DefaultBaseView:
         )
         html(nav_script)
 
+    def nav_to(self, url):
+        nav_script = """
+            <meta http-equiv="refresh" content="0; url='%s'">
+        """ % (
+            url
+        )
+        st.write(nav_script, unsafe_allow_html=True)
+
     def check_existing_session(self) -> bool:
         """Checks whether or not user is logged in
 
@@ -95,9 +105,9 @@ class DefaultBaseView:
         """
         if self.state.get("LOGGED_IN") is True:
             return True
-        if self.auth_cookies.check(self.cookies) is True:
-            self.state["LOGGED_IN"] = True
-            return True
+        # if self.auth_cookies.check(self.cookies) is True:
+        #     self.state["LOGGED_IN"] = True
+        #     return True
         return False
 
     def check_group_access(self, groups: list) -> bool:
@@ -111,12 +121,12 @@ class DefaultBaseView:
         """
         if not groups:
             return True
-        if "groups" not in self.state.keys():
-            user_groups = self.cookies.get("groups")
-            if user_groups:
-                self.state["groups"] = user_groups.split(",")
-        else:
-            user_groups = self.state["groups"]
+        # if "groups" not in self.state.keys():
+        #     user_groups = self.cookies.get("groups")
+        #     if user_groups:
+        #         self.state["groups"] = user_groups.split(",")
+        # else:
+        user_groups = self.state["groups"]
         if not user_groups:
             return False
         groups.append("admin")

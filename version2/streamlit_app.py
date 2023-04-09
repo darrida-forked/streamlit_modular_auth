@@ -108,7 +108,7 @@ def logged_in():
     except (ValueError, JWTError, AttributeError, KeyError) as e:
         logger.info(f"No valid session found; redirecting to login page; error message: {e}")
         with st.spinner():
-            st.button("Redirecting...", on_click=nav_to("http://localhost:8000/login"))
+            st.button("Redirecting...", on_click=nav_to("http://localhost:8502/login"))
             st.stop()
 
 

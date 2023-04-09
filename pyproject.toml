@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "streamlit_modular_auth"
-version = "2023.03.03"
+version = "2023.04.09"
 description = ""
 authors = ["darrida <darrida.py@gmail.com>"]
 readme = "README.md"
@@ -22,6 +22,8 @@ diskcache = "^5.4.0"
 rich = "12.6.0"
 sqlmodel = { version = "^0.0.8", optional = true }
 streamlit-base-extras = "^0.2.13"
+itsdangerous = "^2.1.2"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 
 [tool.poetry.group.test]
 optional = true

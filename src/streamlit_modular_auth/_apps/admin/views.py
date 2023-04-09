@@ -33,14 +33,14 @@ class AdminView(DefaultBaseView):
 
     def change_user_group_status(self, username: str, group: str, granted):
         if not granted:
-            if not User.add_group(username, group, self.db):
+            if not User.add_group(username, group):
                 st.error("Found no record for user.")
         else:
-            if not User.delete_group(username, group, self.db):
+            if not User.delete_group(username, group):
                 st.error("Found no record for user.")
 
     def open_user_info(self, username):
-        user = User.get(username, self.db)
+        user = User.get(username)
         st.session_state["page"]["open_user"] = user
 
     # FUNCTIONALITY
@@ -56,14 +56,14 @@ class AdminView(DefaultBaseView):
         col1, _, col2, col3, _ = st.columns((0.4, 0.1, 0.05, 0.2, 0.25), gap="small")  # ["Information", "Groups"])
         with col1:
             st.text_input("Username", value=user.username, disabled=True)
-            user.first_name = st.text_input("First Name", value=user.first_name or None)
-            user.last_name = st.text_input("Last Name", value=user.last_name or None)
+            user.full_name = st.text_input("First Name", value=user.full_name or None)
             user.email = st.text_input("Email", value=user.email or None)
             password = st.text_input("Password", type="password", placeholder="*************")
 
         # USER PERMISSION GROUPS
         all_groups = self.group_get_all()
-        permissions = User.get_groups(user.username, self.db)
+        # permissions = User.get_groups(user.username)
+        permissions = user.scopes
         for i, group in enumerate(all_groups, start=1):
             group_checkbox = col2.empty()
             col3.write(group)
@@ -80,11 +80,11 @@ class AdminView(DefaultBaseView):
         # RECORD DATES
         created_col, updated_col, _ = st.columns(3)
         with created_col:
-            st.markdown(f"**Create Date:** {str(user.create_date)[:16] or ''}")
-            st.markdown(f"**Create User:** {user.created_by or ''}")
+            st.markdown(f"**Create Date:**")  # {str(user.create_date)[:16] or ''}")
+            st.markdown(f"**Create User:**")  # {user.created_by or ''}")
         with updated_col:
-            st.markdown(f"**Update Date:** {str(user.update_date)[:16] or ''}")
-            st.markdown(f"**Update User:** {user.updated_by or ''}")
+            st.markdown(f"**Update Date:**")  # {str(user.update_date)[:16] or ''}")
+            st.markdown(f"**Update User:**")  # {user.updated_by or ''}")
 
         # BUTTONS
         save_col, close_col, _ = st.columns((0.25, 0.25, 2))
@@ -139,7 +139,7 @@ class AdminView(DefaultBaseView):
             col1, col2, col3, col4, col5 = st.columns((0.5, 1, 1, 1, 1))
             active_checkbox = col1.empty()
             col2.write(user.username)
-            col3.write(f"{user.first_name} {user.last_name}")
+            col3.write(f"{user.full_name}")
             col4.write("Active" if user.active else "Inactive")
             open_button = col5.empty()
 
@@ -175,15 +175,15 @@ class AdminView(DefaultBaseView):
             )
 
     def user_get_all(self):
-        if users := User.get_all(self.db):
+        if users := User.get_all():
             return users
         st.error("Found no users.")
 
     def user_disable(self, username: str):
-        User.set_status(False, username, self.db)
+        User.set_status(False, username)
 
     def user_enable(self, username: str):
-        User.set_status(True, username, self.db)
+        User.set_status(True, username)
 
     def user_refresh_groups(self, username: str) -> None:
         if user := User.get(username, self.db):
@@ -195,7 +195,8 @@ class AdminView(DefaultBaseView):
         return Group.create(name, self.db)
 
     def group_get_all(self, return_str=True) -> List["Group"]:
-        groups = Group.get_all(self.db)
+        # groups = Group.get_all(self.db)
+        groups = [Group(name="admin", active=True), Group(name="test", active=True), Group(name="user", active=True)]
         if return_str and groups:
             return [x.name for x in groups]
         elif groups:

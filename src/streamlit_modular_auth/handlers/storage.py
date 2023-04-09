@@ -3,37 +3,37 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-import diskcache
+# import diskcache
 import streamlit as st
 from argon2 import PasswordHasher
 
-dc = diskcache.Cache("cache.db")
+# dc = diskcache.Cache("cache.db")
 ph = PasswordHasher()
 
 
-class DefaultJSONUserAuth:
-    def __init__(self, auth_filename: str = "_secret_auth_.json"):
-        self.auth_filename = auth_filename
+# class DefaultJSONUserAuth:
+#     def __init__(self, auth_filename: str = "_secret_auth_.json"):
+#         self.auth_filename = auth_filename
 
-    def check_credentials(self, username, password) -> bool:
-        """
-        Authenticates using username and password class attributes.
-        - Uses password and username from initialized object
+#     def check_credentials(self, username, password) -> bool:
+#         """
+#         Authenticates using username and password class attributes.
+#         - Uses password and username from initialized object
 
-        Return:
-            bool: If password is correct -> "True"; if not -> "False"
-        """
-        with open(self.auth_filename, "r") as auth_json:
-            authorized_user_data = json.load(auth_json)
+#         Return:
+#             bool: If password is correct -> "True"; if not -> "False"
+#         """
+#         with open(self.auth_filename, "r") as auth_json:
+#             authorized_user_data = json.load(auth_json)
 
-        for user in authorized_user_data:
-            if user["username"] == username and user["active"] is True:
-                try:
-                    if ph.verify(user["password"], password):
-                        return True
-                except Exception:
-                    print("created better exception for _handlers.py line 34")
-        return False
+#         for user in authorized_user_data:
+#             if user["username"] == username and user["active"] is True:
+#                 try:
+#                     if ph.verify(user["password"], password):
+#                         return True
+#                 except Exception:
+#                     print("created better exception for _handlers.py line 34")
+#         return False
 
 
 class DefaultJSONUserStorage:
